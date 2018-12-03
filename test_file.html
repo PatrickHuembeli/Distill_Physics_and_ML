@@ -1,0 +1,90 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<script src="http://distill.pub/template.v1.js"></script>
+<script type="text/front-matter">
+<html>
+<head>
+<script src="../assets/lib/template.v1.js"></script>
+<script src="../assets/lib/lib.js"></script>
+<script src="../assets/utils.js"></script>
+<script src="../assets/stochastic_milestones.js"></script>
+<link rel="stylesheet" href="../assets/lib/katex.min.css">
+<link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+<script src="../assets/lib/auto-render.min.js"></script>
+<script src="../assets/lib/katex.min.js"></script>
+
+<link   rel="stylesheet" href="../assets/lib/katex.min.css">
+<link   rel="stylesheet" type="text/css" href="../assets/widgets.css">
+
+  <script src = "../assets/momentum.js"></script>  
+  <script src = "../assets/data/Urosen.json"></script>    
+</head> 
+<body>
+  <dt-article class="centered">
+  <p>
+  Each row is a single iterate down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+  </p>
+  <figure style="width:610px; height:70px; display:block; margin-left:auto; margin-right:auto; position:relative">
+
+  <div style="position:relative; top:-35px">
+
+  <span style="position:absolute; left:0px; top:0px">
+  $$    \left(\begin{array}{c}
+  y_{i}^{k}\\
+  x_{i}^{k}
+  \end{array}\right)$$
+  </span>
+
+  <figcaption style="position:absolute; left:00px; top:95px; width:80px;">
+  The iterate is a sum of 
+  </figcaption>
+
+  <span style="position:absolute; left:120px; top:10px">
+  $$=$$
+  </span>
+
+  <span style="position:absolute; left:170px; top:0px">
+  $$R^{k}\left(\begin{array}{c}
+  y_{i}^{0}\\
+  x_{i}^{0}
+  \end{array}\right)$$
+  </span>  
+  <figcaption style="position:absolute; left:170px; top:95px;width:130px;">
+  the deterministic momentum iterates
+  </figcaption>
+
+  <span style="position:absolute; left:320px; top:10px">
+  $$+$$
+  </span>
+
+
+  <span style="position:absolute; left:375px; top:-10px">
+  $$\epsilon^k_i \sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+1\\
+-\alpha
+\end{array}\right)$$
+  </span> 
+
+  <figcaption style="position:absolute; left:375px; top:95px;width:200px;">
+  a decaying sum of the errors, where $\epsilon^k = Q \cdot \text{error}(w^k)$
+  </figcaption>
+
+  </div>
+  </figure>
+  <p>
+  Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+  </p>
+  </dt-article>
+  <script>
+    renderMathInElement(
+        document.body,
+        {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false},
+            ]
+        }
+    );  
+</script>
+</body>
