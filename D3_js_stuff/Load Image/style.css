@@ -1,0 +1,29 @@
+line {
+    stroke:rgb(0,0,0,0.7);
+    stroke-width:1.5
+}
+
+/* 
+hidden {
+    fill:rgb(200,200,200,1.0);
+    stroke-width:1.5
+}
+ */
+
+
+tooltip {
+    position: absolute;
+    z-index: 10;
+    visibility: hidden;
+    background-color: lightblue;
+    text-align: center;
+    padding: 4px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: orange;
+}
+
+
+body {
+    margin: 10px;
+}
