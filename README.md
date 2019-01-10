@@ -7,3 +7,8 @@ RBM Review for Distil
 Some example files, with an RBM and how to load images.
 
 If images are loaded locally one has to open the .html file with a server. E.g. with 'python -m http.server'
+
+## RBM-python
+
+The Colab file can be run on Google Colab.
+It is a working RBM for MNIST.
