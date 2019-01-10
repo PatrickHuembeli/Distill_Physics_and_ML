@@ -47,6 +47,7 @@ train_loader = torch.utils.data.DataLoader(data, batch_size=batch_size,
         shuffle=True)
 
 for epoch in range(epochs):
+    print(epoch)
     # loading data into the RBM
     train_loader = torch.utils.data.DataLoader(data, batch_size=batch_size,
             shuffle=True)
