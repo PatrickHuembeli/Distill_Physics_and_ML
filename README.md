@@ -8,6 +8,11 @@ Some example files, with an RBM and how to load images.
 
 If images are loaded locally one has to open the .html file with a server. E.g. with 'python -m http.server'
 
+### 2-level system
+
+There is still a initialization error. It has to do with the two functions of the sliders. The error disappears either if in `hue()` we replace `x(t)` in `handle.attr("cx", x(h));` with a number.
+Or if we do not call `hue()` in the `hue_e()` function. Still has to be figured out.
+
 ## RBM-python
 
 The Colab file can be run on Google Colab.
