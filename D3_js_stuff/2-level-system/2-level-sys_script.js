@@ -184,7 +184,7 @@ text_test = svg.append("text")
 // PLOT functions
 
 // set the ranges
-var x_plot = d3.scaleLinear().range([width_plot, 0]);
+var x_plot = d3.scaleLinear().domain([0,10]).range([width_plot, 0]);
 var y_plot = d3.scaleLinear().range([hight_plot, 0]);
 
 
@@ -209,8 +209,8 @@ var g = vis.append("svg:g")
 g.append("g")
   .classed("grid x_grid", true)
   .attr("transform", "translate(0," + hight_plot + ")")
-  .call(d3.axisBottom(x_plot).tickSize(0,100,100)
-        .tickFormat(""));
+  .call(d3.axisBottom(x_plot).ticks(energy_gap).tickFormat(function (d) {
+		return energy_gap*d/plot_steps;}));
         
 g.append("g")
   .classed("grid x_grid", true)
@@ -226,7 +226,8 @@ g.append("g")
 
 g.append("g")
   .classed("grid x_grid", true)
-  .call(d3.axisRight(y_plot).tickSize(0,100,100).tickFormat(""));
+  .call(d3.axisLeft(y_plot).ticks(3).tickFormat(function (d) {
+		return d;}));
 
 circle3 = g.append("circle")
              .attr("cx", 10)
@@ -237,6 +238,17 @@ circle3 = g.append("circle")
 line = g.append("path")
   .attr("class", "lines")
   .attr("d", valueline(data));
+
+// X-Axis Title  
+g.append("text")
+    .attr("text-anchor", "middle") 
+    .attr("transform", "translate("+ (width_plot/2) +","+(hight_plot + 40)+")")  
+    .text("Energy Gap");  
+// Y-Axis Title    
+g.append("text")
+    .attr("text-anchor", "middle") 
+    .attr("transform", "translate("+ (0 - 40) +","+(hight_plot/2)+")rotate(-90)")  
+    .text("Boltzmann Factor");      
 
 // -----------------------------------------------------------------------------
 // Initialize Sliders
