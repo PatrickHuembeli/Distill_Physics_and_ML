@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3 - Line Chart - continuous function</title>
+    <!-- script type="text/javascript" src="https://raw.github.com/jquery/sizzle/master/sizzle.js"></script -->
+    <script type="text/javascript" src='https://d3js.org/d3.v4.min.js'></script>
+    <style type="text/css">
+
+body {
+  font: 12px sans-serif;
+}
+
+.mouse_area {
+  opacity: 0;
+}
+.guides {
+  stroke-width: 1px;
+}
+.guides line {
+  stroke: #BBF;
+  shape-rendering: crispEdges;
+}
+.guides circle {
+  fill: #BBF;
+  stroke: #348;
+  opacity: 0.2;
+}
+
+
+.rules line, .rules path {
+  shape-rendering: crispEdges;
+  stroke: #000;
+}
+
+.rules .tick {
+}
+.rules .minor {
+  stroke: #BBB;
+}
+.rules .domain {
+  fill: none;
+}
+
+.grid .tick {
+  stroke: #CCC;
+}
+
+
+.series path {
+  fill: none;
+  stroke: #348;
+  stroke-width: 3px;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var xmargin = 100;
+var ymargin = 100;
+var w = 760;
+var h = 400;
+var x = d3.scaleLinear().domain([0, 5]).range([w,0]);
+var y = d3.scaleLinear().domain([ 0, 1]).range([h,0]);
+
+var pad = 50;
+var svg = d3.select("body")
+    .append("svg:svg")
+    .attr("height", h  +ymargin+ pad) //size of svg
+    .attr("width",  w +xmargin+ pad)
+
+var vis = svg.append("svg:g")
+    .attr("transform", "translate("+xmargin+","+ymargin+")") // gives position of svg
+
+// var legend = d3.select("body").append("div")
+//     .classed("legend", true)
+
+var continuous = make_Boltzmann_func(0.5, .7);
+
+make_rules();
+chart_line();
+//make_mouseover_guides();
+
+
+function make_Boltzmann_func(mu, sigma_squared) {
+  return (function(xi) {
+      return Math.exp(-xi/mu)
+    });
+}
+
+function chart_line() {
+  var g = vis.append("svg:g")
+      .classed("series", true)
+
+  g.append("svg:path")
+      .attr("d", function(d) { return d3.line()(
+        x.ticks(100).map(function(xi) {
+          return [ x(xi), y(continuous(xi)) ]
+        })
+       )})
+}
+
+function make_rules() {
+  var rules = vis.append("svg:g").classed("rules", true)
+
+  function make_x_axis() {
+    return d3.axisBottom(x)
+  }
+
+  function make_y_axis() {
+    return d3.axisLeft(y)
+  } 
+   
+
+  rules.append("svg:g").classed("grid x_grid", true)
+      .attr("transform", "translate(0,"+h+")")
+      .call(make_x_axis()
+        .tickSize(-h,0,0)
+        .tickFormat("")
+      )
+
+  rules.append("svg:g").classed("grid y_grid", true)
+      .attr("transform", "translate(0,0)")
+      .call(make_y_axis()
+        .tickSize(-w,0,0)
+        .tickFormat("")
+      )
+// This function makes the labels appear
+//   rules.append("svg:g").classed("labels x_labels", false)
+//       .attr("transform", "translate(0,"+(h)+")")
+//       .call(make_x_axis()
+//         // .tickFormat(d3.time.format("%Y/%m"))
+//       )
+
+//   rules.append("svg:g").classed("labels y_labels", true)
+//       .call(make_y_axis()
+//       )
+}
+
+
+    </script>
+  </body>
+</html>
