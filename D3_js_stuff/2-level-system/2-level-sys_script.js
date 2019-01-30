@@ -184,7 +184,7 @@ text_test = svg.append("text")
 // PLOT functions
 
 // set the ranges
-var x_plot = d3.scaleLinear().domain([0,10]).range([width_plot, 0]);
+var x_plot = d3.scaleLinear().range([width_plot, 0]);
 var y_plot = d3.scaleLinear().range([hight_plot, 0]);
 
 
@@ -274,6 +274,7 @@ function handler1(h) {
   //svg.style("background-color", d3.rgb(zero_to_one*255, 0.0, (1-zero_to_one)*255 ,0.4))
   rect.attr('fill', d3.rgb(zero_to_one*255, 0.0, (1-zero_to_one)*255 ,0.4));
   update(h)
+  console.log(h)
 }
 // -----------------------------------------------------------------------------
 // FCT of slider 2
@@ -290,13 +291,13 @@ function handler2(k) {
 // -----------------------------------------------------------------------------
 // Functions Plot
 
-function generateData(temp, energy, samplelength) {
+function generateData(temp, energy_gap, samplelength) {
   var data = [];
 
   for (i = 0; i < samplelength; i++) {
     data.push({
       x: i,
-      y: Math.exp(-i/(temp))
+      y: Math.exp(-(i*energy_gap/samplelength)/(temp))
     });
   }
 
@@ -311,17 +312,16 @@ function pointposition(temp, energy, samplelength){
     min_energy = 0
     diff = max_energy - min_energy
     pos_x = energy*width_plot/diff.toPrecision(1)
-    console.log(pos_x)
-    pos_y = Math.exp(-energy*(samplelength/max_energy)/(temp))
+    pos_y = Math.exp(-energy/(temp))
     // factor because we have to transform x-axis samplelength to energy
-    console.log(energy)
+    console.log(energy.toPrecision(2))
     circle3.attr("cy", hight_plot-pos_y*hight_plot);
     circle3.attr("cx", width_plot - pos_x);
 }
 
 
 function update(temp) {
-data1 = generateData(temp, 1.0, plot_steps)
+data1 = generateData(temp, 10, plot_steps)
 // Add the valueline path.
 line.datum(data1)
 line.attr("d", valueline)
