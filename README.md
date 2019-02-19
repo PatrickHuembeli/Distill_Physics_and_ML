@@ -6,12 +6,33 @@ RBM Review for Distil
 
 Some example files, with an RBM and how to load images.
 
-If images are loaded locally one has to open the .html file with a server. E.g. with 'python -m http.server'
+If images or data files are loaded locally one has to open the .html file with a server. E.g. with 'python -m http.server'
 
 ### 2-level system
 
-There is still a initialization error. It has to do with the two functions of the sliders. The error disappears either if in `hue()` we replace `x(t)` in `handle.attr("cx", x(h));` with a number.
-Or if we do not call `hue()` in the `hue_e()` function. Still has to be figured out.
+Code for 2-level system with the Boltzmann factor
+
+### Learn Gaussian
+
+Code to load external data to visualize the learning progress of a RBM. The slider indicates the training steps.
+
+### Load Image
+
+Example Code to load images
+
+### Plot random data
+
+Example code how to plot data from a file and also how to plot a function
+
+### Plot function
+
+Example code to how to plot a function
+
+### RBM Graph
+
+Code to draw a RBM graph with drop down select of number of nodes. Also contains hovering function to show additional information.
+
+
 
 ## RBM-python
 
