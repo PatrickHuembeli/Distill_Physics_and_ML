@@ -250,6 +250,10 @@ g.append("text")
     .attr("transform", "translate("+ (0 - 40) +","+(hight_plot/2)+")rotate(-90)")  
     .text("Boltzmann Factor");      
 
+g.append("text")
+    .attr("text-anchor", "middle") 
+    .attr("transform", "translate("+ 70  +","+(0-10)+")")  
+    .text("Unnormalized probability amplitude of excited state");   
 // -----------------------------------------------------------------------------
 // Initialize Sliders
 
