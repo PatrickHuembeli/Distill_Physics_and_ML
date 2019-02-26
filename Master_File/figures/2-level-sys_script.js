@@ -1,23 +1,35 @@
-const identity = "#RBM_graph_id" // This defines in which div we write into
+const identity_twolevel = "#twolevel_sys_id"
 
-var svg = d3.select("svg"),
-    margin = {right: 50, left: 50}, // position of slider in color field
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height")
-    centre = svg.attr("width")/2
+var margin = {right: 50, left: 50}, // position of slider in color field
+    width = 700
+    height = 600
+
+var svg2 = d3.select(identity_twolevel)
+    .append("svg")
+    .attr('class','figures')
+    .attr("width", width)
+    .attr("height", height);
+
+var centre = width/2
     max_scale = 10 //max scale for x_e
     max_log_scale = 10000
     slider_y_pos = height / 8
     slider_e_y_pos = height / 8 + 100
-    background_x_margin =  10
+    background_margin =  {right: 20, left: 20}
     background_height = 50
     energy_gap = 10.0
     y_line1 = 300 // y position of 2-level lines
     y_line2 = 500 
-    xmargin = centre -350 // position of plot
-    ymargin = y_line1
-    width_plot = 200
+    xplot = centre -250 // position of plot
+    yplot = y_line1
+    width_plot = 200 // Size plot
     hight_plot = 200
+    x_2level = 500 // 2level sys position
+    x_text_energy = centre // Text positions
+    y_text_energy = slider_e_y_pos - 20
+    x_text_temp = centre
+    y_text_temp = slider_y_pos - background_height/2 
+    x_text_prob = 600
     variable = 0
     plot_steps = 500
 
@@ -25,41 +37,37 @@ var svg = d3.select("svg"),
 var x = d3.scaleLog()
     .base(10)
     .domain([0.1, max_log_scale])
-    .range([0, width])
+    .range([0, width - 2*margin.right])
     .clamp(true);    
       
 var x_e = d3.scaleLinear() // x for energy
     .domain([0, max_scale]) // x-axis values
-    .range([0, width]) // width is the svg width minus the margins
+    .range([0, width- 2*margin.right]) // width is the svg width minus the margins
     .clamp(true);    
-
-rect= svg.append('rect')
+                               
+rect= svg2.append('rect')
                .attr('y', slider_y_pos - background_height/2)
-               .attr('x', 0+background_x_margin)
+               .attr('x', background_margin.left)
                .attr('height', background_height)
-               .attr('width', svg.attr("width")- 2*background_x_margin)
+               .attr('width', width- 2*background_margin.right)
                .attr('fill', 'blue') 
                .attr('opacity', 0.5)
                
-title = svg.append('text')
-                .attr('y', slider_y_pos - background_height/2)
-                .attr('x', centre)
-                .text('Temperature')                
 
-var slider = svg.append("g") // slider for temp
+var slider = svg2.append("g") // slider for temp
     .attr("class", "slider")
     .attr("transform", "translate(" + margin.left + "," + slider_y_pos + ")");
     // This defines slider position
          
-var slider_e = svg.append("g") // slider for energy
+var slider_e = svg2.append("g") // slider for energy
     .attr("class", "slider")
     .attr("transform", "translate(" + margin.left + "," + slider_e_y_pos + ")");
     // This defines slider position         
 
 
 // -----------------------------------------------------------------------------
-// TEMP SLIDER
-// -----------------------------------------------------------------------------
+// // TEMP SLIDER
+// // -----------------------------------------------------------------------------
 console.log(x.ticks(3))
 slider.append("line")
     .attr("class", "track")
@@ -92,13 +100,13 @@ var handle = slider.insert("circle", ".track-overlay")
     .attr("class", "handle")
     .attr("r", 9);
 
-slider.transition() // When html started it moves a bit
-    .duration(500)
-    .tween("hue", function() {
-      var i = d3.interpolate(1000, 10);
-      return function(t) { handler1(i(t)); };
-    });
-// -----------------------------------------------------------------------------
+// slider.transition() // When html started it moves a bit
+//     .duration(500)
+//     .tween("hue", function() {
+//       var i = d3.interpolate(1000, 10);
+//       return function(t) { handler1(i(t)); };
+//     });
+
 // -----------------------------------------------------------------------------
 // Energy SLIDER
 // -----------------------------------------------------------------------------
@@ -140,46 +148,55 @@ var handle_e = slider_e.insert("circle", ".track-overlay")
 // -----------------------------------------------------------------------------
   
  
-line1 = svg.append("svg:line")
-    .attr("x1", centre - 75)
-    .attr("x2", centre + 75)
+line1 = svg2.append("line")
+    .attr("x1", x_2level - 75)
+    .attr("x2", x_2level + 75)
     .attr("y1", y_line1)
     .attr("y2", y_line1)
     .style("stroke", "black");
 
-line2 = svg.append("svg:line")
-    .attr("x1", centre - 75)
-    .attr("x2", centre + 75)
+line2 = svg2.append("line")
+    .attr("x1", x_2level - 75)
+    .attr("x2", x_2level + 75)
     .attr("y1", y_line2)
     .attr("y2", y_line2)
     .style("stroke", "black");
 
 
-circle1 = svg.append("circle")
-             .attr("cx", centre)
+circle1 = svg2.append("circle")
+             .attr("cx", x_2level)
              .attr("cy", y_line2)
              .attr("r", 20);
              
-circle2 = svg.append("circle")
-             .attr("cx", centre)
+circle2 = svg2.append("circle")
+             .attr("cx", x_2level)
              .attr("cy", y_line1)
              .attr("r", 20);                         
              
-text1 = svg.append("text")
-            .attr("x", centre+100)
+text1 = svg2.append("text")
+            .attr("class", "general_text")
+            .attr("x", x_text_prob)
             .attr("y", y_line1)
-            .text("occupation probability: "); 
+            .text("p₀: "); 
             
-text2 = svg.append("text")
-            .attr("x", centre+100)
+text2 = svg2.append("text")
+            .attr("class", "general_text")
+            .attr("x", x_text_prob)
             .attr("y", y_line2)
-            .text("occupation probability: ");            
+            .text("p₁: ");            
                           
                           
-text_test = svg.append("text")
-            .attr("x", centre-30)
-            .attr("y", y_line1 - 10)
-            .text("occupation probability: ");                           
+text_egap = svg2.append("text")
+            .attr("class", "general_text")
+            .attr("x", x_text_energy)
+            .attr("y", y_text_energy)
+            .text("Energy Gap: "); 
+            
+text_temp = svg2.append('text')
+                .attr("class", "general_text")
+                .attr('y', slider_y_pos - background_height/2)
+                .attr('x', centre)
+                .text('Temperature')                                       
 
 
 // -----------------------------------------------------------------------------
@@ -201,15 +218,16 @@ data = generateData(0.5, 0.5, plot_steps)
 x_plot.domain(d3.extent(data, function(d) { return d.x; }));
 y_plot.domain([0, d3.max(data, function(d) { return d.y; })]);
 
-var vis = svg.append("svg:g")
-    .attr("transform", "translate("+xmargin+","+ymargin+")") // gives position of svg
+var g = svg2.append("g")
+    .attr("transform", "translate("+xplot+","+yplot+")") // gives position of svg
 
-var g = vis.append("svg:g")
-      .classed("series", true)
+// var g = vis.append("g")
+//       .classed("series", true)
 
 // Add the X Axis
 g.append("g")
   .classed("grid x_grid", true)
+  .attr("class", "plot-ticks")
   .attr("transform", "translate(0," + hight_plot + ")")
   .call(d3.axisBottom(x_plot).ticks(energy_gap).tickFormat(function (d) {
 		return energy_gap*d/plot_steps;}));
@@ -222,6 +240,7 @@ g.append("g")
 
 // Add the Y Axis
 g.append("g")
+    .attr("class", "plot-ticks")
   .classed("grid x_grid", true)
   .attr("transform", "translate("+width_plot+"," + 0 + ")")
   .call(d3.axisLeft(y_plot).tickSize(0,100,100).tickFormat(""));
@@ -243,16 +262,19 @@ line = g.append("path")
 
 // X-Axis Title  
 g.append("text")
+    .attr("class", "axis-text")
     .attr("text-anchor", "middle") 
     .attr("transform", "translate("+ (width_plot/2) +","+(hight_plot + 40)+")")  
     .text("Energy Gap");  
 // Y-Axis Title    
 g.append("text")
+    .attr("class", "axis-text")
     .attr("text-anchor", "middle") 
     .attr("transform", "translate("+ (0 - 40) +","+(hight_plot/2)+")rotate(-90)")  
     .text("Boltzmann Factor");      
 
 g.append("text")
+    .attr("class", "plot-title")
     .attr("text-anchor", "middle") 
     .attr("transform", "translate("+ 70  +","+(0-10)+")")  
     .text("Unnormalized probability amplitude of excited state");   
@@ -273,9 +295,10 @@ function handler1(h) {
   zero_to_one = x(h)/width;
   handle.attr("cx", x(h));
   circle2.attr("opacity", 1 / (1 + Math.exp(energy_gap*beta)));
-  text1.text("occupation probability: "  + (1 / (1 + Math.exp(energy_gap*beta))).toPrecision(3))
+  text1.text(" p₁: "  + (1 / (1 + Math.exp(energy_gap*beta))).toPrecision(3))
   circle1.attr("opacity", 1 / (1 + Math.exp(-energy_gap*beta)));
-  text2.text("occupation probability: "+ (1 / (1 + Math.exp(-energy_gap*beta))).toPrecision(3))
+  text2.text("p₀: "+ (1 / (1 + Math.exp(-energy_gap*beta))).toPrecision(3))
+    text_temp.text("Temperature: "+ argh1.toPrecision(4));
   //svg.style("background-color", d3.hsl(h*10, 0.7, 0.9));
   //svg.style("background-color", d3.rgb(zero_to_one*255, 0.0, (1-zero_to_one)*255 ,0.4))
   rect.attr('fill', d3.rgb(zero_to_one*255, 0.0, (1-zero_to_one)*255 ,0.4));
@@ -285,13 +308,14 @@ function handler1(h) {
 // -----------------------------------------------------------------------------
 // FCT of slider 2
 function handler2(k) {
-  energy_gap = 10*x_e(k)/width;
+  energy_gap = 10*x_e(k)/(width-margin.left-margin.right);
   handle_e.attr("cx", x_e(k));
-  text_test.text("energy_gap: "+ energy_gap.toPrecision(3));
+  text_egap.text("Energy Gap: "+ energy_gap.toPrecision(3));
   handler1(argh1);
-  y = y_line2 - (y_line2-y_line1)*x_e(k)/width
+  y = y_line2 - (y_line2-y_line1)*x_e(k)/(width-margin.left-margin.right)
   line1.attr("y1", y);
   line1.attr("y2", y);
+  text1.attr("y",y)
   circle2.attr("cy", y);
 }
 // -----------------------------------------------------------------------------
