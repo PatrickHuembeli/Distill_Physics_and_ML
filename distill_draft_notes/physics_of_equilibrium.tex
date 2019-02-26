@@ -1,0 +1,118 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{braket}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Physics of Equilibrium}
+\author{Nathan}
+
+\begin{document}
+\maketitle
+
+% Guides:
+% - Don't get bogged down in thermodynamic details. All we really need to be technical about are max-ent models, gibbs distribution, linearly independent random variables, contrastive divergence, etc.
+
+% Physics of Equilibrium
+% - Want to connect ML to physics 
+% - Example of empty box; connect it to atmosphere and it will quickly change configuration to match temperature, pressure, particle concentrations of atmosphere
+% - In fact, doesn't even have to be empty; it just has to have different thermodynamic state than atmosphere
+% - In ML, the goal is for our model to ``equilibrate with data''
+%   - Model is our ``box'' that we want to imprint the data reservoir (atmosphere) on
+
+% - Thermodynamic state
+%   - There may be a huge number of ways boxes can disagree wrt their internal degrees of freedom, even when coarse-grained variables are the same; we disregard these (they don't really matter for our purposes)
+%   - Succinct way of characterizing systems with many many degrees of freedom using only a few values
+%   - If two systems (with different configurations) lead to the same observed values of certain (random) variables, then we don't care
+%   - A kind of equivalence class of a system; many different microscopic configurations that lead to the same value of specified variables are considered within the same thermodynamic state
+
+% - Energy conservation: 
+%    - systems interacting will exchange energy; 
+%    - gain/loss of energy of one system is offset by loss/gain in another
+% - Reservoirs:
+%   - Systems which are so large that interaction with smaller systems will effectively not change them
+%   - Can `imprint' themselves on smaller systems
+%     - If both R & S are both described/modelled by Boltzmann dist, and the structure of variables is the same, then interaction will cause S to have the same values
+%   - in fact, don't need to re-isolate system: at equilibrium, flow in is balanced by flow out
+
+
+% - MaxEnt models: We know the value of these variables, but we're ignorant about these orthogonal variables
+% - Exponential family
+%   - Observables <-> random variables
+%   - Sufficient statistics <-> Energy function
+%   - Natural parameters <-> weights
+%   - Conjugate variables
+%     - weights & random variables
+%     - generalized forces and coordinates
+
+% - Training RBMS
+%   - Contrastive divergence formula can be seen as giving net forces in orthgonal directions
+%   - Model is trained when equilibrium is reached (net force on all coordinates is zero)
+%   - Also when all expvals are equal to eachother for both systems
+
+Boltzmann machines have an interesting history. Boltzmann was an Austrian scientist who worked on statistical descriptions of physics in the 1800s. His name is tied to a number of theories and results that are still in common use today: Boltzmann's constant, Boltzmann's equation, Maxwell-Boltzmann statistics, and the Boltzmann distribution. Boltzmann did not, however, invent Boltzmann machines. This is a more recent construct, emerging from the machine learning literature of the 1980s. Essentially, machine learning researchers ``ported'' certain ideas which were originally developed for statistical physics. In particular, they used the idea that the probability for a system to be in a particular configuration $x$ can be specified using a single scalar function -- the \emph{energy} $E(x)$ -- of that configuration. 
+
+Boltzmann machines were further developed, extended, and improved, over several decades. Currently, the hottest topic in machine learning is deep neural networks, and Boltzmann machines -- a kind of shallow neural network -- have fallen somewhat out of favour amongst practitioners. Despite this, Boltzmann machines have recently been ``backported'' to physics, where they have successfully been used to model the wavefunctions of quantum systems \cite{...}. Boltzmann machines are still being used in other areas, such as ... (need to see if anyone is using them).
+
+\section{Energy-based models and the Boltzmann distribution}
+
+The basic idea of energy-based models is to capture the different possible configurations of a system through a single scalar quantity, called the energy. Low-energy configurations are more likely than high-energy configurations, and if two configurations have the same energy, they are equally likely. The Boltzmann distribution connects energy to probability via the formula
+\begin{equation}
+ p(x) \propto \exp(-\beta E(x)),
+\end{equation}
+where $\beta$ is an arbitrary positive number (in physics, this is called the \emph{inverse temperature}). 
+
+There are a number of arguments which can lead us to use this formula. The simplest is perhaps that the exponential function is the most well-known way to map the real line (the domain of $E(x)$) into positive numbers, which we could then normalize to probabilities. A stronger justification comes from \emph{Jaynes' principle}, after the 19th century physicist E. T. Jaynes. This principle, also called the \emph{principle of maximum entropy}, tells us that, amongst all distributions which are consistent with known observations (e.g., the expectation values of certain random variables), the distribution with maximal entropy should be preferred. Intuitively, this makes sense. If we do not have any information about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom about which we do have strong beliefs. Choosing the max-ent model reduces the amount of (potentially biased and unsubstantiated) prior information built into a model. Jaynes showed how to arrive at the above Boltzmann equation from the principle of maximum entropy, and derivations can be found in several textbooks. \textbf{Worth going through derivation? It's just constrained optimization, i.e., maximizing the entropy formula with lagrange multipliers}
+
+
+
+
+
+
+\section{The physics of equilibrium}
+
+
+
+Let's consider a simple thought exercise. Suppose we have a box which is engineered so that its contents are completely isolated from its exterior environment, except for a small aperture which we can open and close at will. We describe the state of the box with a small number of variables: its temperature $T$, its pressure $P$, and the number of particles of different types, $N_i$, that it has inside it. For simplicity, let's assume all these variables are set to zero initially. 
+
+By opening the aperture, we can expose the interior of the box to the Earth's atmosphere. Some of the particles moving around in the ambient air will end up in the box, raising its internal temperature, its pressure, and its various particle concentrations. At first, there will be large fluctuations in these values, but over time they will stabilize. After giving enough time for the box to equilibrate, we close the aperture again. 
+
+What is the new state of the box? From experience, we know the box will be at the same temperature and pressure, and contain the same concentrations of particles, as the ambient air. The atmosphere has, simply through interaction, imprinted its state onto the smaller box system. 
+This illuminates a principle that we can ``imprint'' the state of one system onto another purely through a interaction. The box can been seen as a kind of proxy ``model'' of the environment, since it has the same values 
+
+But why did the box's parameters -- the temperature, pressure, etc. -- change? Conservation of energy is one of the fundamental laws of nature, showing up across physics, chemistry, and biology. When two systems interact, they exchange energy. Any energy lost by one system will be offset by a gain in the other. In our example, 
+
+
+which can cause the state of each system to change. This is a pretty broadly applicable rule, with variants appearing in physics, chemistry, biology, and machine learning.
+Energy can be decomposed into a product of temperature $T$ and entropy $S$, i.e., $E = T\cdot S$ (these are an example of \emph{conjugate variables}). When a particle from the atmosphere enters the box, the box's entropy increases (
+
+
+
+Technically, the box-atmosphere exchange goes both ways. Since some fraction of particles left the atmosphere and now reside in the box, the atmosphere is now technically at lower temperature, pressure, and particle concentrations than it was before interacting with the box. However, the \emph{scale} of the atmosphere is so gigantic compared to the box, that these changes would not even register within the precision of a detector (like a thermometer). The same story holds even if the box's initial parameters were nonzero. Whatever their value, interaction with the atmosphere will cause the box's state to shift to match the environment's, and vice-versa. 
+
+
+
+
+\section{Plot ideas}
+\begin{itemize}
+ \item Histograms under the probability/energy curve; user can adjust gap (horizontal distance between histogram) and temperature (changes shape of probability/energy curve
+ \item Schematic of a single 2-level system interacting with a ``reservoir'', states of the reservoir are sampled in a batch and interact with system, leading it to a specific average states
+ \item Schematic of a RBM visible layer interacting with a stream of data examples, specifically images; can have similar feel to 2-level system interacting with reservoir
+ \item Plot of a 2D plane showing different image configurations; their vertical location corresponds to how probable they are. Should have MNIST-like configurations at high prob, and random noise at low prob.
+\end{itemize}
+
+
+Equilibrium is one of the most universally applicable concepts in science. (Almost) everything equilibrates. Loosely put, equilibration is the process of systems interacting and finding a way to coexist. When two physical systems interact, they can exchange energy (a kind of universal currency). Conservation of energy is such a strong principle in physics that is has been elevated to a kind of natural \emph{law}.
+
+\end{document}
