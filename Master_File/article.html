@@ -18,6 +18,14 @@
 <head>
   <script src="https://distill.pub/template.v2.js"></script>
   <script src='https://d3js.org/d3.v4.min.js' charset="utf-8"></script>
+<!--   <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script> -->
+
+<script>
+  function MathCache(id) {
+    return document.querySelector("#math-cache ." + id).innerHTML;
+  }
+</script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1" >
   <meta charset="utf8">
   <link rel="stylesheet" href="style.css">
@@ -50,6 +58,8 @@
     return function(callback) { loadingScreen.remove() };
   }
 </script>
+
+
 
 <body>
   <distill-header></distill-header>
@@ -114,6 +124,7 @@
     \sigma
   </d-math>
   
+  
   <figure style = "width:100%; height:260px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_Graph">
   <div id = "RBM_graph_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
@@ -141,6 +152,18 @@
   </figure>
 
   <script type = "text/javascript" src = "figures/image_equilibration_script.js" ></script>
+  
+    <!-- 4th Section -->
+  <h2>
+  Show how images of dataset go to low energies when trained
+  </h2>
+
+ <figure style = "width:100%; height:600px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "image_energies">
+  <div id = "image_energies_id" style="position:absolute; left:0px; top:0px"></div>
+  </figure>
+
+  <script type = "text/javascript" src = "figures/image_energies_script.js" ></script>
+
   
   <h2>A Brief Survey of Techniques</h2>
   

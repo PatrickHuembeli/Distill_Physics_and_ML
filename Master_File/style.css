@@ -13,19 +13,17 @@ svg.figures {
 
 line.RBM_line {
     stroke:rgb(0,0,0,0.7);
-    stroke-width:1.5;
+    stroke-width:2.0;
 }
 
 circle.hidden_circle {
     opacity: 0.5;
-    fill: green;
     stroke: blue;
     stroke-width: 2;
 }
 
 circle.visible_circle {
     opacity: 0.5;
-    fill: blue;
     stroke: black;
     stroke-width: 5;
 }

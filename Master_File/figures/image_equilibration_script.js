@@ -89,18 +89,30 @@ images = svg_imgequil.selectAll()
     .on("click", function(d){main_image_var = d,
                 main_image.attr('xlink:href', '/figures/selected_MNIST/image_'+main_image_var+'.jpg'),
                 compressed_image.attr('xlink:href', '/figures/selected_MNIST/image_'+main_image_var+'_resized.jpg'),
-                console.log(main_image.attr('xlink:href')),
-                console.log(compressed_image.attr('xlink:href')),
                 initialize_NN()});
+
+var hidden_container = svg_imgequil.append("svg")
+    .attr("x", 450)
+    .attr("y", 200)
+    .attr("width", 500)
+    .attr("height", 500)
+    .attr('id','HiddenContainer'); 
+    
+var NN_container = svg_imgequil.append("svg")
+    .attr("x", 220)
+    .attr("y", 200)
+    .attr("width", 500)
+    .attr("height", 800)
+    .attr('id','NNContainer'); 
 
 // Transform compressed image to neural network
 // -----------------------------------------------------------------------------
 // Define global variables
 var img, context, imgData, raw_data1, raw_data
 var colors = ['white', 'black'];
+var hidden_colors = ['blue', 'red']; 
 var initialize_flag = false
 context = canvas.node().getContext("2d");
-
 
 
 
@@ -123,24 +135,22 @@ async function update_drawing() {
         points.push([x, y, c]);
     };
     
-    var hidden_container = svg_imgequil.append("svg")
-        .attr("x", 450)
-        .attr("y", 200)
-        .attr("width", 500)
-        .attr("height", 500)
-        .attr('id','HiddenContainer'); 
+   
+        
+    if (initialize_flag){
+        d3.select("#NNContainer").selectAll("circle")
+            .data(points)
+            .style("fill", function(d) { return colors[d[2]] 
+                                    console.log(d)});
+        
+        d3.select("#HiddenContainer").selectAll("circle")
+        .transition()
+        .duration(100)
+        .style("fill", function(d) { return hidden_colors[Math.round(Math.random())]}) 
+    }
+    else{ // This is for the first run
     
-    if (initialize_flag){d3.select("#NNContainer").remove();}
-    else {}
-       
-    var NN_container = svg_imgequil.append("svg")
-        .attr("x", 220)
-        .attr("y", 200)
-        .attr("width", 500)
-        .attr("height", 800)
-        .attr('id','NNContainer');
-     
-         NN_container.selectAll()
+    d3.select("#NNContainer").selectAll()
             .data(points)
             .enter()    
             .append("line")
@@ -150,39 +160,8 @@ async function update_drawing() {
             .attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
             .attr('stroke', 'black')
             .attr('opacity', '0.3')
-//      line = NN_container.append("line")
-//                     .attr('x1', 10)
-//                     .attr('x2', 1000)
-//                     .attr('y1', 10)
-//                     .attr('y2', 1000)
-//                     .attr('stroke', 'black')
-                    
-//     NN_container.selectAll()
-//         .data(points)
-//         .enter() 
-//         .append("line")
-//         .attr('x1', function(d){console.log(d)
-//                                 return (10 +  neuron_margin_x*d[0] - 5*d[0] )})
-//         .attr('x2', function(d){(10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
-//         .attr('y1', function(d){(10+neuron_margin_x*d[1]+ 5*d[0] )})
-//         .attr('y2', function(d){(10+neuron_margin_x*d[1]+ 5*d[0] )})
-//         .attr('stroke', 'black')                                     
     
-    if (initialize_flag){console.log('new data branch')
-        circles =  NN_container.selectAll("circle")
-                                .data(points);
-        circles.exit().remove()
-        circles.enter().append("circle")
-        .style("fill", function(d) { return colors[d[2]] 
-                                    console.log(d)})
-        .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0] - 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
-        .attr("r", neuron_radius)
-        .attr("r", neuron_radius)
-        .attr("stroke", "black")
-        .attr("opacity", 1.0)
-    }
-    else{
-    NN_container.selectAll()
+    d3.select("#NNContainer").selectAll()
         .data(points)
         .enter()
         .append("circle")
@@ -193,25 +172,23 @@ async function update_drawing() {
         .attr("opacity", 1.0)
         initialize_flag = true
     
-    hidden_colors = ['blue', 'red']    
-    hidden_container.selectAll("circle")
+       
+    d3.select("#HiddenContainer").selectAll()
         .data(points)
         .enter()
-        .append("circle")
+        .append("circle")        
+        .attr("class", "hidden_nodes")
         .style("fill", function(d) { return hidden_colors[Math.round(Math.random())]}) 
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0]- 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)  
         .attr("opacity", 0.5) 
+        
         }
 }
 
 async function initialize_NN() {
 
     img = document.getElementById("compressed_img_id")
-    // context.drawImage(img, 0, 0)
-//     imgData = context.getImageData(0, 0, compressed_size, compressed_size);
-//     raw_data = imgData.data;
-    // console.log('calling');
     try {
     update_drawing();}
     catch {return 'error'} // Wait for short time to load img
