@@ -16,116 +16,73 @@
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \title{Physics of Equilibrium}
-\author{Nathan}
+\author{Patrick, Juan-Miguel, Peter, Nathan}
 
 \begin{document}
 \maketitle
 
-% Guides:
-% - Don't get bogged down in thermodynamic details. All we really need to be technical about are max-ent models, gibbs distribution, linearly independent random variables, contrastive divergence, etc.
+\section{Maximum Entropy Priciple}
 
-% Physics of Equilibrium
-% - Want to connect ML to physics 
-% - Example of empty box; connect it to atmosphere and it will quickly change configuration to match temperature, pressure, particle concentrations of atmosphere
-% - In fact, doesn't even have to be empty; it just has to have different thermodynamic state than atmosphere
-% - In ML, the goal is for our model to ``equilibrate with data''
-%   - Model is our ``box'' that we want to imprint the data reservoir (atmosphere) on
+\subsection{Theory}
 
-% - Thermodynamic state
-%   - There may be a huge number of ways boxes can disagree wrt their internal degrees of freedom, even when coarse-grained variables are the same; we disregard these (they don't really matter for our purposes)
-%   - Succinct way of characterizing systems with many many degrees of freedom using only a few values
-%   - If two systems (with different configurations) lead to the same observed values of certain (random) variables, then we don't care
-%   - A kind of equivalence class of a system; many different microscopic configurations that lead to the same value of specified variables are considered within the same thermodynamic state
+If we maximize the entropy of the probabilitiy distribution $p(x)$ that describes the random variables $\{x_i\}_i^N$ under the constarints $\sum_i p(x_i) f_k(x_i) = \langle f_k \rangle$ we automatically obtain the Boltzmann distribution 
 
-% - Energy conservation: 
-%    - systems interacting will exchange energy; 
-%    - gain/loss of energy of one system is offset by loss/gain in another
-% - Reservoirs:
-%   - Systems which are so large that interaction with smaller systems will effectively not change them
-%   - Can `imprint' themselves on smaller systems
-%     - If both R & S are both described/modelled by Boltzmann dist, and the structure of variables is the same, then interaction will cause S to have the same values
-%   - in fact, don't need to re-isolate system: at equilibrium, flow in is balanced by flow out
+\begin{equation*}
+p(x) = 1/Z \sum_i^N \exp(\sum_k \lambda_k f_k(x_i)).
+\end{equation*} 
+
+Where $f_k(x_i)$ are $m$ arbitrary functions of the random variables $x_i$ and $\lambda_k$ are the Lagrange multipliers . An additional constraint is that $\sum_i p(x_i) = 1$.
+
+\subsection{Applied to physics}
+
+In a physical system the constraints are given by the Hamiltonian of the system. For example through the expectation values of single site observables and two-body correlators.
+
+\begin{align*}
+	\langle \sigma_i \rangle &= \sum_i p(\sigma_i) \sigma_i \\
+	\langle \sigma_i \sigma_j \rangle &= \sum_{i,j} p(\sigma_i, \sigma_j) \sigma_i \sigma_j 
+\end{align*}
+
+These constraints come directly from the Hamiltonian $H = \sum_i b_i \sigma_i  + \sum_{i,j} J_{i,j} \sigma_i \sigma_j$.
 
 
-% - MaxEnt models: We know the value of these variables, but we're ignorant about these orthogonal variables
-% - Exponential family
-%   - Observables <-> random variables
-%   - Sufficient statistics <-> Energy function
-%   - Natural parameters <-> weights
-%   - Conjugate variables
-%     - weights & random variables
-%     - generalized forces and coordinates
+\textcolor{red}{Here are several things still unclear. Why does this meanfield approach apply? Are there other constarints we could implement?} One way to explain it is probably the sufficiency of the staistic. Which would mean that these two expectation values are sufficient statistics for the Boltzmann distribution. But this would mean, that the Boltzmann distribution comes also from the fact that we chose these statistics / constarints.
 
-% - Training RBMS
-%   - Contrastive divergence formula can be seen as giving net forces in orthgonal directions
-%   - Model is trained when equilibrium is reached (net force on all coordinates is zero)
-%   - Also when all expvals are equal to eachother for both systems
+\subsubsection{Sufficient statistic}
+A statistic $t(\vec{x})$ is sufficient with respect to a statistical model $p_{\theta}(\vec{x})$ and its parameter $\theta$ if  the conditional probability $p(\vec{x}|(t(\vec{x}))$ does not depend on $\theta$. Where $\vec{x}$ is a sample $(x_1, \dots x_n)$ of random variables. In other words, a statistic is sufficient with respect to a statistical model and the parameter $\theta$, if there is no way of extracting any additional information from the sample (concerning parameter $\theta$) than the staistic $t(\vec{x})$ already conveis.
 
-Boltzmann machines have an interesting history. Boltzmann was an Austrian scientist who worked on statistical descriptions of physics in the 1800s. His name is tied to a number of theories and results that are still in common use today: Boltzmann's constant, Boltzmann's equation, Maxwell-Boltzmann statistics, and the Boltzmann distribution. Boltzmann did not, however, invent Boltzmann machines. This is a more recent construct, emerging from the machine learning literature of the 1980s. Essentially, machine learning researchers ``ported'' certain ideas which were originally developed for statistical physics. In particular, the idea that the probability for a system to be in a particular configuration $x$ can be specified using a single scalar function -- the \emph{energy} $E(x)$ -- of that configuration. 
+A simple example: If we choose to describe a set of random variables by a Gaussian distribution $\mathcal{N}(\mu, \sigma^2)$, the mean of $\vec{x}$ is a sufficient statistic for the parameter $\mu$ .
 
-Boltzmann machines were further developed, extended, and improved, over several decades. Currently, the hottest topic in machine learning is deep neural networks, and Boltzmann machines -- a kind of shallow neural network -- have fallen somewhat out of favour amongst practitioners. Despite this, Boltzmann machines have recently been ``backported'' to physics, where they have successfully been used to model the wavefunctions of quantum systems \cite{...}. Boltzmann machines are still being used in other areas, such as ... (need to see if anyone is using them). \textcolor{red}{}
+\subsection{Connection to machine learning}
+In ML we normally choose the model we would like to fit, which is in this case a Boltzmann distribution $p = \exp(\sum_k w_k f_k)$ and then we fit the data $(x_1, \dots x_n)$ such that $\langle \sigma_i \sigma_j \rangle_p = \langle \sigma_i \sigma_j \rangle_{\text{Data}}$ and $\langle \sigma_i \rangle_p = \langle \sigma_i  \rangle_{\text{Data}}$. To do so we apply several tricks like making BM bipartite and use sampling to get approximate the model distribution.
 
-\section{Energy-based models and the Boltzmann distribution}
+\subsection{Going from this theory to a trainable model}
 
-The basic idea of energy-based models is to capture the different possible configurations of a system through a single scalar quantity, called the energy. Low-energy configurations are more likely than high-energy configurations, and if two configurations have the same energy, they are equally likely. The Boltzmann distribution connects energy to probability via the formula
-\begin{equation}
- p(x) \propto \exp(-\beta E(x)),
-\end{equation}
-where $\beta$ is an arbitrary positive number (in physics, this is called the \emph{inverse temperature}). 
-
-There are a number of arguments which can lead us to this formula. The simplest is perhaps that the exponential function is the most straightforward way to map the real line (the domain of $E(x)$) into positive numbers, which we could then normalize to probabilities. A stronger justification comes from \emph{Jaynes' principle}, after the 19th century physicist E. T. Jaynes. This principle, also called the \emph{principle of maximum entropy}, tells us that, amongst all distributions which are consistent with known observations (e.g., the expectation values of certain random variables), the distribution with maximal entropy should be preferred. 
-
-Intuitively, this makes sense. If we do not have any information about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom about which we do have strong beliefs. Choosing the max-ent model reduces the amount of (potentially biased and unsubstantiated) prior information built into a model. Jaynes showed how to arrive at the above Boltzmann equation from the principle of maximum entropy, and derivations can be found in several textbooks. \textbf{Worth going through derivation? It's just constrained optimization, i.e., maximizing the entropy formula with Lagrange multipliers.}
-
-Suppose we have a system which can exist in many different possible configurations $\{x_j\}_{j=1}^J$. We assume a discrete set of configurations, but similar arguments can be made for a continuous set. We have some partial information about the system, specifically the expectation values of the random variables $\{r_k(x)\}_{k=1}^K$ (these can be constraints forced upon the system by us, or actually observed obtained via measurement). That is, we have the constraints 
-\begin{equation}
- \langle r_k \rangle_{x} = a_k
-\end{equation}
-
-These expectation values are not enough to completely characterize the system (i.e., $J>K$), and we have no information about random variables outside of the span of the $r_k$. Jaynes' principle tells us that, if we want to model this system, we should maximize the entropy $H(x) = -\sum_{x=1}^J p(x) \log p(x)$, subject to the given constraints. Thus, we try to solve the constrained optimization
-\begin{equation}
- \textit{max}_{\lambda_i}[-\sum_{x=1}^J p(x) \log p(x) + \sum_{k=1}^K \lambda_k (\langle r_k \rangle_{x} - a_k) + \lambda_0(\sum_{j=1}^J p(x_j) - 1)]
-\end{equation}
-
-
-
-
-
-
-
-\section{The physics of equilibrium}
-
-
-
-Let's consider a simple thought exercise. Suppose we have a box which is engineered so that its contents are completely isolated from its exterior environment, except for a small aperture which we can open and close at will. We describe the state of the box with a small number of variables: its temperature $T$, its pressure $P$, and the number of particles of different types, $N_i$, that it has inside it. For simplicity, let's assume all these variables are set to zero initially. 
-
-By opening the aperture, we can expose the interior of the box to the Earth's atmosphere. Some of the particles moving around in the ambient air will end up in the box, raising its internal temperature, its pressure, and its various particle concentrations. At first, there will be large fluctuations in these values, but over time they will stabilize. After giving enough time for the box to equilibrate, we close the aperture again. 
-
-What is the new state of the box? From experience, we know the box will be at the same temperature and pressure, and contain the same concentrations of particles, as the ambient air. The atmosphere has, simply through interaction, imprinted its state onto the smaller box system. 
-This illuminates a principle that we can ``imprint'' the state of one system onto another purely through a interaction. The box can been seen as a kind of proxy ``model'' of the environment, since it has the same values 
-
-But why did the box's parameters -- the temperature, pressure, etc. -- change? Conservation of energy is one of the fundamental laws of nature, showing up across physics, chemistry, and biology. When two systems interact, they exchange energy. Any energy lost by one system will be offset by a gain in the other. In our example, 
-
-
-which can cause the state of each system to change. This is a pretty broadly applicable rule, with variants appearing in physics, chemistry, biology, and machine learning.
-Energy can be decomposed into a product of temperature $T$ and entropy $S$, i.e., $E = T\cdot S$ (these are an example of \emph{conjugate variables}). When a particle from the atmosphere enters the box, the box's entropy increases (
-
-
-
-Technically, the box-atmosphere exchange goes both ways. Since some fraction of particles left the atmosphere and now reside in the box, the atmosphere is now technically at lower temperature, pressure, and particle concentrations than it was before interacting with the box. However, the \emph{scale} of the atmosphere is so gigantic compared to the box, that these changes would not even register within the precision of a detector (like a thermometer). The same story holds even if the box's initial parameters were nonzero. Whatever their value, interaction with the atmosphere will cause the box's state to shift to match the environment's, and vice-versa. 
-
-
-
-
-\section{Plot ideas}
 \begin{itemize}
- \item Histograms under the probability/energy curve; user can adjust gap (horizontal distance between histogram) and temperature (changes shape of probability/energy curve
- \item Schematic of a single 2-level system interacting with a ``reservoir'', states of the reservoir are sampled in a batch and interact with system, leading it to a specific average states
- \item Schematic of a RBM visible layer interacting with a stream of data examples, specifically images; can have similar feel to 2-level system interacting with reservoir
- \item Plot of a 2D plane showing different image configurations; their vertical location corresponds to how probable they are. Should have MNIST-like configurations at high prob, and random noise at low prob.
+	\item We will start with a visualization of  $\langle \sigma_i \sigma_j \rangle_p = \langle \sigma_i \sigma_j \rangle_{\text{Data}}$ for a general energy based model where we don't have hidden and visible units. The input data just has the same dimension as the number of spins. The expectation values for the data are therefore fixed and we change the model parameters with sliders and the reader should try to reproduce the data distribution by changing the model parameters with these sliders.
+	\item In a next step we can make a visualization where we do something similar but with a task that cannot be achieved. For example we have a 4 dimensional data set (4 pixels) and we want some configurations to be very likely and some very similar configurations have to be almost 0 probability. We will show that this cannot be achieved just by a system of 4 spins. Therefore we introduce hidden units which are just traced out in the end.
+	\item With such a model (which is a Boltzmann machine) we actual have more expressive power but this power comes with the price that we have to sample the hidden units now also for the $\langle \sigma_i \sigma_j \rangle_{\text{Data}}$ part, which we now write as $\langle v_i h_j \rangle_{\text{Data}}$.
+	\item We can now also add the same figure from step 1) again, but now the task is a bit trickier, because the target distribution $\langle \sigma_i \sigma_j \rangle_{\text{Data}} \rightarrow \langle v_i h_j \rangle_{\text{Data}}$ is not fixed anymore, because it also contains random variables $h_j$. Therefore it will be a bit harder to fit $\langle v_i h_j \rangle_p = \langle v_i h_j \rangle_{\text{Data}}$.
+	\item from here on we can also explain for example why we do Restricted BMs. Why they are bipartite? Because of this the conditional probabilities $p(\vec{v} | \vec{h})$ and $p(\vec{h} | \vec{v})$ marginalize. And finally why contrastive divergence?
+	\item \textcolor{red}{We might mention Hopfield networks in this section?}
 \end{itemize}
 
+\subsection{Equilibration with bath of data}
 
-Equilibrium is one of the most universally applicable concepts in science. (Almost) everything equilibrates. Loosely put, equilibration is the process of systems interacting and finding a way to coexist. When two physical systems interact, they can exchange energy (a kind of universal currency). Conservation of energy is such a strong principle in physics that is has been elevated to a kind of natural \emph{law}.
+The formula $\langle \sigma_i \sigma_j \rangle_p = \langle \sigma_i  \sigma_j \rangle_{\text{Data}}$ made us think of this process as a thermalization with a bath of data, where the system has to equlibrate with this bath. But for each pair of spins we would need a different bath and the equilibrate temperature would be the parameter $W_{i,j}$. For the moment we decided that this picture does not help to understand BMs better. It is rather confusing and complicated.
 
+\subsection{Contrastive Divergence}
+
+The update rule of an RBM is:
+
+\begin{equation*}
+	\Delta W_{i,j} = \langle \frac{ \partial E}{\partial W_{i,j}} \rangle_{\text{Data}} - \langle \frac{\partial E}{\partial W_{i,j}} \rangle_{p_{\theta}} = \langle v_i h_j \rangle_{\text{Data}} - \langle v_i h_j \rangle_{p_{\theta}}
+\end{equation*}
+
+If the energy is given by $E(v,h) = \sum_{i,j} W_{i,j} v_i h_j $ (\textcolor{red}{sometimes there is a minus sign in front of the sum, which changes the direction}), then the update rule is $W \rightarrow W - \Delta W$
+
+The question here was, why is the minus sign in front of the average over the model distribution and not vice versa. How do I know in which direction I will have to move my parameters, if I train a model.
+There is a intuitive approach to this question if we consider the very extreme case of a system whith only two spins $v$ and $h$ and we assume that these variables are always not equal in the data and always equal if we sample them from the distribution $p_{\theta}$. This means that $\langle v_i h_j \rangle_{\text{Data}} = -1$
+ and $\langle v_i h_j \rangle_{p_{\theta}}  = 1$. So the update will be minimally, namely $\Delta W_{i,j} = -2$. And this makes physically sense because the data is always anti-alligned, which means the minimum energy of the configurations of the data will be achieved by increasing the weights. Since the configurations of the distribution $p_{\theta}$ are always aligned to achieve minimum energy $W$ must be strongly negative.
+ 
+ 
 \end{document}
