@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[nofootinbib, superscriptaddress, prl]{revtex4}
 
 %% Language and font encodings
 \usepackage[english]{babel}
@@ -15,17 +15,45 @@
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
-\title{Physics of Equilibrium}
-\author{Patrick, Juan-Miguel, Peter, Nathan}
-
 \begin{document}
+\title{Physics of Equilibrium}
+\author{Patrick, Juan-Miguel, Arthur, Peter, Nathan}
 \maketitle
 
-\section{Maximum Entropy Priciple}
+\section{Outline}
+\begin{itemize}
+\item The starting point is a derivation, using the maximum entropy principle, of the probability distribution that characterizes energy-based models.
+\item Novelty here is that we do not introduce an energy function; rather, we introduce a set of constraints based on statistics of our data. 
+\item In the specific case of a distribution over $n$-bit strings $z$, setting constraints on the expectation values $\langle \sigma_i \rangle$, $\langle \sigma_i \sigma_j\rangle$ is enough to derive the Boltzmann distribution for the Ising model. This immediately implies that these expectations are sufficient to determine the model parameters.
+\item We can then make a connection to maximum likelihood estimation (MLE), where given a model specified by a Boltzmann distribution, the maximum likelihood parameters of the model are those that match the expectation values of the data, thus motivating our choice of constraints.
+\item The above constraints could (somehow) be interpreted as `thermalizing with a bath of data', but we concluded this was too confusing.
+\item Instead, we make a connection to physics, showing that the previous derivation of our model is equivalent to the distribution at thermal equilibrium of a system with a given energy function, i.e., a given Hamiltonian.
+\item Here it is possible to use some of the visualizations to illustrate the concept of thermal distribution and the connection between low energy and high probability.
+\item At this stage, we can interpret our task of training a model with finding the correct Hamiltonian parameters. Crucially, each parameter controls a corresponding expectation value, e.g. $w_{ij}$ controls $\langle \sigma_i \sigma_j$.
+\item Therefore, we can train our model by slowly changing each parameter such that its corresponding expectation gets closer to the expectation for the data. This approach is exactly what we do in contrastive divergence, which we have therefore derived without the need to take derivatives of the relative entropy.
+\item An interactive visualization of this training process would be extremely helpful here: give the reader the task of finding parameters that match all expectation values. We can hint that a good strategy is to slowly change each one independently.
+\item We can then argue that there is not enough richness in the probability distribution. A better strategy is to think of a large system, and use as a model the probability distribution of a subsystem. This motivates the partitioning into hidden and visible layers. This is another opportunity for a visualization to motivate this choice.
+\item So far, we have assumed that we have access to the expectation values for our model. In the absence of an actual physical device, our only choice is to simulate sampling from its Boltzmann distribution. We do this with Gibbs sampling.
+\end{itemize}
+
+From here onwards the path is less clear, but the following are some ideas
+\begin{itemize}
+\item Gibbs sampling is difficult in general, but becomes much easier when we restrict the interactions to occur only between visible and hidden layers. Hence the birth of RBMs.
+\item This is a good opportunity to introduce a visualization of how Gibbs sampling works for RBMs. Can it also be interpreted as equilibration between layers?
+\item Application: image reconstruction. Discuss how this can also be viewed as a high-energy out-of-equilibrium state undergoing thermalization. A good visualization is also a possibility here.
+\item Smuggle in quantum? We go crazy and think of matrix-based energy models. One idea would be to show how they are strictly richer models.
+\end{itemize}
+
+Below are more detailed notes on the concepts we are planning to discuss.
+
+
+
+
+\section{Maximum Entropy Principle}
 
 \subsection{Theory}
 
-If we maximize the entropy of the probabilitiy distribution $p(x)$ that describes the random variables $\{x_i\}_i^N$ under the constarints $\sum_i p(x_i) f_k(x_i) = \langle f_k \rangle$ we automatically obtain the Boltzmann distribution 
+If we maximize the entropy of the probability distribution $p(x)$ that describes the random variables $\{x_i\}_i^N$ under the constarints $\sum_i p(x_i) f_k(x_i) = \langle f_k \rangle$ we automatically obtain the Boltzmann distribution 
 
 \begin{equation*}
 p(x) = 1/Z \sum_i^N \exp(\sum_k \lambda_k f_k(x_i)).
@@ -45,7 +73,7 @@ In a physical system the constraints are given by the Hamiltonian of the system.
 These constraints come directly from the Hamiltonian $H = \sum_i b_i \sigma_i  + \sum_{i,j} J_{i,j} \sigma_i \sigma_j$.
 
 
-\textcolor{red}{Here are several things still unclear. Why does this meanfield approach apply? Are there other constarints we could implement?} One way to explain it is probably the sufficiency of the staistic. Which would mean that these two expectation values are sufficient statistics for the Boltzmann distribution. But this would mean, that the Boltzmann distribution comes also from the fact that we chose these statistics / constarints.
+\textcolor{red}{Here are several things still unclear. Why does this meanfield approach apply? Are there other constraints we could implement?} One way to explain it is probably the sufficiency of the statistic. Which would mean that these two expectation values are sufficient statistics for the Boltzmann distribution. But this would mean, that the Boltzmann distribution comes also from the fact that we chose these statistics / constraints.
 
 \subsubsection{Sufficient statistic}
 A statistic $t(\vec{x})$ is sufficient with respect to a statistical model $p_{\theta}(\vec{x})$ and its parameter $\theta$ if  the conditional probability $p(\vec{x}|(t(\vec{x}))$ does not depend on $\theta$. Where $\vec{x}$ is a sample $(x_1, \dots x_n)$ of random variables. In other words, a statistic is sufficient with respect to a statistical model and the parameter $\theta$, if there is no way of extracting any additional information from the sample (concerning parameter $\theta$) than the staistic $t(\vec{x})$ already conveis.
