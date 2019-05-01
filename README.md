@@ -4,7 +4,9 @@ RBM Review for Distil
 
 ## Master File
 
-Contains the Distill template, and all the figures so far
+Contains the Distill template, and all the figures so far.
+
+To see the page start `python3 -m http.server`
 
 
 <!-- 
