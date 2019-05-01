@@ -34,7 +34,7 @@ var centre = width/2
     plot_steps = 500
 
     
-var x = d3.scaleLog()
+var x_temp = d3.scaleLog()
     .base(10)
     .domain([0.1, max_log_scale])
     .range([0, width - 2*margin.right])
@@ -68,11 +68,11 @@ var slider_e = svg2.append("g") // slider for energy
 // -----------------------------------------------------------------------------
 // // TEMP SLIDER
 // // -----------------------------------------------------------------------------
-console.log(x.ticks(3))
+console.log(x_temp.ticks(3))
 slider.append("line")
     .attr("class", "track")
-    .attr("x1", x.range()[0])
-    .attr("x2", x.range()[1]) 
+    .attr("x1", x_temp.range()[0])
+    .attr("x2", x_temp.range()[1]) 
 
     // This defines from where to where the slider goes
   .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
@@ -81,7 +81,7 @@ slider.append("line")
     .attr("class", "track-overlay")
     .call(d3.drag()
         .on("start.interrupt", function() { slider.interrupt(); }) // this is the function that makes the slider movable
-        .on("start drag", function() { argh1 = x.invert(d3.event.x)
+        .on("start drag", function() { argh1 = x_temp.invert(d3.event.x)
                                        handler1(argh1);
 }));
 
@@ -89,9 +89,9 @@ slider.insert("g", ".track-overlay")
     .attr("class", "ticks")
     .attr("transform", "translate(0," + 18 + ")") // position of ticks
   .selectAll("text")
-  .data(x.ticks(4))
+  .data(x_temp.ticks(4))
   .enter().append("text")
-    .attr("x", x)
+    .attr("x", x_temp)
     .attr("text-anchor", "middle")
     .text(function(d) { return d ; });
 
@@ -292,8 +292,8 @@ update(0.1)
 // Fct of Slider 1
 function handler1(h) {
   beta = 1/(h);
-  zero_to_one = x(h)/width;
-  handle.attr("cx", x(h));
+  zero_to_one = x_temp(h)/width;
+  handle.attr("cx", x_temp(h));
   circle2.attr("opacity", 1 / (1 + Math.exp(energy_gap*beta)));
   text1.text(" p₁: "  + (1 / (1 + Math.exp(energy_gap*beta))).toPrecision(3))
   circle1.attr("opacity", 1 / (1 + Math.exp(-energy_gap*beta)));
