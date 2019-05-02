@@ -20,6 +20,14 @@
 \author{Patrick, Juan-Miguel, Arthur, Peter, Nathan}
 \maketitle
 
+\section{Outline}
+
+\begin{itemize}
+\item General Introduction which already contains a part about equilibration
+\item energy based models
+\item max entropy
+\item training
+\end{itemize}
 
 \section{Introduction}
 
@@ -59,7 +67,7 @@ There are a number of arguments which can lead us to this formula. The simplest 
     }%
 }
 
-Intuitively, it makes sense to choose the distribution with maximum entropy. If we do not have any information and therefore no constraint about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom about which we do have strong beliefs and that are constraint. Choosing the max-ent model reduces the amount of (potentially biased and unsubstantiated) prior information built into a model. Jaynes showed how to arrive at the above Boltzmann equation from the principle of maximum entropy, and derivations can be found in several textbooks. \textbf{Worth going through derivation? \textcolor{red}{I don't think this will be necessary} It's just constrained optimization, i.e., maximizing the entropy formula with Lagrange multipliers.}
+Intuitively, it makes sense to choose the distribution with maximum entropy. If we do not have any information and therefore no constraint about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom about which we do have strong beliefs and that are constraint. Choosing the maximum entropy model reduces the amount of (potentially biased and unsubstantiated) prior information built into a model. Jaynes showed how to arrive at the above Boltzmann equation from the principle of maximum entropy, and derivations can be found in several textbooks. \textbf{Worth going through derivation? \textcolor{red}{I don't think this will be necessary} It's just constrained optimization, i.e., maximizing the entropy formula with Lagrange multipliers.}
 
 Suppose we have a system which can exist in many different possible configurations $\{x_j\}_{j=1}^J$. We assume a discrete set of configurations, but similar arguments can be made for a continuous set \textbf{I don't think we have to mention this here. I would rather keep it simple.}. We have some partial information about the system, specifically the expectation values of the random variables $\{r_k(x)\}_{k=1}^K$ (these can be constraints forced upon the system by us, or actually observed obtained via measurement). That is, we have the constraints 
 \begin{equation}
@@ -78,6 +86,7 @@ which has the solution
 p(x) = \frac{1}{Z} \sum_j^J \exp \left( \sum_k^K \lambda_k  \langle r_k \rangle_{x_j}\right)
 \end{equation}
 
+\textcolor{red}{Notation is not very clear yet. We probably should change it to something like: $\sum_i p_i r_{ij} = a_j$ and then follows }
 
 \section{From the sufficient statistics to the Hamiltonian}
 
