@@ -96,18 +96,15 @@ p(\vec{x}_j) = \frac{1}{Z} \exp \left( \sum_k^K \lambda_k  r_k (\vec{x}_j)\right
 
 \subsubsection{Boltzmann distribution and Equilibrium}
 
-The Boltzmann distribution is known from physics.
-and it describes the statistics of physical configurations of a system that is in an equilibrium at some temperature. We do not explicitely write the temperature because we either set it to $T=1$ or it is already absorbed in the parameters $\lambda_k$ of the model. But it is important that we are not looking at systems with zero temperature because in this case a physical system always will equilibrate to its state of minimum energy. Allowing a non zero temperature automatically leads to states that are a thermal distribution which means we would observe many possible configurations that are not only of minimum energy. In the extreme case of very high temperature all the configurations even get equally likely.  
+The Boltzmann distribution is known from physics and it describes the statistics of physical configurations of a system that is in an equilibrium at some temperature in this case the probability of a configuration $\vec{x}$ is given as $p(\vec{x}) = \frac{1}{Z} \exp{- \frac{1}{T} E(\vec{x})}$. Where $E(\vec{x})$ is a function that connects the configuration $\vec{x}$ with the real line, which is also called the energy of the system. Before we did not explicitely write the temperature because we either set it to $T=1$ or it is already absorbed in the parameters $\lambda_k$ of the model. But it is important that we are looking at systems with non-zero temperature because for zero temperature a physical system will equilibrate to its state of minimum energy. Allowing a non zero temperature automatically leads to states that are a thermal distribution which means we would observe many possible configurations that are not only of minimum energy. In the extreme case of very high temperature all the configurations even get equally likely.  
 
 \textbf{Add here modified version of 2-level system figure. Maybe we have to show an energy landscape and the occupation probability of two states. We should discuss this}
-
-\subsubsection{Paragraph for Boltzman distribution at zero temperature}
 
 \subsubsection{From the sufficient statistics to the Energy function}
 
 So far this result is general and can be applied to any constraint, the choice of $\langle r_k \rangle_x$ will in the end define the physics of the model. The most commonly used physical model in machine learning that defines the underlying behaviour of the Boltzmann distribution is a so called Ising model, which is defined through a energy function $E(\vec {\sigma}) = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i$. 
 The sufficient statistic of the Boltzmann distribution of an Ising model are the single-spin expectation values $\langle \sigma_i \rangle$ and the two-spin correlations $\langle \sigma_i \sigma_j \rangle$. This means that these two constraints suffice to fully determine the parameters of the classical Ising energy function from the data.
-Generally for the exponential family a statistic $T(x)$ is sufficient, if we can write the probability $p(x)$ as
+Generally for the exponential family, a statistic $T(x)$ is sufficient, if we can write the probability $p(x)$ as
 
 \begin{align}
 	p(x) = \exp \left( \alpha(\theta)^T T(x) + A(\theta) \right),
@@ -118,6 +115,7 @@ where $\alpha(\theta)$ is a vector valued function and $A(\theta)$ is a scalar w
 
 We want to emphasise at this point that the choice of single-spin and two-spin expectation values for this kind of model is not sufficient to capture higher-order correlations between input nodes. For real-world ML applications these correlations are important and this kind of model does not suffice. But we also want to stress here that we are not talking about BM yet. So far this model is simply an Ising spin system, where every spin represents a node (e.g. pixel) of our input data. To overcome this issue of low order correlations later we will use a part of the spins in the system as mediators between input nodes, which we we call hidden units.
 
+\subsubsection{Paragraph for Boltzman distribution at zero temperature??}
 
 \subsubsection{Energy-based models}
 
@@ -128,24 +126,22 @@ The energy function is not unique to Boltzmann machines and occurs in a huge cla
 where $\beta$ is an arbitrary positive number (in physics, this is called the \emph{inverse temperature}). 
 There are a number of arguments which can lead us to this formula. The simplest is perhaps that the exponential function is the most straightforward way to map the real line (the domain of $E(x)$) into positive numbers, which we could then normalize to probabilities. A more elaborate way to define it is the principle of maximum entropy that we have shown before.
 
+\subsection{Sampling}
 
-\subsubsection{Maximum likelihood estimation (MLE) DO WE KEEP THIS?}
-
-We would like to add a few words here to close the loop between the principle of maximum entropy and the maximum likelihood estimation, especially for people who come from machine learning.
-Energy based models and predominantly Boltzmann machines are approached differently in machine learning literature. BMs are a choice for an ansatz for the probability distribution and the parameters of the model are adjusted such that the data is maximally likely. Therefore the expectation values $\langle \sigma_i \rangle$ and  $\langle \sigma_i \sigma_j \rangle$ are not constraints of the model they are the objectives to be maximally likely.
-The choice of the Boltzmann machine as an ansatz for the probability distribution in machine learning is very well motivated by its success in experiments (Cite some RBM papers), but for a physicist intuitively the question comes to mind, why should we not use any other energy function that we know from physics. When we approach energy based models from the principle of maximum entropy we can see that the constraints and therefore the data itself determines the model and therefore from a theoretical point of view we are not restricted to Ising like energy functions.
+\textbf{We should add the plot here with the nodes that equilibrate, to show that equilibration makes random inputs equilibrate. The problem here is, that we have not yet introduced the BM. We are still with general spin models.}
 
 \subsubsection{Sampling in physics}
 
 I physics low energies are preferred over high energies. 
-And therefore if we initialize a system randomly it will eventually equilibrate to a low energy configuration or if we are at $T=0$ to the minimum energy.
+And therefore if we initialize a system randomly it will eventually equilibrate to a low energy configuration or if we are at $T=0$ to a local minimum of the energy.
 If we imagine to have a spin model implemented as a physical device and we can initialise the spins in a random way, this spin configuration would automatically go to a configuration of lower energy.
 Therefore in a real physical system, sampling from a system is only a matter of initialising it and waiting until it is equilibrate.
 
 \subsubsection{Sampling in ML}
 
 In ML we don't have an equilibration process that drives our system into a low energy configuration. But there are several methods how we can imitate this behaviour.
-To sample from a Hopfield network one takes a random input vector $\vec{v}$ and passes it through the network several times and updates each node after another and then determines the update of a node via the update rule $v_i = 1,~ if~\sum_j W_{ij} v_j \geq 0$. The outcome in this case is deterministic and one can stop this process after two iterations through the nodes did not lead to any change.
+To sample from a Hopfield network one takes a random input vector $\vec{v}$ and updates each node after another and then determines the update of a node via the update rule $x_i = 1,~ if~\sum_j W_{ij} x_j \geq h_i$. The outcome in this case is deterministic and one can stop this process after the nodes have been iterated through two times without any update.
+For non-zero temperature models, the updates work similarly, just that the update is not deterministic, but there is a probability assigned to every node $x_i$ according to its input strength $\sum_j W_{ij} x_j + h_i$. One can imagine that 
 
 
 \subsubsection{Sampling from a energy based model}
@@ -163,6 +159,12 @@ If we go back to image of a experimenter standing in front of a physical impleme
 After one has agreed on a certain kind of model the learning or training procedure itself can be interpreted as the search for the parameters of the system Hamiltonian which maximize the entropy and fulfil the constraints. If we consider a Ising model the constraints are given by the expectation values $\langle \sigma_i \sigma_j \rangle $
  and $\langle \sigma_i \rangle$ and the coupling parameters $w_{i,j}$ of the Hamiltonian control the expectation values of $\langle \sigma_i \sigma_j \rangle $ and the local fields $h_i$ controll the single spin expectations $\langle \sigma_i \rangle$.
 To learn these system parameters we slowly change the parameters of the system until the expectation values of the model get closer of the expectation values of the data. 
+
+\subsubsection{Maximum likelihood estimation (MLE) DO WE KEEP THIS?}
+
+We would like to add a few words here to close the loop between the principle of maximum entropy and the maximum likelihood estimation, especially for people who come from machine learning.
+Energy based models and predominantly Boltzmann machines are approached differently in machine learning literature. BMs are a choice for an ansatz for the probability distribution and the parameters of the model are adjusted such that the data is maximally likely. Therefore the expectation values $\langle \sigma_i \rangle$ and  $\langle \sigma_i \sigma_j \rangle$ are not constraints of the model they are the objectives to be maximally likely.
+The choice of the Boltzmann machine as an ansatz for the probability distribution in machine learning is very well motivated by its success in experiments (Cite some RBM papers), but for a physicist intuitively the question comes to mind, why should we not use any other energy function that we know from physics. When we approach energy based models from the principle of maximum entropy we can see that the constraints and therefore the data itself determines the model and therefore from a theoretical point of view we are not restricted to Ising like energy functions.
 
 \subsubsection{The Hopfield network}
 
