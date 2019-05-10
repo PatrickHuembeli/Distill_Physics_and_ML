@@ -11,6 +11,7 @@
 %% Useful packages
 \usepackage{amsmath}
 \usepackage{braket}
+\usepackage{bbold}
 \usepackage{graphicx}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
@@ -23,21 +24,31 @@
 \section{Outline}
 
 \begin{itemize}
-\item General Introduction which already contains a part about equilibration
-\item energy based models
-\item max entropy
-\item training
+\item Split whole text into testing and training!
+\item MaxEntropy leads to BM distribution
+\item Thermal equilibrium (without big explanations): The BM distr describes thermal equilibrium of stat mech systems for example spin systems.
+We can factor T=1 or we can also factor the temperature into what we call weights and biases in ML.
+\item Sufficient statistics --> Ising
+\item Energy (energy based models) and Temp, mention Ising
+\item Sampling in a Hopfield model (or generally from a computational point of view) Finds closest local minimum. Zero temp BM.
+\item Sampling in physics (equilibrate from initial random state)
+\item visible, hidden partitioning from computer science view, is to increase expressivity.
+(not long range correlations, this argument comes from RBM). Avoid higher order interactions. By introducing hidden units.
+\item physics of hidden units? it is physical impossible to have states of that high degeneracy?
+\item Restricted BM from CS perspective brings efficiency. It is possible to sample
+\item In physics, talk about long range correlations. (This probably only makes sense in Restricted BM)
+Find system where we only look at parts.
+\item quasi static evolution as a training approach.
+\item I would like to include the idea of what do we need for a ML algorithm. We need to be able to sample, to compare somehow the samples and the data and finally 
+\item we will need to talk about higher-order correlations. That they are important in ML and that we can implement them with the visible units. Here we also should connect ML and physics.
+\item mention somewhere in beginning that this not yet BM. It is just Ising model.
 \end{itemize}
 
-\section{Introduction}
+\section{New Try}
 
-\noindent\fbox{%
-    \parbox{\textwidth}{%
-        If the title will be "the physics of Boltzmann machines" it will make sense to start with a short introduction into BM and after that start more general with energy based models. But this is still open for discussion.
-    }%
-}
+\subsection{Introduction}
 
-Boltzmann machines have an interesting history. Boltzmann was an Austrian scientist who worked on statistical descriptions of physics in the 1800s. His name is tied to a number of theories and results that are still in common use today: Boltzmann's constant, Boltzmann's equation, Maxwell-Boltzmann statistics, and the Boltzmann distribution. Boltzmann did not, however, invent Boltzmann machines. This is a more recent construct, emerging from the machine learning literature of the 1980s. Essentially, machine learning researchers ``ported'' certain ideas which were originally developed for statistical physics. In particular, the idea that the probability for a system to be in a particular configuration $x$ can be specified using a single scalar function -- the \emph{energy} $E(x)$ -- of that configuration. 
+Boltzmann machines have an interesting history. Boltzmann was an Austrian scientist who worked on statistical descriptions of physics in the 1800s. His name is tied to a number of theories and results that are still in common use today: Boltzmann's constant, Boltzmann's equation, Maxwell-Boltzmann statistics, and the Boltzmann distribution. Boltzmann did not, however, invent Boltzmann machines. This is a more recent construct, emerging from the machine learning literature of the 1980s. Essentially, machine learning researchers "ported'' certain ideas which were originally developed for statistical physics. In particular, the idea that the probability for a system to be in a particular configuration $x$ can be specified using a single scalar function -- the \emph{energy} $E(x)$ -- of that configuration. 
 
 Boltzmann machines were further developed, extended, and improved, over several decades. Currently, the hottest topic in machine learning is deep neural networks, and Boltzmann machines -- a kind of shallow neural network -- have fallen somewhat out of favour amongst practitioners. Despite this, Boltzmann machines have recently been ``back-ported'' to physics, where they have successfully been used to model the wavefunctions of quantum systems \cite{carleo2017solving}. And they also seem to get back into the focus of fundamental research in machine learning 
 
@@ -49,97 +60,137 @@ Boltzmann machines were further developed, extended, and improved, over several 
 
 Furthermore Boltzmann machines are still being used in other areas, such as ... (need to see if anyone is using them).
 
-To understand the "Physics of Boltzmann Machines" we will start with more general models, the energy-based models, that will eventually lead us to the concept of Boltzmann machines and finally to restricted Boltzmann machines which are the most commonly used models in machine learning.
+To understand the "Physics of Boltzmann Machines" we structure this article the following way:
+Our article is split into two main section. In the first section we introduce the framework of a Boltzmann machine and describe the functionality of this model independent from the context of learning and training the model. 
+In the second section on the other hand we will describe the training procedure in detail. 
+We will start with the principle of maximum entropy which leads to the Boltzmann distribution. The Boltzmann distribution itself describes a system at thermal equilibrium at finite temperature. The nature of this system will be defined by the choice of the constraints under which we want to maximise the entropy and the sufficiency of their statistics. We will have a brief discussion about energy based models and the connection of energy and probability which will lead us to the first concrete ML model, the Hopfield network. We will draw the connection of the sampling procedure of these models and how physical system equilibrate. The introduction of hidden and visible units will finally lead us to the Boltzmann machine. We will emphasise why the use of hidden units is beneficial for ML purposes but also what it physically means. And finally we will emphasise the importance of the introduction of a bipartition of the BM graph which is commonly known as a restricted BM.
 
-\section{Energy-based models and the Boltzmann distribution}
+In the second section we give an overview of how RBMs can be trained and introduce the contrastive divergence algorithm. We also provide a physical interpretation of this algorithm to justify from a physical point of view why this procedure makes sense.
 
-The basic idea of energy-based models is to capture the different possible configurations of a system through a single scalar quantity, called the energy. Low-energy configurations are more likely than high-energy configurations, and if two configurations have the same energy, they are equally likely. The Boltzmann distribution connects energy to probability via the formula
-\begin{equation}
- p(x) \propto \exp(-\beta E(x)),
-\end{equation}
-where $\beta$ is an arbitrary positive number (in physics, this is called the \emph{inverse temperature}). 
+\subsection{Testing: The BM as a trained model}
 
-There are a number of arguments which can lead us to this formula. The simplest is perhaps that the exponential function is the most straightforward way to map the real line (the domain of $E(x)$) into positive numbers, which we could then normalize to probabilities. A stronger justification comes from \emph{Jaynes' principle}, after the 19th century physicist E. T. Jaynes. This principle, also called the \emph{principle of maximum entropy}, tells us that, amongst all distributions which are consistent with known observations (e.g., the expectation values of certain random variables), the distribution with maximal entropy should be preferred.
+\subsubsection{The principle of maximum entropy}
 
-\noindent\fbox{%
-    \parbox{\textwidth}{%
-       Probably we should say a few words here about the "known observations that are consistent with the ones from the distribution". What does this mean in terms of for example an image that has to be learned. Can we already build a bridge here to the ML community?
-    }%
-}
+\emph{Jaynes' principle} is named after the 19th century physicist E. T. Jaynes. This principle, also called the \emph{principle of maximum entropy}, tells us that, amongst all distributions which are consistent with known observations (e.g., the expectation values of certain random variables), the distribution with maximal entropy should be preferred. Known observations in machine learning are for example the statistics of single input pixels or the correlations between pixels of the data.
 
-Intuitively, it makes sense to choose the distribution with maximum entropy. If we do not have any information and therefore no constraint about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom about which we do have strong beliefs and that are constraint. Choosing the maximum entropy model reduces the amount of (potentially biased and unsubstantiated) prior information built into a model. Jaynes showed how to arrive at the above Boltzmann equation from the principle of maximum entropy, and derivations can be found in several textbooks. \textbf{Worth going through derivation? \textcolor{red}{I don't think this will be necessary} It's just constrained optimization, i.e., maximizing the entropy formula with Lagrange multipliers.}
+Intuitively, it makes sense to choose the distribution with maximum entropy. If we do not have any information and therefore no constraint about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom about which we do have strong beliefs and that are constraint. Choosing the maximum entropy model reduces the amount of (potentially biased and unsubstantiated) prior information built into a model. Jaynes showed how to arrive at the above Boltzmann equation from the principle of maximum entropy, and derivations can be found in several textbooks. \textbf{Could linke Susskind's Stanford video where he derives it. Very well done. \url{https://www.youtube.com/watch?v=SmmGDn8OnTA} around 45:00 minutes.}
 
-Suppose we have a system which can exist in many different possible configurations $\{x_j\}_{j=1}^J$. We assume a discrete set of configurations, but similar arguments can be made for a continuous set \textbf{I don't think we have to mention this here. I would rather keep it simple.}. We have some partial information about the system, specifically the expectation values of the random variables $\{r_k(x)\}_{k=1}^K$ (these can be constraints forced upon the system by us, or actually observed obtained via measurement). That is, we have the constraints 
+Suppose we have a system which can exist in many different possible configurations $\{\vec{x}_j\}_{j=1}^J$. We assume a discrete set of configurations, but similar arguments can be made for a continuous set. We have some partial information about the system, specifically the expectation values of the random variables $\{r_k(\vec{x})\}_{k=1}^K$ (these can be constraints forced upon the system by us, or actually observed obtained via measurement). That is, we have the constraints 
 \begin{equation}
  \langle r_k \rangle_{x} = a_k,
 \end{equation}
 
-with $ \langle r_k \rangle_{x} = \sum_i p(x_i) r_k(x_i)$.
-These expectation values are not enough to completely characterize the system (i.e. if we have more configurations than constraints, $J>K$), and we have no information about random variables outside of the span of the $r_k$. Jaynes' principle tells us that, if we want to model this system, we should maximize the entropy $H(x) = -\sum_{x=1}^J p(x) \log p(x)$, subject to the given constraints, plus we need to take care that $p(x)$ is normalized $\sum_{j=1}^J p(x_j) = 1 $. Thus, we try to solve the constrained optimization
+with $ \langle r_k \rangle_{x} = \sum_i p(\vec{x}_i) r_k(\vec{x}_i)$.
+These expectation values are not enough to completely characterize the system (i.e. if we have more configurations than constraints, $J>K$), and we have no information about random variables outside of the span of the $r_k$. Jaynes' principle tells us that, if we want to model this system, we should maximize the entropy $H(x) = -\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j)$, subject to the given constraints, plus we need to take care that $p(\vec{x})$ is normalized $\sum_{j=1}^J p(\vec{x}_j) = 1 $. Thus, we try to solve the constrained optimization
 \begin{equation}
- \textit{max}_{\lambda_i}[-\sum_{j=1}^J p(x_j) \log p(x_j) + \sum_{k=1}^K \lambda_k (\langle r_k \rangle_{x_j} - a_k) + \lambda_0(\sum_{j=1}^J p(x_j) - 1)],
+ \textit{max}_{\lambda_i}[-\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j) + \sum_{k=1}^K \lambda_k (\langle r_k \rangle_{\vec{x}_j} - a_k) + \lambda_0(\sum_{j=1}^J p(\vec{x}_j) - 1)],
 \end{equation}
 
 which has the solution
 
 \begin{equation}
-p(x) = \frac{1}{Z} \sum_j^J \exp \left( \sum_k^K \lambda_k  \langle r_k \rangle_{x_j}\right)
+p(\vec{x}_j) = \frac{1}{Z} \exp \left( \sum_k^K \lambda_k  r_k (\vec{x}_j)\right)
 \end{equation}
 
 \textcolor{red}{Notation is not very clear yet. We probably should change it to something like: $\sum_i p_i r_{ij} = a_j$ and then follows }
 
-\section{From the sufficient statistics to the Hamiltonian}
+\subsubsection{Boltzmann distribution and Equilibrium}
 
-So far this result is general and can be applied to any physical system. The choice of the constraints $\langle r_k \rangle_x$ will in the end define the physics of the enrgy based model. The most commonly used energy function in machine learning that defines the underlying physics of the Boltzmann distribution is a so called Ising model with $E(\vec {\sigma} = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i$. 
-The sufficient statistic of the Boltzmann distribution of an Ising model are the single-spin expectation values $\langle \sigma_i \rangle$ and the two-spin correlations $\langle \sigma_i \sigma_j \rangle$. This means that these two constraints suffice to fully determine the parameters of a classical Ising Hamiltonian from the data.
+The Boltzmann distribution is known from physics.
+and it describes the statistics of physical configurations of a system that is in an equilibrium at some temperature. We do not explicitely write the temperature because we either set it to $T=1$ or it is already absorbed in the parameters $\lambda_k$ of the model. But it is important that we are not looking at systems with zero temperature because in this case a physical system always will equilibrate to its state of minimum energy. Allowing a non zero temperature automatically leads to states that are a thermal distribution which means we would observe many possible configurations that are not only of minimum energy. In the extreme case of very high temperature all the configurations even get equally likely.  
+
+\textbf{Add here modified version of 2-level system figure. Maybe we have to show an energy landscape and the occupation probability of two states. We should discuss this}
+
+\subsubsection{Paragraph for Boltzman distribution at zero temperature}
+
+\subsubsection{From the sufficient statistics to the Energy function}
+
+So far this result is general and can be applied to any constraint, the choice of $\langle r_k \rangle_x$ will in the end define the physics of the model. The most commonly used physical model in machine learning that defines the underlying behaviour of the Boltzmann distribution is a so called Ising model, which is defined through a energy function $E(\vec {\sigma}) = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i$. 
+The sufficient statistic of the Boltzmann distribution of an Ising model are the single-spin expectation values $\langle \sigma_i \rangle$ and the two-spin correlations $\langle \sigma_i \sigma_j \rangle$. This means that these two constraints suffice to fully determine the parameters of the classical Ising energy function from the data.
 Generally for the exponential family a statistic $T(x)$ is sufficient, if we can write the probability $p(x)$ as
 
 \begin{align}
 	p(x) = \exp \left( \alpha(\theta)^T T(x) + A(\theta) \right),
 \end{align}
 
-where $\alpha(\theta)$ is a vector valued function and $A(\theta)$ is a scalar which for a Boltzmann distribution is simply $A(\theta) = \log(1/Z)$. Therefore in general we are not restricted to model the distribution of our data with the energy function of a classical Ising model. The choice of the constraints will determine the physical model.
+where $\alpha(\theta)$ is a vector valued function and $A(\theta)$ is a scalar which for a Boltzmann distribution is simply $A(\theta) = \log(1/Z)$ \cite{li_learning_2013}. Therefore in general we are not restricted to model the distribution of our data with the energy function of a classical Ising model. The choice of the constraints will determine the physical model.
 
-\textbf{Source:}
-\url{https://link-springer-com.recursos.biblioteca.upc.edu/content/pdf/10.1007%2F978-3-642-40994-3.pdf}, Learning Discriminative Sufficient Statistics
-Score Space for Classification
 
-\noindent\fbox{%
-    \parbox{\textwidth}{%
-       One thing which is not yet fully clear to me is, how do we justify the choice of an Ising model. Is there a good argument why 2-spin correlators are sufficient to learn classical data? Why should we not go to higher momenta? Or would the model even get better if we went to higher momenta? 
-       
-       I think we should add here a few words, why it is reasonable to start with spin-1/2 systems and take an Ising Hamiltonian, just to make the story telling more coherent.
-       
-       And additionally we could also say that if we want to use a Ising like system the constraints are automatically given by the single- and two-spin expectations.
-    }%
-}
+We want to emphasise at this point that the choice of single-spin and two-spin expectation values for this kind of model is not sufficient to capture higher-order correlations between input nodes. For real-world ML applications these correlations are important and this kind of model does not suffice. But we also want to stress here that we are not talking about BM yet. So far this model is simply an Ising spin system, where every spin represents a node (e.g. pixel) of our input data. To overcome this issue of low order correlations later we will use a part of the spins in the system as mediators between input nodes, which we we call hidden units.
 
-\subsection{Maximum likelihood estimation (MLE)}
+
+\subsubsection{Energy-based models}
+
+The energy function is not unique to Boltzmann machines and occurs in a huge class of models that are summarized under the name energy-based models. The basic idea of energy-based models is to capture the different possible configurations of a system through a single scalar quantity, called the energy. Low-energy configurations are more likely than high-energy configurations, and if two configurations have the same energy, they are equally likely. The Boltzmann distribution connects energy to probability via the formula
+\begin{equation}
+ p(x) \propto \exp(-\beta E(x)),
+\end{equation}
+where $\beta$ is an arbitrary positive number (in physics, this is called the \emph{inverse temperature}). 
+There are a number of arguments which can lead us to this formula. The simplest is perhaps that the exponential function is the most straightforward way to map the real line (the domain of $E(x)$) into positive numbers, which we could then normalize to probabilities. A more elaborate way to define it is the principle of maximum entropy that we have shown before.
+
+
+\subsubsection{Maximum likelihood estimation (MLE) DO WE KEEP THIS?}
 
 We would like to add a few words here to close the loop between the principle of maximum entropy and the maximum likelihood estimation, especially for people who come from machine learning.
-Energy based models and predominantly Boltzmann machines are approached differently in machine learning literature. BMs are a choice for an ansatz for the probability distribution and the parameters of the model are adjusted such that the data is maximally likely. Therefore the expectation values $\langle \sigma_i \rangle$ and  $\langle \sigma_i \sigma_j \rangle$ are not constraints of the model they are the objectives to be maximally likely. \textbf{This sentence needs review!}
+Energy based models and predominantly Boltzmann machines are approached differently in machine learning literature. BMs are a choice for an ansatz for the probability distribution and the parameters of the model are adjusted such that the data is maximally likely. Therefore the expectation values $\langle \sigma_i \rangle$ and  $\langle \sigma_i \sigma_j \rangle$ are not constraints of the model they are the objectives to be maximally likely.
 The choice of the Boltzmann machine as an ansatz for the probability distribution in machine learning is very well motivated by its success in experiments (Cite some RBM papers), but for a physicist intuitively the question comes to mind, why should we not use any other energy function that we know from physics. When we approach energy based models from the principle of maximum entropy we can see that the constraints and therefore the data itself determines the model and therefore from a theoretical point of view we are not restricted to Ising like energy functions.
 
-\section{Learning: From Ising models to Boltzmann machines to restricted Boltzmann machines}
+\subsubsection{Sampling in physics}
 
-\noindent\fbox{%
-    \parbox{\textwidth}{%
-       Somewhere I would like to add a comment on what can we do to train an energy based model. Because the acces to the "machine" is very limited and the only things we can do is adjust parameters and sample from the machine. Therefore the only thing we can do is sample and compare somehow to the actual data. And from this we have to derive an update rule.
-    }%
-}
+I physics low energies are preferred over high energies. 
+And therefore if we initialize a system randomly it will eventually equilibrate to a low energy configuration or if we are at $T=0$ to the minimum energy.
+If we imagine to have a spin model implemented as a physical device and we can initialise the spins in a random way, this spin configuration would automatically go to a configuration of lower energy.
+Therefore in a real physical system, sampling from a system is only a matter of initialising it and waiting until it is equilibrate.
 
+\subsubsection{Sampling in ML}
+
+In ML we don't have an equilibration process that drives our system into a low energy configuration. But there are several methods how we can imitate this behaviour.
+To sample from a Hopfield network one takes a random input vector $\vec{v}$ and passes it through the network several times and updates each node after another and then determines the update of a node via the update rule $v_i = 1,~ if~\sum_j W_{ij} v_j \geq 0$. The outcome in this case is deterministic and one can stop this process after two iterations through the nodes did not lead to any change.
+
+
+\subsubsection{Sampling from a energy based model}
+
+Random init
+Find closest local minimum
+Hopfield as zero temp example (strange update rule)
+
+\subsection{Training}
+
+If we go back to image of a experimenter standing in front of a physical implementation of a energy function the question now arises, what do we need, to train such a system on a given data set. Because as discussed before the only thing we can do is sampling from this machine. Therefore training a BM means that we have to come up with an update rule for the model parameters simply by comparing the samples with the data. In this section we will have a deeper look at this procedure. 
+
+\subsection{Learning: From Ising models to Boltzmann machines to restricted Boltzmann machines}
 
 After one has agreed on a certain kind of model the learning or training procedure itself can be interpreted as the search for the parameters of the system Hamiltonian which maximize the entropy and fulfil the constraints. If we consider a Ising model the constraints are given by the expectation values $\langle \sigma_i \sigma_j \rangle $
  and $\langle \sigma_i \rangle$ and the coupling parameters $w_{i,j}$ of the Hamiltonian control the expectation values of $\langle \sigma_i \sigma_j \rangle $ and the local fields $h_i$ controll the single spin expectations $\langle \sigma_i \rangle$.
 To learn these system parameters we slowly change the parameters of the system until the expectation values of the model get closer of the expectation values of the data. 
 
+\subsubsection{The Hopfield network}
+
+At the very beginning of this section we need to go one step back and briefly discuss the Hopfield network. The Hopfield network is a so called associative memory network, which does not learn patterns and generalise them to new ones, it only memories the training data and can recreate it after memorising them if one only feeds part of the data in the network. The Hopfield network has exact the same energy function $E(\vec {\sigma}) = -\sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i$, but the nodes are not activated probabilistically, they follow the deterministic update rule
+
+\begin{equation}
+	\sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\mbox{if }}\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\mbox{otherwise,}}\end{array}}\right.
+\end{equation}
+
+which can be interpreted as a Ising model at zero temperature, because this way a random input configuration $\vec{\sigma}$ will always converge to the next local minimum. No fluctuations because of temperature will occur. 
+The "training" of a Hopfield network is also deterministic and we update the weight matrix simply with the outer product of the $n$ input vectors $\{ \vec{\sigma}^{\alpha}\}_i^n$ that have to be memorised. $W = \sum_{\alpha}^n( (\vec{\sigma}^{\alpha})^T \vec{\sigma}^{\alpha} - \mathbb{1}) $, which can be written as an update rule $w_{i,j} \leftarrow \sum_{\alpha}^n \sigma_i^{\alpha} \sigma_j^{\alpha}, \forall~i \neq j$
+%= \sum_i^n \vec{\sigma}_i^T \vec{\sigma}_i - n \mathbb{1}$
+, the subtraction of the identity matrix takes care that the nodes are not connected with themselves.
+This weight matrix leads to a energy landscape where each training vector is exactly a local minimum. And if we feed a slight variation of one of the input vectors into the network, the update rule will make them converge to the configuration that is associated with the closest energy minimum. 
+%After memorising the input vectors an arbitrary vector $\vec{\sigma}$ can be fed through the network and $W \vec{\sigma} =  \vec{\sigma}  \vec{\sigma}_1^T \vec{\sigma}_1 + \vec{\sigma}  \vec{\sigma}_2^T \vec{\sigma}_2 + \dots -  \vec{\sigma} n \mathbb{1} = $
+
+Source: \url{http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf}
+
+\subsubsection{The Ising model in finite temperature}
+
+Now if we turn on the temperature our model is not fully deterministic anymore and we allow energy states to be occupied that are not the exact energies of local minima.
 \textbf{In Figure such and such } one can try to adjust the parameters of the system in a way that the model distribution fits the target distribution (in a certain background color). One will see that this task is not easy because all the parameters influence each other and therefore one has to make small adjustments with each step.
 
 If we now go to a bit more difficult target distribution one will realize that it cannot be approximated with the model at hand. So far we only used a Ising system to model data, where every spin represents a data point. A much more expressive model is the Boltzmann machine, where we start to distinguish between visible and hidden spin variables. On first glance there is no difference between the two models except the name of the nodes. But the crucial point is that only the visible units are used to represent data. The hidden units are only there to increase the space of possible configurations and they will be averaged out in the end. This way we can increase the expressivity of the model. In Figure (such and such) one can try again to model the harder distribution but now with hidden nodes. You will see that it is now possible to approximate more complex target distributions.
 
+\subsubsection{Unlearning}
 
-
-\subsection{R! BM and sampling}
+\subsubsection{R! BM and sampling}
 
  \textbf{Need to introduce RESTRICTED! BM, why do we do that? --> sampling}
 
@@ -157,6 +208,163 @@ If the energy is given by $E(v,h) = \sum_{i,j} W_{i,j} v_i h_j $ (\textbf{someti
 But what is the intuition about this update rule, why is the minus sign in front of the average over the model distribution and not vice versa. How do we know in which direction we will have to move my parameters, if we train a model.
 To get some intuition about this update rule we consider the very extreme case of a system whit only two spins $v$ and $h$ and assume that these variables are always not equal in the data and always equal if we sample them from the distribution $p_{\theta}$. This means that $\langle v h \rangle_{\text{Data}} = -1$
  and $\langle v h \rangle_{p_{\theta}}  = 1$. So the update will be minimally, namely $\Delta W_{i,j} = -2$ and therefore we move to higher weights $W$. The data is always anti-aligned, which means the minimum energy of the configurations of the data will be achieved by increasing the weights to be strongly positive. And since the configurations sampled from the distribution $p_{\theta}$ are always aligned $W$ must be strongly negative at the moment because this has to be minimum energy.
+ 
+\begin{thebibliography}{10}
+
+\bibitem{carleo2017solving}
+G.~Carleo, M.~Troyer, {\it Science\/} {\bf 355, 6325}, 602
+  (2017).
+
+\bibitem{li_learning_2013}
+X.~Li, W.~Bin, L.~Yuncai, L.~Tai~Sing, {\it Machine Learning and Knowledge Discovery in Databases}, {\bf 49--64} (2013)
+
+\end{thebibliography} 
+
+%\section{Introduction}
+%
+%\noindent\fbox{%
+%    \parbox{\textwidth}{%
+%        If the title will be "the physics of Boltzmann machines" it will make sense to start with a short introduction into BM and after that start more general with energy based models. But this is still open for discussion.
+%    }%
+%}
+%
+%Boltzmann machines have an interesting history. Boltzmann was an Austrian scientist who worked on statistical descriptions of physics in the 1800s. His name is tied to a number of theories and results that are still in common use today: Boltzmann's constant, Boltzmann's equation, Maxwell-Boltzmann statistics, and the Boltzmann distribution. Boltzmann did not, however, invent Boltzmann machines. This is a more recent construct, emerging from the machine learning literature of the 1980s. Essentially, machine learning researchers ``ported'' certain ideas which were originally developed for statistical physics. In particular, the idea that the probability for a system to be in a particular configuration $x$ can be specified using a single scalar function -- the \emph{energy} $E(x)$ -- of that configuration. 
+%
+%Boltzmann machines were further developed, extended, and improved, over several decades. Currently, the hottest topic in machine learning is deep neural networks, and Boltzmann machines -- a kind of shallow neural network -- have fallen somewhat out of favour amongst practitioners. Despite this, Boltzmann machines have recently been ``back-ported'' to physics, where they have successfully been used to model the wavefunctions of quantum systems \cite{carleo2017solving}. And they also seem to get back into the focus of fundamental research in machine learning 
+%
+%\noindent\fbox{%
+%    \parbox{\textwidth}{%
+%       Yoshua Bengio tweeted about this: \url{https://twitter.com/datasciencenig/status/1020355546581553152}, I don't find the original tweet at the moment. But might be appropriate in a blog to "cite" one of the leading ML researchers that says we should go back to study RBM to understand deep learning.
+%    }%
+%}
+%
+%Furthermore Boltzmann machines are still being used in other areas, such as ... (need to see if anyone is using them).
+%
+%To understand the "Physics of Boltzmann Machines" we will start with more general models, the energy-based models, that will eventually lead us to the concept of Boltzmann machines and finally to restricted Boltzmann machines which are the most commonly used models in machine learning.
+
+
+
+%\section{Energy-based models and the Boltzmann distribution}
+%
+%The basic idea of energy-based models is to capture the different possible configurations of a system through a single scalar quantity, called the energy. Low-energy configurations are more likely than high-energy configurations, and if two configurations have the same energy, they are equally likely. The Boltzmann distribution connects energy to probability via the formula
+%\begin{equation}
+% p(x) \propto \exp(-\beta E(x)),
+%\end{equation}
+%where $\beta$ is an arbitrary positive number (in physics, this is called the \emph{inverse temperature}). 
+%There are a number of arguments which can lead us to this formula. The simplest is perhaps that the exponential function is the most straightforward way to map the real line (the domain of $E(x)$) into positive numbers, which we could then normalize to probabilities. 
+
+%A stronger justification comes from \emph{Jaynes' principle}, after the 19th century physicist E. T. Jaynes. This principle, also called the \emph{principle of maximum entropy}, tells us that, amongst all distributions which are consistent with known observations (e.g., the expectation values of certain random variables), the distribution with maximal entropy should be preferred. Known observations in machine learning are for example the statistics of single input pixels or the correlations between pixels of the data.
+%
+%Intuitively, it makes sense to choose the distribution with maximum entropy. If we do not have any information and therefore no constraint about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom about which we do have strong beliefs and that are constraint. Choosing the maximum entropy model reduces the amount of (potentially biased and unsubstantiated) prior information built into a model. Jaynes showed how to arrive at the above Boltzmann equation from the principle of maximum entropy, and derivations can be found in several textbooks. \textbf{Worth going through derivation? \textcolor{red}{I don't think this will be necessary} It's just constrained optimization, i.e., maximizing the entropy formula with Lagrange multipliers.}
+%
+%Suppose we have a system which can exist in many different possible configurations $\{\vec{x}_j\}_{j=1}^J$. We assume a discrete set of configurations, but similar arguments can be made for a continuous set \textbf{I don't think we have to mention this here. I would rather keep it simple.}. We have some partial information about the system, specifically the expectation values of the random variables $\{r_k(\vec{x})\}_{k=1}^K$ (these can be constraints forced upon the system by us, or actually observed obtained via measurement). That is, we have the constraints 
+%\begin{equation}
+% \langle r_k \rangle_{x} = a_k,
+%\end{equation}
+%
+%with $ \langle r_k \rangle_{x} = \sum_i p(\vec{x}_i) r_k(\vec{x}_i)$.
+%These expectation values are not enough to completely characterize the system (i.e. if we have more configurations than constraints, $J>K$), and we have no information about random variables outside of the span of the $r_k$. Jaynes' principle tells us that, if we want to model this system, we should maximize the entropy $H(x) = -\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j)$, subject to the given constraints, plus we need to take care that $p(\vec{x})$ is normalized $\sum_{j=1}^J p(\vec{x}_j) = 1 $. Thus, we try to solve the constrained optimization
+%\begin{equation}
+% \textit{max}_{\lambda_i}[-\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j) + \sum_{k=1}^K \lambda_k (\langle r_k \rangle_{\vec{x}_j} - a_k) + \lambda_0(\sum_{j=1}^J p(\vec{x}_j) - 1)],
+%\end{equation}
+%
+%which has the solution
+%
+%\begin{equation}
+%p(x) = \frac{1}{Z} \sum_j^J \exp \left( \sum_k^K \lambda_k  \langle r_k \rangle_{x_j}\right)
+%\end{equation}
+%
+%\textcolor{red}{Notation is not very clear yet. We probably should change it to something like: $\sum_i p_i r_{ij} = a_j$ and then follows }
+
+
+
+
+%\section{Boltzmann distribution and Equilibrium}
+%
+%The Boltzmann distribution is known from physics.
+%and it describes the statistics of physical configurations of a system that is in an equilibrium at some temperature. We do not explicitely write the temperature because we either set it to $T=1$ or it is already absorbed in the parameters $\lambda_k$ of the model. But it is important that we are not looking at systems with zero temperature because in this case a physical system always will equilibrate to its state of minimum energy. Allowing a non zero temperature automatically leads to states that are a thermal distribution which means we would observe many possible configurations that are not only of minimum energy. In the extreme case of very high temperature all the configurations even get equally likely.  
+
+%\section{From the sufficient statistics to the Hamiltonian}
+%
+%So far this result is general and can be applied to any physical system. The choice of the constraints $\langle r_k \rangle_x$ will in the end define the physics of the enrgy based model. The most commonly used energy function in machine learning that defines the underlying physics of the Boltzmann distribution is a so called Ising model with $E(\vec {\sigma} = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i$. 
+%The sufficient statistic of the Boltzmann distribution of an Ising model are the single-spin expectation values $\langle \sigma_i \rangle$ and the two-spin correlations $\langle \sigma_i \sigma_j \rangle$. This means that these two constraints suffice to fully determine the parameters of a classical Ising Hamiltonian from the data.
+%Generally for the exponential family a statistic $T(x)$ is sufficient, if we can write the probability $p(x)$ as
+%
+%\begin{align}
+%	p(x) = \exp \left( \alpha(\theta)^T T(x) + A(\theta) \right),
+%\end{align}
+%
+%where $\alpha(\theta)$ is a vector valued function and $A(\theta)$ is a scalar which for a Boltzmann distribution is simply $A(\theta) = \log(1/Z)$. Therefore in general we are not restricted to model the distribution of our data with the energy function of a classical Ising model. The choice of the constraints will determine the physical model.
+%
+%\textbf{Source:}
+%\url{https://link-springer-com.recursos.biblioteca.upc.edu/content/pdf/10.1007%2F978-3-642-40994-3.pdf}, Learning Discriminative Sufficient Statistics
+%Score Space for Classification
+%
+%\noindent\fbox{%
+%    \parbox{\textwidth}{%
+%       One thing which is not yet fully clear to me is, how do we justify the choice of an Ising model. Is there a good argument why 2-spin correlators are sufficient to learn classical data? Why should we not go to higher momenta? Or would the model even get better if we went to higher momenta? 
+%       
+%       I think we should add here a few words, why it is reasonable to start with spin-1/2 systems and take an Ising Hamiltonian, just to make the story telling more coherent.
+%       
+%       And additionally we could also say that if we want to use a Ising like system the constraints are automatically given by the single- and two-spin expectations.
+%    }%
+%}
+
+%\subsection{Maximum likelihood estimation (MLE)}
+%
+%We would like to add a few words here to close the loop between the principle of maximum entropy and the maximum likelihood estimation, especially for people who come from machine learning.
+%Energy based models and predominantly Boltzmann machines are approached differently in machine learning literature. BMs are a choice for an ansatz for the probability distribution and the parameters of the model are adjusted such that the data is maximally likely. Therefore the expectation values $\langle \sigma_i \rangle$ and  $\langle \sigma_i \sigma_j \rangle$ are not constraints of the model they are the objectives to be maximally likely. \textbf{This sentence needs review!}
+%The choice of the Boltzmann machine as an ansatz for the probability distribution in machine learning is very well motivated by its success in experiments (Cite some RBM papers), but for a physicist intuitively the question comes to mind, why should we not use any other energy function that we know from physics. When we approach energy based models from the principle of maximum entropy we can see that the constraints and therefore the data itself determines the model and therefore from a theoretical point of view we are not restricted to Ising like energy functions.
+%
+%\section{Sampling in physics}
+%
+%I physics low energies are preferred over high energies. 
+%And therefore if we initialize a system randomly it will eventually equilibrate to a low energy configuration or if we are at $T=0$ to the minimum energy.
+%If we imagine to have a spin model implemented as a physical device and we can initialise the spins in a random way, this spin configuration would automatically go to a configuration of lower energy.
+%Therefore in a real physical system, sampling from a system is only a matter of initialising it and waiting until it is equilibrate.
+%
+%\section{Sampling in ML}
+%
+%In ML we don't have an equilibration process that drives our system into a low energy configuration. But there are several methods how we can imitate this behaviour.
+%To sample from a Hopfield network one takes a random input vector $\vec{v}$ and passes it through the network several times and updates each node after another and then determines the update of a node via the update rule $v_i = 1,~ if~\sum_j W_{ij} v_j \geq 0$. The outcome in this case is deterministic and one can stop this process after two iterations through the nodes did not lead to any change.
+
+%\section{Learning: From Ising models to Boltzmann machines to restricted Boltzmann machines}
+%
+%\noindent\fbox{%
+%    \parbox{\textwidth}{%
+%       Somewhere I would like to add a comment on what can we do to train an energy based model. Because the acces to the "machine" is very limited and the only things we can do is adjust parameters and sample from the machine. Therefore the only thing we can do is sample and compare somehow to the actual data. And from this we have to derive an update rule.
+%    }%
+%}
+%
+%
+%After one has agreed on a certain kind of model the learning or training procedure itself can be interpreted as the search for the parameters of the system Hamiltonian which maximize the entropy and fulfil the constraints. If we consider a Ising model the constraints are given by the expectation values $\langle \sigma_i \sigma_j \rangle $
+% and $\langle \sigma_i \rangle$ and the coupling parameters $w_{i,j}$ of the Hamiltonian control the expectation values of $\langle \sigma_i \sigma_j \rangle $ and the local fields $h_i$ controll the single spin expectations $\langle \sigma_i \rangle$.
+%To learn these system parameters we slowly change the parameters of the system until the expectation values of the model get closer of the expectation values of the data. 
+%
+%\textbf{In Figure such and such } one can try to adjust the parameters of the system in a way that the model distribution fits the target distribution (in a certain background color). One will see that this task is not easy because all the parameters influence each other and therefore one has to make small adjustments with each step.
+%
+%If we now go to a bit more difficult target distribution one will realize that it cannot be approximated with the model at hand. So far we only used a Ising system to model data, where every spin represents a data point. A much more expressive model is the Boltzmann machine, where we start to distinguish between visible and hidden spin variables. On first glance there is no difference between the two models except the name of the nodes. But the crucial point is that only the visible units are used to represent data. The hidden units are only there to increase the space of possible configurations and they will be averaged out in the end. This way we can increase the expressivity of the model. In Figure (such and such) one can try again to model the harder distribution but now with hidden nodes. You will see that it is now possible to approximate more complex target distributions.
+%
+%
+%
+%\subsection{R! BM and sampling}
+%
+% \textbf{Need to introduce RESTRICTED! BM, why do we do that? --> sampling}
+%
+%So far we assumed that we have access to the probability distribution of the energy based model $p(x, \theta)$ and the data $p(x)$. But in general this is not true because the partition function $Z$ is not tractable for systems of the size $N>20$. Therefore to compare the statistics of the data with the statistics of the model we need to be able to approximate these distributions. For the data this is relatively simple, because we can just average over some data instances, for example over batches. To approximate the model distribution we need configurations that come from the model itself. For a real physical system we therefore would set the parameters of the model and wait until it equilibrates, take many configurations like this and compare them to the data. 
+%Unfortunately we cannot simulate these equilibration dynamics on a computer, because they are computationally very demanding. What we can do is Gibbs sampling. But for a BM Gibbs sampling is as well not tractable, because if we sample one variable a change would influence the probabilities of all other variables and equilibration would take very long time. \textbf{I am not 100 \% sure if it even would equilibrate} To avoid this problem the graph of the BM can be made bipartite, which means that we separate the nodes in a visible and a hidden layer and don't allow inter-layer connections. This architecture is called "Restricted Boltzmann Machine". With this simple trick the conditional probabilities $p(\vec{v}|\vec{h})$ and $p(\vec{h}|\vec{v})$ marginalize and therefore we can sample each node of a layer independent of the other nodes of the same layer. 
+%
+%The question that now remains is how can we efficiently adjust the parameters? Can we somehow derive an update rule simply by comparing the samples from the model with the data? The answer is yes and it is known under the name Contrastive Divergence. If we use the update rule $W \rightarrow W - \Delta W$ for gradient descent the update rule of CD is:
+%
+%\begin{equation*}
+%	\Delta W_{i,j} = \langle \frac{ \partial E}{\partial W_{i,j}} \rangle_{\text{Data}} - \langle \frac{\partial E}{\partial W_{i,j}} \rangle_{p_{\theta}} %= \langle v_i h_j \rangle_{\text{Data}} - \langle v_i h_j \rangle_{p_{\theta}}
+%\end{equation*}
+%
+%If the energy is given by $E(v,h) = \sum_{i,j} W_{i,j} v_i h_j $ (\textbf{sometimes there is a minus sign in front of the sum, which changes the direction}).
+%
+%But what is the intuition about this update rule, why is the minus sign in front of the average over the model distribution and not vice versa. How do we know in which direction we will have to move my parameters, if we train a model.
+%To get some intuition about this update rule we consider the very extreme case of a system whit only two spins $v$ and $h$ and assume that these variables are always not equal in the data and always equal if we sample them from the distribution $p_{\theta}$. This means that $\langle v h \rangle_{\text{Data}} = -1$
+% and $\langle v h \rangle_{p_{\theta}}  = 1$. So the update will be minimally, namely $\Delta W_{i,j} = -2$ and therefore we move to higher weights $W$. The data is always anti-aligned, which means the minimum energy of the configurations of the data will be achieved by increasing the weights to be strongly positive. And since the configurations sampled from the distribution $p_{\theta}$ are always aligned $W$ must be strongly negative at the moment because this has to be minimum energy.
 
 
 \section{The physics of equilibrium (This is from Nathan's draft)}
