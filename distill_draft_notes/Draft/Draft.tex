@@ -17,7 +17,7 @@
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \begin{document}
-\title{Machine learning, physics and equilibrium}
+\title{Machine Learning, Physics and Equilibrium}
 \author{Patrick, Juan-Miguel, Arthur, Peter, Nathan}
 \maketitle
 
@@ -215,6 +215,16 @@ If the energy is given by $E(v,h) = \sum_{i,j} W_{i,j} v_i h_j $ (\textbf{someti
 But what is the intuition about this update rule, why is the minus sign in front of the average over the model distribution and not vice versa. How do we know in which direction we will have to move my parameters, if we train a model.
 To get some intuition about this update rule we consider the very extreme case of a system whit only two spins $v$ and $h$ and assume that these variables are always not equal in the data and always equal if we sample them from the distribution $p_{\theta}$. This means that $\langle v h \rangle_{\text{Data}} = -1$
  and $\langle v h \rangle_{p_{\theta}}  = 1$. So the update will be minimally, namely $\Delta W_{i,j} = -2$ and therefore we move to higher weights $W$. The data is always anti-aligned, which means the minimum energy of the configurations of the data will be achieved by increasing the weights to be strongly positive. And since the configurations sampled from the distribution $p_{\theta}$ are always aligned $W$ must be strongly negative at the moment because this has to be minimum energy.
+ 
+
+ 
+\section{Connecting training with equilibrium}
+
+Machine learning with energy-based models bears some strong resemblance to long-studied subfields of physics. For instance, in machine learning we want to model systems which could have (exponentially) many possible configurations using only a small set of parameters. A similar approach is used in the study of statistical physics and thermodynamics, where we describe thermodynamic systems by an energy function (sometimes referred to as a potential) which consists of a very small set of parameters (temperature, pressure, etc.). If two systems, with different values of these parameters, are allowed to interact, energy will flow -- in both directions -- between them . This energy exchange process causes the system's thermodynamic parameters to change values. As we all know, putting food in the oven -- whose temperature is typically very hot -- will cause the food to heat up. Leaving hot food out in the kitchen will cause it to cool down again. 
+
+
+
+
  
 \begin{thebibliography}{10}
 
