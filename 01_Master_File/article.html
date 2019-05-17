@@ -305,21 +305,31 @@ which can be interpreted as a Ising model at zero temperature, because this way 
 If the energy is given by <d-math>E(v,h) = \sum_{i,j} W_{i,j} v_i h_j </d-math> (<strong>sometimes there is a minus sign in front of the sum, which changes the direction</strong>).</p>
 <p>
 
- <figure style = "width:100%; height:600px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
+<!-- <figure style = "width:100%; height:600px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
   <div id = "RBM_complete_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
 
   <script type = "text/javascript" src = "figures/RBM_complete.js" ></script>
-
+  -->
   <div class="row">
 
   <div class="column">
-  <p class="slider-label-text">Weights </p>
-  <p id="weight_slider" class="slider-label-number"></p>
-    <input id="weight_slider_id" type="range" oninput="temp_slider(this.value)" min="0.001" max="1" step="0.001">
-    <p class="slider-label-text">Biases </p>
-    <p id="bias_slider" class="slider-label-number" width="100%"></p>
-    <input type="range" oninput="bias_slider(this.value)" min="0" max="10" step="0.01">
+  <p id="weight_slider_text" class="slider-label-text">Weight</p>
+  <p id="weight_slider_value" class="slider-label-number"></p>
+    <input id="weight_slider_id" value=-1 type="range" oninput="slider_fct_RBM(this.value,1)" min="-1" max="1" step="0.01">
+  <p id="bias_slider_text" class="slider-label-text">Bias</p>
+  <p id="bias_slider_value" class="slider-label-number" width="50%"></p>
+    <input id="bias_slider_id" value=-1 type="range" oninput="slider_bias_fct_RBM(this.value,1)" min="-1" max="1" step="0.01">
+  <div>
+  <input type="checkbox" onclick="change_layout()" id="hidden_check" name="hidden_check"
+         checked>
+  <label for="hidden_check">Allow hidden units</label>
+</div>
+
+<div>
+  <input type="checkbox" id="restricted_check" name="restricted_check">
+  <label for="restricted_check">Make it restricted</label>
+</div>
   </div>
 
   <div class="doublecolumn">
