@@ -328,13 +328,13 @@ which can be interpreted as a Ising model at zero temperature, because this way 
   <p class="slider-label-text">Some description</p>  
   <p class="slider-label-text">Learning step </p>  
     <input id="learn_button_id" type="button" value="Learning step" onclick="learn_phase()">   
-    <input id="learn_button_id" type="button" value="Unlearning step" onclick="learn_phase()">   
-    <input id="learn_button_id" type="button" value="Reinitialize" onclick="learn_phase()">   
+    <input id="learn_button_id" type="button" value="Unlearning step" onclick="unlearn_phase()">   
+    <input id="learn_button_id" type="button" value="Reinitialize" onclick="reinitialize_phase()">   
     <p class="figure-text">This figure shows how learning and unlearning changes the energy landscape.</p>
   </div>
   
   <div class="doublecolumn">
-    <figure style = "width:100%; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
+    <figure style = "width:100%; height:300px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
   <div id = "energy_landscape_figure_id" style="width:100%, height:100%, position:absolute; left:0px; top:0px"></div>
   </figure>
   <script type = "text/javascript" src = "energy_landscape.js" ></script>
