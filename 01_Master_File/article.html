@@ -355,14 +355,19 @@ where <d-math>A(\theta)</d-math> is an arbitrary positive number (in physics, th
 
   <div class="row">
   
-  <div class="triplecolumn">
+  <div class="column">  
+  <p class="slider-label-text">Training progress</p>  
+  <p id="temperature_slider" class="slider-label-number"></p>
+    <input id="temp_slider_id" type="range" oninput="slider_fct_image_energies(this.value)" min="0" max="100" step="1.0">  
+  </div>
+    <div class="doublecolumn">
     <p class="figure-text">add some text here</p>
-    <figure style = "width:700px; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_Hopfield">
+    <figure style = "width:700px; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "image_energies">
   <div id = "image_energies_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   </div>
 </div>
-  <script type = "text/javascript" src = "figures/image_energies_script.js" ></script>
+  <script type = "text/javascript" src = "image_energies_script_new.js" ></script>
 
   <div class="triplecolumn"><p class="figure-text"><b>Training: </b>The model parameters are initiallized randomly and during the training we want to minimize the energies of the images we want to learn where at the same time we maximize the energies of configurations we don't want. This figure illustrates the evolution of energies over the training progress.</p></div>
 

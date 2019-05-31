@@ -31,7 +31,7 @@ var line = d3.line()
 
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
 var dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(0.3,0.6)() } })
-var points_data = [10,20]
+var points_data = [8,24]
 
 //for (i=0; i<Math.floor(n/n_points); i++) {points_data.push(i*Math.floor(n/n_points)+1)}
 
@@ -46,7 +46,7 @@ var svg = d3.select(energy_figure_id).append("svg")
 // Random initial positions
 var images_list = [0,1]; 
 image_for_node = svg.append('image')
-    .attr('xlink:href', '/figures/MNIST_and_noise/image_'+images_list[0]+'.jpg')
+    .attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+images_list[0]+'.jpg')
     .attr("x", 20)
     .attr("y", 20)
     .attr("width", 50)
@@ -82,7 +82,7 @@ circle_energy = svg.selectAll(".dot")
     .attr("id", function(d,i){return "noisy_images"+i})
 	.on("click", function(d,i){
 	    			console.log(i)
-		    		image_for_node.attr('xlink:href', '/figures/MNIST_and_noise/image_'+i+'.jpg')	})
+		    		image_for_node.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg')	})
    
 for (j=0;j<points_data.length;j++){
 	element = d3.select("#"+"noisy_images"+points_data[j])
@@ -91,16 +91,16 @@ for (j=0;j<points_data.length;j++){
 	element.attr("r", 5)
 
 }
-neighbour1 = [7,8,9,10,11,12,13]
-neighbour2 = [17,18,19,20,21,22,23]
+neighbour1 = [5,6,7,8,9,10,11]
+neighbour2 = [21,22,23,24,25,26,27]
 learning_steps = 0
 unlearning_steps = 0
 learn_adjust = 0.1
 unlearn_adjust = 0.05
 
 function learn_phase(){
-	for (j=0; j<neighbour1.length;j++){dataset[neighbour1[j]].y = dataset[neighbour1[j]].y- learn_adjust*Math.exp(-Math.abs(10-neighbour1[j])/2)}//*Math.exp(-learning_steps/4)}
-	for (j=0; j<neighbour2.length;j++){dataset[neighbour2[j]].y = dataset[neighbour2[j]].y- learn_adjust*Math.exp(-Math.abs(20-neighbour2[j])/2)}//*Math.exp(-learning_steps/4)}
+	for (j=0; j<neighbour1.length;j++){dataset[neighbour1[j]].y = dataset[neighbour1[j]].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[j])/2)}//*Math.exp(-learning_steps/4)}
+	for (j=0; j<neighbour2.length;j++){dataset[neighbour2[j]].y = dataset[neighbour2[j]].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[j])/2)}//*Math.exp(-learning_steps/4)}
 	update_line()
 	learning_steps +=1
 }
