@@ -478,6 +478,27 @@ If the energy is given by <d-math>E(v,h) = \sum_{i,j} W_{i,j} v_i h_j </d-math> 
 
 </div>
   
+  <h2>Training: the contrastive divergence update rule <strong>[Work-in-progress]</strong></h2>
+  
+    <p>How can we train energy-based models to generate good samples? The common starting point is to begin with a mathematically motivated cost function, e.g., the Kullback-Leiber divergence or the log-likelihood, which represents how probable it is for the model to produce samples which are in a target distribution. The gradient of this cost formula is taken, and, after some manipulation, one arrives at a specific analytic formula which provides a first-order update rule for the model's parameters. If the energy function is <d-math>E(x) = \sum_i \theta_i x_i</d-math>, with the 
+    parameters of the model given by <d-math>\theta</d-math> <strong>[NB: for now, ignoring hidden/visible or RBM distinction]</strong>, and <d-math>\eta</d-math> is some chosen learning rate, then the update rule has the compact form 
+    </p>
+    <d-math block>\theta_i\rightarrow\theta_i + \eta \left[\langle x_i \rangle_{\mathrm{data}} - \langle x_i\rangle_{\mathrm{model}}\right].</d-math>
+    <p>
+    In this update rule, averages <d-math>\langle\cdots\rangle </d-math> of the quantities <d-math>x_i</d-math> are taken with respect to both the data distribution (i.e., by averaging these values in the training dataset) and the distribution produced by the model (this is usually estimated by sampling from the model a finite number of times). After each step of gradient descent, these expectation values should get more and more similar to the corresponding values from the data distribution. 
+    </p>
+    
+    <p>Rather than deriving this equation, as is done in many other treatments, we will instead try to give some physical intuition about it, in particular how it relates to equilibrium. Our starting point will be to picture both our model and the training data as physical systems. The identification of binary variables with physical spins is common, but a number of other physical systems can also provide good intuition, like the particles in a room. These systems (the dataset and the model) can take many possible configurations. Each configuration <d-math>x</d-math> has an an associated energy <d-math>E(x)</d-math>. In physics, the probability of observing a particular configuration of a system (e.g., all the spins aligned upwards, or all the gases condensed in one corner of the room) is proportional to the energy of that configuration. 
+    </p>
+    
+    <p>
+    In textbook physics (as encountered in a high-school curriculum, for instance), energy is the product of <i>force</i> and <i>position</i>: <d-math>E = F\times x</d-math>. For example, the gravitational force felt on Earth is equal to <d-math>F=mg</d-math>, and position is measured by the height <d-math>h</d-math> from the surface. The energy associated to gravity is the product <d-math>E = mgh</d-math>. If we want to change the position of an object, we need to apply an upwards force which is stronger than gravity. This will generate changes in position. Conveniently, we can often break down energy into a product of so-called <i>conjugate variables</i>, analogous to a force and a position, even if the quantities are physically nothing like forces or positions. These quantities have the official-sounding names of <i>generalized forces</i> and <i>generalized coordinates</i>. The only real intuition we need is that generalized forces drive changes in the values of generalized coordinates (a force is needed to move an object against gravity). One example of a pair of conjugate variables is the pressure and volume of an enclosed gas. Changes in pressure will drive changes in volume (e.g., blowing up a balloon).
+    </p>
+    
+    <p>
+    ...
+    </p>
+  
   <h2>A Brief Survey of Techniques</h2>
   
   <p>Before diving in: if you haven’t encountered t-SNE before, here’s what you need to know about the math behind it. The goal is to take a set of points in a high-dimensional space and find a faithful representation of those points in a lower-dimensional space, typically the 2D plane. The algorithm is non-linear and adapts to the underlying data, performing different transformations on different regions. Those differences can be a major source of confusion.
