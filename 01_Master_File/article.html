@@ -478,7 +478,7 @@ If the energy is given by <d-math>E(v,h) = \sum_{i,j} W_{i,j} v_i h_j </d-math> 
 
 </div>
   
-  <h2>Training: the contrastive divergence update rule <strong>[Work-in-progress]</strong></h2>
+  <h2>Training: the update rule for energy-based models<strong>[Work-in-progress]</strong></h2>
   
     <p>How can we train energy-based models to generate good samples? The common starting point is to begin with a mathematically motivated cost function, e.g., the Kullback-Leiber divergence or the log-likelihood, which represents how probable it is for the model to produce samples which are in a target distribution. The gradient of this cost formula is taken, and, after some manipulation, one arrives at a specific analytic formula which provides a first-order update rule for the model's parameters. If the energy function is <d-math>E(x) = \sum_i \theta_i x_i</d-math>, with the 
     parameters of the model given by <d-math>\theta</d-math> <strong>[NB: for now, ignoring hidden/visible or RBM distinction]</strong>, and <d-math>\eta</d-math> is some chosen learning rate, then the update rule has the compact form 
@@ -492,12 +492,21 @@ If the energy is given by <d-math>E(v,h) = \sum_{i,j} W_{i,j} v_i h_j </d-math> 
     </p>
     
     <p>
-    In textbook physics (as encountered in a high-school curriculum, for instance), energy is the product of <i>force</i> and <i>position</i>: <d-math>E = F\times x</d-math>. For example, the gravitational force felt on Earth is equal to <d-math>F=mg</d-math>, and position is measured by the height <d-math>h</d-math> from the surface. The energy associated to gravity is the product <d-math>E = mgh</d-math>. If we want to change the position of an object, we need to apply an upwards force which is stronger than gravity. This will generate changes in position. Conveniently, we can often break down energy into a product of so-called <i>conjugate variables</i>, analogous to a force and a position, even if the quantities are physically nothing like forces or positions. These quantities have the official-sounding names of <i>generalized forces</i> and <i>generalized coordinates</i>. The only real intuition we need is that generalized forces drive changes in the values of generalized coordinates (a force is needed to move an object against gravity). One example of a pair of conjugate variables is the pressure and volume of an enclosed gas. Changes in pressure will drive changes in volume (e.g., blowing up a balloon).
+    In textbook physics (as encountered in a high-school curriculum, for instance), energy is the product of <i>force</i> and <i>position</i>: <d-math>E = F\times x</d-math>. For example, the gravitational force felt on Earth is equal to <d-math>F=mg</d-math>, and position is measured by the height <d-math>h</d-math> from the surface. The energy associated to gravity is thus given by the product <d-math>E = mgh</d-math>. If we want to change the position of an object, we need to apply an upwards force which counteracts the force of gravity. This will generate changes in position. Conveniently, we can often break down energy into a product of so-called <i>conjugate variables</i>, analogous to a force and a position, even if the quantities are physically nothing like forces or positions. These quantities have the official-sounding names of <i>generalized forces</i> and <i>generalized coordinates</i> (or generalized displacements). The only real intuition we need is that generalized forces drive changes in the values of generalized coordinates (like a force is needed to move an object against gravity). One example of a conjugate variable pair is the pressure and volume of an enclosed gas. Changes in pressure <d-math>p</d-math> drive changes in volume <d-math>V</d-math> (like blowing up a balloon or expanding a piston). Pressure thus has the role of a generalized force, and volume that of a generalized coordinate, with the associated energy being their product <d-math>E=pV</d-math>. More generally, an energy function can be built up from a number of distinct generalized force/coordinate pairs <d-math>E = \sum_i F_i q_i</d-math>. 
     </p>
     
     <p>
-    ...
+    Now we connect back to the energy-based models described above. We can generically write the energy functions of these models as <d-math>E(x) = \sum_i \theta_i x_i</d-math>, where the parameters <d-math>\theta_i</d-math> are the weights and biases of the model and <d-math>x_i</d-math> contain the random variables (the visible units, the hidden units, and their products). This energy function has the same form as discussed above. Specifically, we will identify the model parameters (the <d-math>\theta_i</d-math>) as the coordinates, and the random variables (the <d-math>x_i</d-math>) with the forces (for compactness, we drop the word 'generalized' in the remaining discussions). 
     </p>
+  
+    <p>
+    Still needed: introduce external systems; these also provide a force onto the system, giving changes to coordinates. In principle, system pushes on environment and environment pushes on system; however, environment is so large that the change in it's coordinates is typically not noticeable (e.g., standing on the Earth's surface does not move the Earth any noticable amount). The generalized forces from large external systems thus do not change, and provide a steady baseline. This are represented by the expectation values <d-math>\langle x_i \rangle_{\mathrm{data}}</d-math>.
+    </p>
+    
+    <p>
+    Still needed: discuss how to mimic the evolution of a system subject to forces as part of our training procedure. For small time steps, the coordinates of the system change in response to the all forces. Eventually, we want the coordinates to settle on a steady value. This is an equilibrium point, where all forces counterbalance eachother. It is at this point where all expectation values are equal <d-math>\langle x_i \rangle_{\mathrm{data}} = \langle x_i \rangle_{\mathrm{model}}</d-math>, and the parameter updates go to zero. This also means that the sufficient statistics of our model (the expectation values) match the corresponding values from the external dataset. If our energy-based model is flexible enough to capture the true distribution, then these statistics are indeed sufficient. 
+    </p>
+  
   
   <h2>A Brief Survey of Techniques</h2>
   
