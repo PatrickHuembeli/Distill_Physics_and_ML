@@ -31,28 +31,106 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
+<style>
+* {
+box-sizing: border-box;
+}
+
+.column {
+float: left;
+width: 233px; /*This is 33% of the width in normal scale */
+padding: 10px;
+border: 2px solid red;
+border-radius: 5px;
+/*   border-spacing: 15px; */
+}
+
+.doublecolumn {
+  float: left;
+  width: 466px;
+  padding: 10px;
+  border: 2px solid red;
+  border-radius: 5px;
+/*
+  border-collapse: separate;
+  border-spacing: 15px;
+*/
+
+}
+
+.triplecolumn {
+float: left;
+width: 700px;
+padding: 10px;
+border: 2px solid black;
+border-radius: 5px;
+/*   border-spacing: 15px; */
+}
+.row {
+float: left;
+width: 720px;
+padding: 1px;
+border: none;
+/*   border-spacing: 15px; */
+}
+.slider-label-text {
+  float: left;
+  width: 50%;
+  padding: 5px;
+  font: 14px sans-serif;
+}
+
+.slider-label-number {
+  float: left;
+  width: 50%;
+  padding: 5px;
+  font: 14px sans-serif;
+}
+
+.title-text {
+  float: right;
+  width: 50%;
+  padding: 5px;
+  font: 16px sans-serif;
+}
+
+.figure-text {
+  color: rgba(0,0,0,0.6);
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Clearfix (clear floats) */
+/*
+.row::after {
+content: "";
+clear: both;
+display: table;
+}
+*/
+</style>
+
 
 <body>
   <distill-header></distill-header>
 <d-front-matter>
   <script id='distill-front-matter' type="text/json">{
-    "title": "Machine learning, physics and equilibrium",
+    "title": "The Physics behind Energy-Based Models",
     "description": "We need to understand the simple models",
     "published": "XXX xx, 2019",
     "authors": [
       {
         "author":"Patrick Huembeli",
-        "authorURL":"https://colah.github.io/",
+        "authorURL":"http://patrickhuembeli.github.io/",
         "affiliations": [{"name": "ICFO-The Institute for Photonics", "url": "https://icfo.eu/"}]
       },
       {
         "author":"Juan-Miguel Arrazola",
-        "authorURL":"https://shancarter.com/",
         "affiliations": [{"name": "Xanadu", "url": "https://www.xanadu.ai/"}]
       },
       {
         "author":"Nathan Killoran",
-        "authorURL":"https://shancarter.com/",
+        "authorURL":"https://github.com/co9olguy",
         "affiliations": [{"name": "Xanadu", "url": "https://www.xanadu.ai/"}]
       },
       {
@@ -93,154 +171,55 @@
   <p>
   In the 1980s, graphical models were extensively studied <b>PW: It was Judea Pearl who came up with graphical models in the 1980s -- this is more of the Bayesian/Markovian network stuff, but it might be worth referencing. He might have had a book by the late 1980s on this</b>.
   A subset of these models are called energy-based models, which have properties familiar from the theory of neural networks, but they are also grounded in statistical mechanics <b>PW: a reference or two wouldn't hurt</b>, which is a branch of modern physics.
-  In this article, we will walk you through the dynamics of the most important energy-based models -- Hopfield networks and Boltzmann machine -- reflecting on the meaning of the underlying concepts in computer science and physics.
+  In this article, we will walk you through the dynamics of the most important energy-based models – Hopfield networks and Boltzmann machines – reflecting on the meaning of the underlying concepts in computer science and physics.
   Additionally, we will provide a new way of interpreting training from the perspective of thermal equilibration and review the differences between learning and memorizing in this perspective.
   </p>
 
   <p>
-  Boltzmann machines have an interesting history. Boltzmann was an Austrian scientist who worked on statistical descriptions of physics in the 1800s. His name is tied to a number of theories and results that are still in common use today: Boltzmann’s constant, Boltzmann’s equation, Maxwell-Boltzmann statistics, and the Boltzmann distribution. Boltzmann did not, however, invent Boltzmann machines. This is a more recent construct, emerging from the machine learning literature of the 1980s.
-	 Essentially, machine learning researchers &quot;ported” certain ideas which were originally developed for statistical physics. In particular, the idea that the probability for a system to be in a particular configuration   <d-math>x</d-math> can be specified using a single scalar function – the <em>energy</em> <d-math>E(x)</d-math> – of that configuration.</p>
-  <p>Boltzmann machines were further developed, extended, and improved, over several decades. Currently, the hottest topic in machine learning is deep neural networks, and Boltzmann machines – a kind of shallow neural network – have fallen somewhat out of favour amongst practitioners. Despite this, Boltzmann machines have recently been “back-ported” to physics, where they have successfully been used to model the wavefunctions of quantum systems <d-cite key="carleo2017solving"></d-cite>. And they also seem to get back into the focus of fundamental research in machine learning. <d-footnote>According to this <a href="https://twitter.com/datasciencenig/status/1020355546581553152" target="_blank">tweet</a>, Yoshua Bengio as an example wants to go back to BM for a better understanding of generative models.</d-footnote> Furthermore Boltzmann machines are still being used in other areas, such as recommendation systems <d-cite key='salakhutdinov_restricted_2007'></d-cite></p>
-<p>To understand the “Machine learning from the perspective of physics and equilibration” we structure this article the following way: Our article is split into two main parts. In the first part of this article we introduce the framework of energy based models and introduce the most common architectures. In the second part we will describe the training procedure in detail.
-</p>
-<p>From the principle of maximum entropy one obtains the Boltzmann distribution that describes a system at thermal equilibrium at finite temperature.
-The nature of this system will be defined by the choice of the constraints under which we want to maximise the entropy and the sufficiency of their statistics.
-We will have a brief discussion about energy based models and the connection of energy and probability which will lead us to the first concrete ML model, the Hopfield network. We will draw the connection of the sampling procedure of these models and how physical system equilibrate. The introduction of hidden and visible units will finally lead us to the Boltzmann machine. We will emphasise why the use of hidden units is beneficial for ML purposes but also what it physically means. And finally we will emphasise the importance of the introduction of a bipartition of the BM graph which is commonly known as a restricted BM.</p>
-<p>Finally we give an overview of how RBMs can be trained and show how the contrastive divergence algorithm <d-cite key="carreira-perpinan_contrastive_nodate"></d-cite> naturally follows from the Hopfield ideas of learning and unlearning. We will put this in contrast to the minimization of the Kullback-Leibler (KL) distance that is commonly used in ML literature and finally we offer an alternative interpretation of learning via an equilibration approach.</p>
+  Energy-based models emerged in the machine learning literature in the 1980s.
+	Essentially, machine learning researchers &ldquo;ported&rdquo; certain ideas which were originally developed for statistical physics. In particular, the idea that the probability for a system to be in a particular configuration   <d-math>x</d-math> can be specified using a single scalar function – the <em>energy</em> <d-math>E(x)</d-math> – of that configuration.</p>
 
+  <p>These models were further developed, extended, and improved, over several decades. Currently, the hottest topic in machine learning is deep neural networks trained by backpropagation: energy-based models have fallen somewhat out of favour amongst practitioners. Despite this, some energy-based models, Boltzmann machines especially, have recently been “back-ported” to physics, where they have successfully been used to model the wavefunctions of quantum systems <d-cite key="carleo2017solving"></d-cite>. They also seem to get back into the focus of fundamental research in machine learning. <d-footnote>According to this <a href="https://twitter.com/datasciencenig/status/1020355546581553152" target="_blank">tweet</a>, Yoshua Bengio as an example wants to return to studying Boltzmann machines for a better understanding of generative models.</d-footnote> Furthermore Boltzmann machines are still being used in other areas, such as recommendation systems <d-cite key='salakhutdinov_restricted_2007'></d-cite><b>PW: We could also cite https://openai.com/blog/energy-based-models/</b> The rekindled interest is understandable: many types of energy-based models are generative, guarantee to sample a valid probability distribution, and they can often be stacked to create deep, hierarchical representations <b>PW: Cite the deep belief network paper</b>.</p>
+
+  <p>In the first part of this article we introduce the framework of energy-based models, alternating between a computer science view and a physics perspective, and introduce the most common architectures.
+  Most of the models are probabilistic, so we also take a closer look at sampling the distributions they model.
+  In the second part of the article, we will describe the training procedure in detail, introducing a new interpretation of the procedure coming from physics principles.</p>
 
 <!-- Second Section  2  -->
-  <a class="marker" href="#section-2" id="section-2"><span>Energy based models</span></a>
-<h2 id="testing-the-bm-as-a-trained-model">Energy based models</h2>
+  <a class="marker" href="#section-2" id="section-2"><span>Energy-based models</span></a>
+  <h2 id="testing-the-bm-as-a-trained-model">Energy-based models</h2>
+
+  Energy-based models rely on the principle of maximum entropy. From the principle of maximum entropy one obtains the Boltzmann distribution that describes a system at thermal equilibrium at finite temperature.
+  The nature of this system will be defined by the choice of the constraints under which we want to maximise the entropy and the sufficiency of their statistics.
+  We will have a brief discussion about energy-based models and the connection of energy and probability which will lead us to the first concrete ML model, the Hopfield network. We will draw the connection of the sampling procedure of these models and how physical system equilibrate. The introduction of hidden and visible units will finally lead us to the Boltzmann machine. We will emphasise why the use of hidden units is beneficial for ML purposes but also what it physically means. And finally we will emphasise the importance of the introduction of a bipartition of the graph of the Boltzmann machine, which is commonly known as a restricted Boltzmann machine.
 
 <!-- Second Section  2.1  -->
   <a class="marker" href="#section-2.1" id="section-2.1"><span>Maximum Entropy</span></a>
-<h3 id="the-principle-of-maximum-entropy">The principle of maximum entropy</h3>
-<p><em>Jaynes’ principle</em> is named after the 19th century physicist E. T. Jaynes. This principle, also called the <em>principle of maximum entropy</em>, tells us that, amongst all distributions which are consistent with known observations (e.g., the expectation values of certain random variables), the distribution with maximal entropy should be preferred. Known observations in machine learning are for example the statistics of single input pixels or the correlations between pixels of the data.</p>
-<p>Intuitively, it makes sense to choose the distribution with maximum entropy. If we do not have any information and therefore no constraint about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom about which we do have strong beliefs and that are constraint. Choosing the maximum entropy model reduces the amount of (potentially biased and unsubstantiated) prior information built into a model. Jaynes showed how to arrive at the above Boltzmann equation from the principle of maximum entropy, and derivations can be found in several textbooks.
-<d-footnote>We highly recommend Leonard Susskind's <a href="https://youtu.be/SmmGDn8OnTA?t=1959">lecture</a> from around minute 32 he derives the Boltzmann distribution of a system at a energy <d-math>E</d-math> </d-footnote></p>
-<p>Suppose we have a system which can exist in many different possible configurations <d-math>\{\vec{x}_j\}_{j=1}^J</d-math>. We assume a discrete set of configurations, but similar arguments can be made for a continuous set. We have some partial information about the system, specifically the expectation values of the random variables <d-math>\{r_k(\vec{x})\}_{k=1}^K</d-math> (these can be constraints forced upon the system by us, or actually observed via measurement). That is, we have the constraints
-<d-math block>  \langle r_k \rangle_{x} = a_k, </d-math>
-with <d-math>\langle r_k \rangle_{x} = \sum_i p(\vec{x}_i) r_k(\vec{x}_i). </d-math>
-These expectation values are not enough to completely characterize the system (i.e. if we have more configurations than constraints, <d-math>J>K </d-math>), and we have no information about random variables outside of the span of the <d-math>r_k </d-math>. Jaynes’ principle tells us that, if we want to model this system, we should maximize the entropy <d-math>H(x) = -\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j) </d-math>, subject to the given constraints, plus we need to take care that the probabilities are normalized <d-math>\sum_{j=1}^J p(\vec{x}_j) = 1 </d-math>. Thus, we try to solve the constrained optimization
-<d-math block> \text{max}_{\lambda_i}[-\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j) + \sum_{k=1}^K \lambda_k (\langle r_k \rangle_{\vec{x}_j} - a_k) + \lambda_0(\sum_{j=1}^J p(\vec{x}_j) - 1)], </d-math>
-which has the solution
-<d-math block>p(\vec{x}_j) = \frac{1}{Z} \exp \left( \sum_k^K \lambda_k  r_k (\vec{x}_j)\right)
- </d-math>
-This probability distribution is known under the name Boltzmann distribution.</p>
+  <h3 id="the-principle-of-maximum-entropy">The principle of maximum entropy</h3>
+  <p>The <em>principle of maximum entropy</em>, tells us that, amongst all distributions which are consistent with known observations (e.g., the expectation values of certain random variables), the distribution with maximal entropy should be preferred. Known observations in machine learning are for example the statistics of single input pixels or the correlations between pixels of the data.</p>
 
-<!-- Second Section  2.3  -->
-  <a class="marker" href="#section-2.3" id="section-2.3"><span>From the sufficient statistics to the Energy function</span></a>
+  <p>Intuitively, it makes sense to choose the distribution with maximum entropy. If we do not have any information – and therefore no constraint – about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom that are constrained. Choosing the maximum entropy model reduces the amount of potentially biased or unsubstantiated prior information built into a model.
+  </p>
 
-<h3 id="from-the-sufficient-statistics-to-the-energy-function">From the sufficient statistics to the Energy function</h3>
-<p>So far this result is general and can be applied to any constraint. The choice of <d-math>\langle r_k \rangle_x</d-math> will in the end define the physics of the model. The most commonly used physical model in machine learning that defines the underlying behaviour of the Boltzmann distribution is a so called Ising model, which is defined through a energy function <d-math>E(\vec {\sigma}) = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i</d-math>. To recover a Boltzmann distribution with this energy function We rename the Lagrange multipliers <d-math>\lambda_k </d-math> to <d-math>w_{i,j} </d-math> which are the couplings and <d-math>h_i </d-math> which are the local magnetic fields.
-And the sufficient statistic of the Boltzmann distribution of such an Ising model are the single-spin expectation values <d-math>\langle \sigma_i \rangle</d-math> and the two-spin correlations <d-math>\langle \sigma_i \sigma_j \rangle</d-math>.
-<d-footnote>
-Generally for the exponential family, a statistic <d-math>T(x)</d-math> is sufficient, if we can write the probability <d-math>p(x)</d-math> as
-
-<d-math block>p(x) = \exp \left( \alpha(\theta)^T T(x) + A(\theta) \right),</d-math>
-
-where <d-math>\alpha(\theta)</d-math> is a vector valued function and <d-math>A(\theta)</d-math> is a scalar which for a Boltzmann distribution is simply a normalization factor that we call the partition function <d-math>A(\theta) = \log(1/Z)</d-math> <d-cite key="li_learning_2013"></d-cite>. Therefore in general we are not restricted to model the distribution of our data with the energy function of a classical Ising model. The choice of the constraints will determine the physical model.
-</d-footnote>
-This means that these two constraints suffice to fully determine the Lagrange parameters of the classical Ising energy function from the data.
-Therefore we set the constraints to <d-math>\langle r_k \rangle = \langle \sigma_i \sigma_j</d-math \rangle> and <d-math>\langle r_k \rangle = \langle \sigma_i \rangle</d-math>.
-
-
-
-We want to emphasise at this point that for real world ML-applications higher-order correlations between input nodes are important and the choice of single-spin and two-spin expectation values in general is not sufficient to capture them. But we also want to stress here that we are not talking about Boltzman machines yet. So far this model is simply an Ising spin system, where every spin represents a node (e.g. pixel) of our input data. To overcome this issue of low order correlations we will later use a part of the spins in the system as mediators between input nodes, which we we call hidden units.</p>
-
+  <p>Suppose we have a system which can exist in many different possible configurations <d-math>\{\vec{x}_j\}_{j=1}^J</d-math>; the elements of these vectors are random variables. We assume a discrete set of configurations, but similar arguments can be made for a continuous set. We have some partial information about the system, specifically, the expectation values of functions <d-math>r_k</d-math> of the random variables <d-math>\{r_k(\vec{x})\}_{k=1}^K</d-math>. These can be constraints forced upon the system by us or actually observed in the data. That is, we have the constraints on the expectation values<d-math block>  \langle r_k \rangle_{x} = a_k, </d-math> with <d-math>\langle r_k \rangle_{x} = \sum_i p(\vec{x}_i) r_k(\vec{x}_i). </d-math>
+  These expectation values are not sufficient to completely characterize the system (i.e. if we have more configurations than constraints, <d-math>J>K </d-math>), and we have no information about random variables outside of the span of the <d-math>r_k </d-math>. The principle of maximum entropy tells us that, if we want to model this system, we should maximize the entropy <d-math>H(x) = -\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j) </d-math>, subject to the given constraints, plus we need to take care that the probabilities are normalized <d-math>\sum_{j=1}^J p(\vec{x}_j) = 1 </d-math>. Thus, we want to solve a constrained optimization problem. Instead, we apply using Lagrange multipliers <d-math>\lambda_i</d-math> for the constraints to make the maximization unconstrained, arriving at the following optimization problem:
+  <d-math block> \text{max}_{\lambda_i}[-\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j) + \sum_{k=1}^K \lambda_k (\langle r_k \rangle_{\vec{x}_j} - a_k) + \lambda_0(\sum_{j=1}^J p(\vec{x}_j) - 1)], </d-math>
+  which has the solution<d-footnote>To derive the connection, we recommend Leonard Susskind's <a href="https://youtu.be/SmmGDn8OnTA?t=1959">lecture</a> from around minute 32, where he gives a simple derivation of the Boltzmann distribution of a system at a fixed energy <d-math>E</d-math> </d-footnote>
+  <d-math block>p(\vec{x}_j) = \frac{1}{Z} \exp \left( \sum_k^K \lambda_k  r_k (\vec{x}_j)\right).
+  </d-math>
+  This probability distribution is known under the name Boltzmann distribution.</p>
 
 <!-- Second Section  2.2  -->
-  <a class="marker" href="#section-2.2" id="section-2.2"><span>Boltzmann distribution and Equilibrium</span></a>
+  <a class="marker" href="#section-2.2" id="section-2.2"><span>Boltzmann distribution and equilibrium</span></a>
+  <h3 id="boltzmann-distribution-and-equilibrium">Boltzmann distribution and equilibrium</h3>
 
-<h3 id="boltzmann-distribution-and-equilibrium">Boltzmann distribution and Equilibrium</h3>
-
-<p>The Boltzmann distribution is known from physics and it describes the statistics of physical configurations of a system that is in an equilibrium at some temperature.
-In this case the probability of a configuration <d-math>\vec{x}</d-math> is given as <d-math>p(\vec{x}) = 1/Z \exp (- 1/T \cdot E(\vec{x}) )</d-math>.
-Where <d-math>E(\vec{x})</d-math> is a function that connects the configuration <d-math>\vec{x}</d-math> with the real line, which is also called the energy of the system. Before, we did not explicitely write the temperature because we either set it to <d-math>T=1</d-math> or it is already absorbed in the Lagranhge parameters <d-math>\lambda_k</d-math> of the model. But it is important that we are looking at systems with non-zero temperature because for zero temperature a physical system will equilibrate to a local minimum.
-Allowing a non-zero temperature automatically leads to states that are in a thermal distribution which means the system can be in configurations that are at low energy and not only minimum energy. In the extreme case of very high temperature all the configurations even get equally likely.</p>
+  <p>The Boltzmann distribution is known from physics and it describes the statistics of physical configurations of a system that is in an equilibrium at some temperature.
+  In this case the probability of a configuration <d-math>\vec{x}</d-math> is given as <d-math>p(\vec{x}) = 1/Z \exp (- 1/T \cdot E(\vec{x}) )</d-math>.
+  Where <d-math>E(\vec{x})</d-math> is a function that connects the configuration <d-math>\vec{x}</d-math> with the real line, which is also called the energy of the system. Before, we did not explicitely write the temperature because we either set it to <d-math>T=1</d-math> or it is already absorbed in the Lagrange parameters <d-math>\lambda_k</d-math> of the model. But it is important that we are looking at systems with non-zero temperature because for zero temperature a physical system will equilibrate to a local minimum.
+  Allowing a non-zero temperature automatically leads to states that are in a thermal distribution which means the system can be in configurations that are at low energy and not only minimum energy. Low-energy configurations are more likely than high-energy configurations, and if two configurations have the same energy, they are equally likely. The Boltzmann distribution connects energy to probability via the above formula. In the extreme case of very high temperature all the configurations even get equally likely.</p>
 
 <!-- Figure Section 2.2  -->
-  <style>
-* {
-  box-sizing: border-box;
-}
-
-.column {
-  float: left;
-  width: 233px; /*This is 33% of the width in normal scale */
-  padding: 10px;
-  border: 2px solid red;
-  border-radius: 5px;
-/*   border-spacing: 15px; */
-}
-
-.doublecolumn {
-    float: left;
-    width: 466px;
-    padding: 10px;
-    border: 2px solid red;
-    border-radius: 5px;
-/*
-    border-collapse: separate;
-    border-spacing: 15px;
- */
-
-}
-
-.triplecolumn {
-  float: left;
-  width: 700px;
-  padding: 10px;
-  border: 2px solid black;
-  border-radius: 5px;
-/*   border-spacing: 15px; */
-}
-.row {
-  float: left;
-  width: 720px;
-  padding: 1px;
-  border: none;
-/*   border-spacing: 15px; */
-}
-.slider-label-text {
-    float: left;
-    width: 50%;
-    padding: 5px;
-    font: 14px sans-serif;
-}
-
-.slider-label-number {
-    float: left;
-    width: 50%;
-    padding: 5px;
-    font: 14px sans-serif;
-}
-
-.title-text {
-    float: right;
-    width: 50%;
-    padding: 5px;
-    font: 16px sans-serif;
-}
-
-.figure-text {
-    color: rgba(0,0,0,0.6);
-    font-size: 13px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-}
-
-/* Clearfix (clear floats) */
-/*
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
-}
- */
-</style>
   <div class="row">
-
   <div class="column">
   <p class="slider-label-text">Temperature: </p>
   <p id="temperature_slider" class="slider-label-number"></p>
@@ -250,107 +229,73 @@ Allowing a non-zero temperature automatically leads to states that are in a ther
     <input type="range" oninput="energy_slider(this.value)" min="0" max="10" step="0.01">
     <p class="figure-text">2-level system with temperature. This is a simple model that shows the influence of temperature on the probability to be in a certain state. If the system is at zero temperature only the low energy state can be occupied. If the temperature is increased the higher energy level can also be occupied. If we are at very high temperature, both states get equally likely. </p>
   </div>
-
   <div class="doublecolumn">
     <p class="slider-label-text">Unnormalized Probability </p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
   <div id = "test_figure_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   <script type = "text/javascript" src = "2-level-sys_new.js" ></script>
-
   </div>
-
-</div>
-
-<div class="triplecolumn"> <p class="figure-text">This figure shows the effect of temperature on the occupation probability of a higher energy state. If the energy difference between the sates is big and the temperature is low, the probability of the system to be in the higher energy state goes to zero. On the other side if the temperature increases or the energy gap closes the system gets more likely to be in the higher energy state.<p></div>
-
-<p> Temperature in the end will make the difference between a simple memory and actual learning where the model is able to generalize the learned data and ouput new configurations that are close to the training data. The intuition here is the following: Memorizing means that each configuration of the training set will be in a local minimum of the energy landscape. Therefore any configuration that is not at a local minimum will equilibrate to the next minimum and we will retrieve the exact  training examples.
-If the temperature is non-zero, configurations that are not exactly at a local minimum of the energy landscape can occur with some probability. The higher the temperature the more likely these higher-energy states get. The configurations around one local energy minimum can occur and if the temperature is not to high the possible configurations are all similar.</p>
-
-  <div class="row">
-
-  <div class="column">
-  <p class="figure-text"><b>Influence of Temperature on Configurations: </b>After training local energy minima correspond to configurations of the training set. At zero temperature configurations with higher energy will equilibrate to the minimum energy configuration. For non zero temperature higher energy configurations can be occupied with a certain probability here shown as a shaded blue area around the minima.</p>
   </div>
+  <div class="triplecolumn"> <p class="figure-text">This figure shows the effect of temperature on the occupation probability of a higher energy state. If the energy difference between the sates is big and the temperature is low, the probability of the system to be in the higher energy state goes to zero. On the other side if the temperature increases or the energy gap closes the system gets more likely to be in the higher energy state.<p></div>
 
-  <div class="doublecolumn">
-    <p class="slider-label-text">Energy Minima </p>
-    <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "Figure_energy_minima_and_temp">
-  <div id = "energy_minima_and_temp_id" style="position:absolute; left:0px; top:0px"></div>
-  </figure>
-  <script type = "text/javascript" src = "energy_minima_and_temp.js" ></script>
+  <p> Temperature in the end will make the difference between a simple memory and actual learning where the model is able to generalize the learned data and ouput new configurations that are close to the training data. The intuition here is the following: Memorizing means that each configuration of the training set will be in a local minimum of the energy landscape. Therefore any configuration that is not at a local minimum will equilibrate to the next minimum and we will retrieve the exact training examples.
+  If the temperature is non-zero, configurations that are not exactly at a local minimum of the energy landscape can occur with some probability. The higher the temperature the more likely these higher-energy states get. The configurations around one local energy minimum can occur and if the temperature is not to high the possible configurations are all similar.</p>
 
-  </div>
+<!-- Second Section  2.3  -->
+  <a class="marker" href="#section-2.3" id="section-2.3"><span>From the sufficient statistics to the energy function</span></a>
+  <h3 id="from-the-sufficient-statistics-to-the-energy-function">From the sufficient statistics to the energy function</h3>
+  <p>So far this result is general and can be applied to any constraint. The choice of <d-math>\langle r_k \rangle_x</d-math>, or, equivalently, the choice of the energy function <d-math>E(\vec{x})</d-math>, will define the physics of the model. The most commonly used physical model in machine learning is a so-called <em>Ising model</em>, which is defined through a energy function <d-math>E(\vec {\sigma}) = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i</d-math>.
+  Here we used a physics convention: the discrete configurations <d-math>\vec{x}</d-math> are representation by "spins" <d-math>\vec {\sigma}</d-math>, which are just binary random variables taking values <d-math>+1</d-math> or <d-math>-1</d-math>.
+  We can always easily convert between spins and binary random variables taking values <d-math>0</d-math> or <d-math>1</d-math>, or any other discrete variables.
+  To recover a Boltzmann distribution with this energy function, we rename the Lagrange multipliers <d-math>\lambda_k </d-math> to <d-math>w_{i,j} </d-math> which are the couplings and <d-math>h_i </d-math> which are the local magnetic fields.
+  The sufficient statistic of the Boltzmann distribution of such an Ising model are the single-spin expectation values <d-math>\langle \sigma_i \rangle</d-math> and the two-spin correlations <d-math>\langle \sigma_i \sigma_j \rangle</d-math>.
 
-</div>
+  <d-footnote>Generally for the exponential family, a statistic <d-math>T(\vec{x})</d-math> is sufficient, if we can write the probability <d-math>p(\vec{x})</d-math> as
+  <d-math block>p(\vec{x}) = \exp \left( \alpha(\theta)^T T(\vec{x}) + A(\theta) \right),</d-math>
+  where <d-math>\alpha(\theta)</d-math> is a vector valued function and <d-math>A(\theta)</d-math> is a scalar which for a Boltzmann distribution is simply a normalization factor that we call the partition function <d-math>A(\theta) = \log(1/Z)</d-math> <d-cite key="li_learning_2013"></d-cite>. Therefore in general we are not restricted to model the distribution of our data with the energy function of a classical Ising model. The choice of the constraints will determine the physical model.
+  </d-footnote>
 
-<div class="triplecolumn"><p class="figure-text"> This figure illustrates two local energy minima that contain a different MNIST number as their minimum energy. If we are at zero temperature any higher energy configuration would equilibrate to the closest local minimum and the only configurations that can be retrieved are the ones at the minimum energy. If we allow a certain temperature (blue shaded area) we can also retrieve configurations with a slightly higher energy. This eventually makes the system to generalize training data.</p></div>
+  This means that these two constraints suffice to fully determine the Lagrange parameters of the classical Ising energy function from the data.
+  Therefore we set the constraints to <d-math>\langle r_k \rangle = \langle \sigma_i \sigma_j\rangle</d-math> and <d-math>\langle r_k \rangle = \langle \sigma_i \rangle</d-math>.
+
+  We want to emphasise at this point that for real world machine learning applications higher-order correlations between input nodes are important and the choice of single-spin and two-spin expectation values in general is not sufficient to capture them. So far this model is simply an Ising spin system, where every spin represents a node (e.g. pixel) of our input data. To overcome this issue of low order correlations we will later use a part of the spins in the system as mediators between input nodes, which we we call hidden units.</p>
+
 <!-- Second Section  2.4  -->
-  <a class="marker" href="#section-2.4" id="section-2.4"><span>Not sure if we need this section</span></a>
+  <a class="marker" href="#section-2.4" id="section-2.4"><span>Architectures</span></a>
+  <h3 id="architecture">Architectures</h3>
+  <p>So far we have not restricted ourselves to a certain kind of model. But for practical purposes some models have been proven to be more useful than others and the most common models are based on the energy function of a Ising spin system. The first model we introduce is the Hopfield network, which is simply an Ising model of <d-math>N</d-math> spins at zero temperature, where the dimension of the data vector is equal to the number of available spins. This kind of model does not really learn configurations, it just memorizes them.</p>
 
+  <p>The Boltzmann machine is different from the Hopfield network in two aspect. First, it is not at zero temperature anymore, therefore we allow thermal distributions of configurations and not only local minima of the energy. Second, the <d-math>N</d-math> spins of the model are separate into <d-math>v</d-math> visible units (in blue) and <d-math>h</d-math> hidden units (in yellow). The dimension of the input data is equal to the visible units <d-math>v</d-math>. The choice of the Boltzmann machine as an ansatz for the probability distribution in machine learning is very well motivated by its success in experiments (Cite some RBM papers), but for a physicist intuitively the question comes to mind: why shouldn't we use any other energy function that we know from physics? It might be more expressive. When we approach energy-based models from the principle of maximum entropy we can see that the constraints and therefore the data itself determines the model. Therefore, from a theoretical point of view, we are not restricted to Ising-like energy functions. It is even known that single-spin expectation values and two-spin correlators are in general not sufficient to learn complex data, such as images. This issue is overcome by adding hidden units that are not expressing data instances. They are used to mediate between visible units and they are averaged out in the end.</p>
 
-<!-- Second Section  2.5  -->
-  <a class="marker" href="#section-2.5" id="section-2.5"><span>Energy Based models</span></a>
-<h3 id="energy-based-models">Energy-based models</h3>
-<p>The energy function is not unique to Boltzmann machines and occurs in a huge class of models that are summarized under the name energy-based models. The basic idea of energy-based models is to capture the different possible configurations of a system through a single scalar quantity, called the energy. Low-energy configurations are more likely than high-energy configurations, and if two configurations have the same energy, they are equally likely. The Boltzmann distribution connects energy to probability via the formula
-<d-math block> p(x) \propto \exp(-\beta E(x)), </d-math>
-where <d-math>\beta</d-math> is an arbitrary positive number (in physics, this is called the <em>inverse temperature</em>). There are a number of arguments which can lead us to this formula. The simplest is perhaps that the exponential function is the most straightforward way to map the real line (the domain of <d-math>\beta</d-math>) into positive numbers, which we could then normalize to probabilities. A more elaborate way to define it is the principle of maximum entropy that we have shown before.</p>
-
-<h3 id="paragraph-for-boltzman-distribution-at-zero-temperature">Update rule for zero and finte temperature</h3>
-<p>
-The Boltzmann distribution at zero temperature simply states that the lowest energy is always occupied with 100% probability. Therefore in a potential well, equilibration can only go into the direction of lower energy. Therefore to find a rule of equilibration at zero temperature for a single spin <d-math>\sigma_i</d-math>
-we only have to find out which local spin direction is favourable.
-For the given Ising energy function <d-footnote> <d-math>E(\vec {\sigma}) = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i</d-math></d-footnote>, if
-
-<d-math block> E(\sigma_i=-1) - E(\sigma_i=+1)  \geq 0</d-math>
-
-we set the local spin to <d-math>+1</d-math>. From this we get the simple local update rule.
-
-<d-math block>\sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\text{if }}-\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\text{otherwise,}}\end{array}}\right.</d-math>
-
-We can update the configuration spin after spin according to this rule and converge to a local minimum. (CITE Paper)
-
-For finite temperature we still compare the energy difference when one spin is changed
-<d-math>\Delta E =  E(\sigma_i) - E(-\sigma_i)</d-math>, but now there is a probability to change the configuration even though the energy is increased by this step. The update rule is expanded the following way: If a change of the spin decreases the energy <d-math>\Delta E \geq 0</d-math> the spin will be changed and we update to <d-math>\sigma_i \leftarrow -\sigma_i</d-math>. But if a change would increase the energy <d-math>\Delta E \leq 0</d-math> we still have the probability <d-math>p(\sigma_i) \prop \exp(-\beta \Delta E) </d-math> that we change the spin.
-</p>
-
-<!-- Second Section  2.6  -->
-  <a class="marker" href="#section-2.6" id="section-2.6"><span>Architecture</span></a>
-<h3 id="architecture">Architecture</h3>
-<p>So far we have not restricted ourselves to a certain kind of model. But for practical purposes some models have been proven to be more useful than others and the most common models are based on the energy function of a Ising spin system. The first model we introduce is the Hopfield network, which is simply an Ising model of <d-math>N</d-math> spins at zero temperature, where the dimension of the data vector is equal to the number of available spins. This kind of model does not really learn configurations, it just memorizes them.</p>
-<p>The Boltzmann machine is in two aspect different from the Hopfield network. First it is not at zero temperature anymore, therefore we allow thermal distributions of configurations and not only local minima of the energy. And second the <d-math>N</d-math> spins of the model are separate into <d-math>v</d-math> visible units (in blue) and <d-math>h</d-math> hidden units (in yellow). The dimension of the input data is equal to the visible units <d-math>v</d-math>.</p>
-<p>And finally the Restricted Boltzmann machine is the model that is most commonly used. Avoiding connections within the same layer brings a big advantage to compute the gradients. We will see later why in the section about training. Compared to the fully conected BM the RBM has less expressivity because there are much less parameters. But less complex models as the RBM tend to generaloze better if their training error is comparable to a more complex model (CITE https://arxiv.org/pdf/1706.08947.pdf), because complex models tend to overfit.</p>
+  <p>Finally, the restricted Boltzmann machine (RBM) is the model that is most commonly used. Avoiding connections within the same layer brings an advantage to compute the gradients during training (see Section <b>Insert ref.</b>). Compared to the fully conected Boltzmann machine the RBM has less expressivity as there are much fewer parameters. On the other hand, following the principles of statistical learning theory and Occam's razor, less complex models tend to generalize better if their training error is comparable to a more complex model (CITE https://arxiv.org/pdf/1706.08947.pdf), since complex models are more likely to overfit the data.</p>
 
   <div class="row">
-
   <div class="column">
     <p class="figure-text">Hopfield network: The number of nodes is equal to the size of the input data. There are no hidden nodes (dashed) contributing to the energy.</p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_Hopfield">
   <div id = "architecture_Hopfield_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   </div>
-
   <div class="column">
     <p class="figure-text">Boltzmann machine: The BM graph is fully connected. The visible nodes (blue) are clamped to the input data. The hidden nodes (yellow) are free parameters.</p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_BM">
   <div id = "architecture_BM_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
-
   </div>
-
   <div class="column">
-    <p class="figure-text">Restricted Boltzmann machine (RBM): Alos with hidden and visible nodes, but we don't allow connections within the same layer. This will simplify the training.
+    <p class="figure-text">Restricted Boltzmann machine: Also with hidden and visible nodes, but we don't allow connections within the same layer. This will simplify the training.
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_RBM">
   <div id = "architecture_RBM_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   </div>
-</div>
+  </div>
   <script type = "text/javascript" src = "architecture.js" ></script>
 
 <!-- Second Section  3  -->
   <a class="marker" href="#section-3" id="section-3"><span>Sampling</span></a>
-<h2 id="sampling">Sampling</h2>
-<p>A model with a fixed energy function will assign an energy to every configuration and configurations with low energies will be more likely to appear. Sampling from a model is the ability to recover low energy configurations from a system with a given energy function. As we will see the process of sampling on a real physical system in a laboratory is somewhat very simple and occurs naturally, if such a system can be implemented in a laboratory. On the other side sampling is notoriously difficult in computer simulations</p>
+  <h2 id="sampling">Sampling</h2>
+  <p>A model with a fixed energy function will assign an energy to every configuration and configurations with low energies will be more likely to appear. Sampling from a model is the ability to recover low energy configurations from a system with a given energy function. As we will see the process of sampling on a real physical system in a laboratory is somewhat very simple and occurs naturally, if such a system can be implemented in a laboratory. On the other side sampling is notoriously difficult in computer simulations</p>
 
   <div class="row">
 
@@ -360,32 +305,59 @@ For finite temperature we still compare the energy difference when one spin is c
   <div id = "image_equilibration_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   </div>
-</div>
+  </div>
   <script type = "text/javascript" src = "image_equilibration_script.js" ></script>
 
   <div class="triplecolumn"><p class="figure-text"><b>Sampling through equilibration:(THE FIGURE STILL HAS TO BE ADAPTED TO THE CAPTION)</b> This figure shows a reszricted Boltzmann machine, where the visible units are initialized (a) randomly (b) in a MNIST digit (c) with a partially damaged MNIST digit. In a restricted BM the equilibration is sequentially, where the hidden and the visible layer is sampled one after another dependend of the configuration of the other layer. The energy during the equilibration process will go to a lower value.</p></div>
 
 <!-- Second Section  3.1  -->
   <a class="marker" href="#section-3.1" id="section-3.1"><span>Sampling in physics</span></a>
-<h3 id="sampling-in-physics">Sampling in physics</h3>
-<p>We would like to think of energy based models the following way. Imagine you are an experimentor and you have an implementation of a spin system in front of you. You can initialize the spins and you can manipulate the couplings <d-math>J_{i,j}</d-math> and the local fields <d-math>h_i</d-math>. The only thing you can do with such a machine is to initialize the spins in some way and see to what configuration they will equilibrate. I physics low energies are preferred over high energies. And therefore if we initialize a system randomly it will eventually equilibrate to a low energy configuration or if we are at <d-math>T=0</d-math> to a local minimum of the energy. Therefore in a real physical system, sampling from a system is only a matter of initialising it and waiting until it equilibrates.</p>
-<!-- Second Section  3.2  -->
-  <a class="marker" href="#section-3.2" id="section-3.2"><span>Sampling in ML</span></a>
-<h3 id="sampling-in-ml">Sampling in ML</h3>
-<p>In ML we don’t have an equilibration process that drives our system into a low energy configuration. We therefore have to simulate this process. But there are several methods how we can imitate this behaviour. To sample from a Hopfield network one takes a random input vector <d-math>\vec{v}</d-math> and updates each node after another and then determines the update of a node via the update rule we learned before
-<d-footnote>
-<d-math block>\sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\text{if }}-\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\text{otherwise,}}\end{array}}\right.</d-math> </d-footnote>.
-The outcome in this case is deterministic and one can stop this process after the nodes have been iterated through two times without any update. For non-zero temperature models, the updates work similarly, just that the update is not deterministic, but there is a probability assigned to every node <d-math>\sigma_i</d-math> according to its input strength <d-math>\sum_j W_{ij} \sigma_j + h_i</d-math>. And according to this probability we update the spins.</p>
-<!-- Second Section  4  -->
-  <a class="marker" href="#section-4" id="section-4"><span>Training</span></a>
-<h2 id="training">Training</h2>
-<p>If we go back to image of a experimenter standing in front of a physical implementation of a energy function the question now arises, what do we need, to train such a system on a given data set. Because as discussed before the only thing we can do is sampling from this machine. Therefore training a BM means that we have to adjust the couplings and local fields of a randomly initialized spin model until its configurations show the same distribution as a our training data. For this we have to come up with an update rule for the model parameters simply by comparing the samples with the training data. In this section we will have a deeper look at this procedure.</p>
-
-
-
+  <h3 id="sampling-in-physics">Sampling in physics</h3>
+  <p>We would like to think of energy-based models the following way. Imagine you are an experimentor and you have an implementation of a spin system in front of you. You can initialize the spins and you can manipulate the couplings <d-math>J_{i,j}</d-math> and the local fields <d-math>h_i</d-math>. The only thing you can do with such a machine is to initialize the spins in some way and see what configuration they will equilibrate to. In physics, low energies are preferred over high energies. And therefore if we initialize a system randomly it will eventually equilibrate to a low energy configuration, or, if we are at <d-math>T=0</d-math>, to a local minimum of the energy. Therefore in a real physical system, sampling from a system is only a matter of initialising it and waiting until it equilibrates.</p>
 
   <div class="row">
+    <div class="column">
+    <p class="figure-text"><b>Influence of Temperature on Configurations: </b>After training local energy minima correspond to configurations of the training set. At zero temperature configurations with higher energy will equilibrate to the minimum energy configuration. For non zero temperature higher energy configurations can be occupied with a certain probability here shown as a shaded blue area around the minima.</p>
+    </div>
+    <div class="doublecolumn">
+      <p class="slider-label-text">Energy Minima </p>
+      <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "Figure_energy_minima_and_temp">
+    <div id = "energy_minima_and_temp_id" style="position:absolute; left:0px; top:0px"></div>
+    </figure>
+    <script type = "text/javascript" src = "energy_minima_and_temp.js" ></script>
+    </div>
+  </div>
+  <div class="triplecolumn"><p class="figure-text"> This figure illustrates two local energy minima that contain a different MNIST number as their minimum energy. If we are at zero temperature any higher energy configuration would equilibrate to the closest local minimum and the only configurations that can be retrieved are the ones at the minimum energy. If we allow a certain temperature (blue shaded area) we can also retrieve configurations with a slightly higher energy. This eventually makes the system to generalize training data.</p></div>
 
+
+<!-- Second Section  3.2  -->
+  <a class="marker" href="#section-3.2" id="section-3.2"><span>Sampling in ML</span></a>
+  <h3 id="sampling-in-ml">Sampling in ML</h3>
+
+  <p>In ML, we do not have an equilibration process that drives our system into a low energy configuration. We therefore have to simulate this process. But there are several methods how we can imitate this behaviour. To sample from a Hopfield network, we samplet The Boltzmann distribution at zero temperature: the lowest energy is always occupied with 100% probability. Therefore in a potential well, equilibration can only go into the direction of lower energy. Therefore to find a rule of equilibration at zero temperature for a single spin <d-math>\sigma_i</d-math>
+  we only have to find out which local spin direction is favourable.
+  For the given Ising energy function <d-footnote> <d-math>E(\vec {\sigma}) = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i</d-math></d-footnote>, if
+  <d-math block> E(\sigma_i=-1) - E(\sigma_i=+1)  \geq 0</d-math>
+
+  we set the local spin to <d-math>+1</d-math>. From this we get the simple local update rule.
+
+  <d-math block>\sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\text{if }}-\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\text{otherwise,}}\end{array}}\right.</d-math>
+
+  We can update the configuration spin after spin according to this rule and converge to a local minimum. (CITE Paper)
+  The outcome in this case is deterministic and one can stop this process after the nodes have been iterated through two times without any update.
+  </p>
+
+  <p>For finite temperature we still compare the energy difference when one spin is changed
+  <d-math>\Delta E =  E(\sigma_i) - E(-\sigma_i)</d-math>, but now there is a probability to change the configuration even though the energy is increased by this step. The update rule is expanded the following way: If a change of the spin decreases the energy <d-math>\Delta E \geq 0</d-math> the spin will be changed and we update to <d-math>\sigma_i \leftarrow -\sigma_i</d-math>. But if a change would increase the energy <d-math>\Delta E \leq 0</d-math> we still have the probability <d-math>p(\sigma_i) \prop \exp(-\beta \Delta E) </d-math> that we change the spin.</p>
+
+<!-- Second Section  4  -->
+  <a class="marker" href="#section-4" id="section-4"><span>Training</span></a>
+  <h2 id="training">Training</h2>
+   We will show how the contrastive divergence algorithm <d-cite key="carreira-perpinan_contrastive_nodate"></d-cite> naturally follows from Hopfield's ideas of learning and unlearning. We will put this in contrast to the minimization of the Kullback-Leibler (KL) distance that is commonly used in ML literature and finally we offer an alternative interpretation of learning via an equilibration approach.
+
+  <p>If we go back to image of a experimenter standing in front of a physical implementation of a energy function the question now arises: what do we need to train such a system on a given data set? Because, as discussed before, the only thing we can do is sampling from this machine. Therefore training a BM means that we have to adjust the couplings and local fields of a randomly initialized spin model until its configurations show the same distribution as a our training data. For this we have to come up with an update rule for the model parameters simply by comparing the samples with the training data. In this section we will have a deeper look at this procedure.</p>
+
+  <div class="row">
   <div class="column">
   <p class="slider-label-text">Training progress</p>
   <p id="temperature_slider" class="slider-label-number"></p>
@@ -397,41 +369,37 @@ The outcome in this case is deterministic and one can stop this process after th
   <div id = "image_energies_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   </div>
-</div>
+  </div>
   <script type = "text/javascript" src = "image_energies_script_new.js" ></script>
-
   <div class="triplecolumn"><p class="figure-text"><b>The purpose of training </b>is to find the model parameters that make the wanted configurations low energy. The model parameters are initiallized randomly and therefore the configuration's energies are also random. During the training we want to minimize the energies of the images we want to learn where at the same time we maximize the energies of configurations we don't want. This figure illustrates the evolution of energies over the training progress.</p></div>
 
 <!-- Second Section  4.1  -->
   <a class="marker" href="#section-4.1" id="section-4.1"><span>Ising, Hopfield, BM and RBM</span></a>
-<h3 id="learning-from-ising-models-to-boltzmann-machines-to-restricted-boltzmann-machines">Learning: From Ising models to Boltzmann machines to restricted Boltzmann machines</h3>
-<p>After one has agreed on a certain kind of model the learning or training procedure itself can be interpreted as the search for the parameters of the system's energy function which maximize the entropy and fulfil the constraints. If we consider a Hopfield model the constraints are given by the expectation values <d-math>\langle \sigma_i \sigma_j \rangle </d-math>, <d-math>\langle \sigma_i \rangle</d-math> and we want to find the coupling parameters <d-math>w_{i,j}</d-math> and the local fields <d-math>h_i</d-math> of the energy function. To learn these system parameters we slowly change the parameters of the system until the expectation values of the model get closer of the expectation values of the data.</p>
-<!-- Second Section  4.2  -->
-  <a class="marker" href="#section-4.2" id="section-4.2"><span>MLE</span></a>
-<h3 id="maximum-likelihood-estimation-mle-do-we-keep-this">Maximum likelihood estimation (MLE) DO WE KEEP THIS?</h3>
-<p>We would like to add a few words here to close the loop between the principle of maximum entropy and the maximum likelihood estimation, especially for people who come from machine learning. Energy based models and predominantly Boltzmann machines are approached differently in machine learning literature. BMs are a choice for an ansatz for the probability distribution and the parameters of the model are adjusted such that the data is maximally likely. Therefore the expectation values <d-math>\langle \sigma_i \rangle</d-math> and <d-math>\langle \sigma_i \sigma_j \rangle</d-math> are not constraints of the model they are the objectives to be maximally likely. The choice of the Boltzmann machine as an ansatz for the probability distribution in machine learning is very well motivated by its success in experiments (Cite some RBM papers), but for a physicist intuitively the question comes to mind, why should we not use any other energy function that we know from physics, because it might be more expressive. When we approach energy based models from the principle of maximum entropy we can see that the constraints and therefore the data itself determines the model and therefore from a theoretical point of view we are not restricted to Ising like energy functions. It is even known that single-spin expectation values and two-spin correlators are in general not sufficient to learn complex data, such as images. This issue can be overcome by adding hidden units that are not expressing data instances. They are used to mediate between visible units and they are averaged out in the end.</p>
+  <h3 id="learning-from-ising-models-to-boltzmann-machines-to-restricted-boltzmann-machines">Learning: From Ising models to Boltzmann machines to restricted Boltzmann machines</h3>
+  <p>After one has agreed on a certain kind of model the learning or training procedure itself can be interpreted as the search for the parameters of the system's energy function which maximize the entropy and fulfil the constraints. If we consider a Hopfield model the constraints are given by the expectation values <d-math>\langle \sigma_i \sigma_j \rangle </d-math>, <d-math>\langle \sigma_i \rangle</d-math> and we want to find the coupling parameters <d-math>w_{i,j}</d-math> and the local fields <d-math>h_i</d-math> of the energy function. To learn these system parameters we slowly change the parameters of the system until the expectation values of the model get closer of the expectation values of the data.</p>
+
 <!-- Second Section  4.3  -->
   <a class="marker" href="#section-4.3" id="section-4.3"><span>Retrieving with and without Temperature</span></a>
-<h3 id="the-hopfield-network">Retrieving with and without Temperature</h3>
-<p>Learning and memorizing in energy based models is nothing else than minimizing the energies of wanted configurations and avoiding to have energy minimas for unwanted configurations.
-In the ideal case that every configuration that we want to learn or  memorize occupies a local energy minimum, other configurations will always equilibrate to their next local minimum and therefore
-we always will recover a configuration that is part of the training data.</p>
+  <h3 id="the-hopfield-network">Retrieving with and without Temperature</h3>
+  <p>Learning and memorizing in energy-based models is nothing else than minimizing the energies of wanted configurations and avoiding to have energy minimas for unwanted configurations.
+  In the ideal case that every configuration that we want to learn or  memorize occupies a local energy minimum, other configurations will always equilibrate to their next local minimum and therefore
+  we always will recover a configuration that is part of the training data.</p>
+
 <!-- Second Section  4.3  -->
   <a class="marker" href="#section-4.3" id="section-4.3"><span>Hopfield</span></a>
-<h3 id="the-hopfield-network">The Hopfield network</h3>
-<p>The Hopfield network <d-cite key= "Hopfield1982NeuralNA"></d-cite> is a so called associative memory network, which does not learn patterns and generalise them to new ones, it only memorises the training data and can retrieve it. The Hopfield network has exact the same energy function <d-math>E(\vec {\sigma}) = -\sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i</d-math> as the BM, but the nodes are not activated probabilistically, they follow the deterministic update rule
+  <h3 id="the-hopfield-network">The Hopfield network</h3>
 
-<d-math block>\sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\text{if }}\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\text{otherwise,}}\end{array}}\right.</d-math>
+  <p>The Hopfield network <d-cite key= "Hopfield1982NeuralNA"></d-cite> is a so called associative memory network, which does not learn patterns and generalise them to new ones, it only memorises the training data and can retrieve it. The Hopfield network has exact the same energy function <d-math>E(\vec {\sigma}) = -\sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i</d-math> as the BM, but the nodes are not activated probabilistically, they follow the deterministic update rule
 
-which can be interpreted as a Ising model at zero temperature, because this way a random input configuration <d-math>\vec{\sigma}</d-math> will always converge to the next local minimum. No fluctuations because of temperature will occur. The “training” of a Hopfield network is also deterministic and we update the weight matrix according to the Hebbian learning rule <d-cite> </d-cite> which is simply the outer product of the <d-math>n</d-math> input vectors <d-math>\{ \vec{\sigma}^{\alpha}\}_{\alpha}^n</d-math> that have to be memorised. Therefore the weights <d-math>W = \sum_{\alpha}^n( (\vec{\sigma}^{\alpha})^T \vec{\sigma}^{\alpha} - \mathbb{1}) </d-math>, which can be written as an update rule <d-math>w_{i,j} \leftarrow \sum_{\alpha}^n \sigma_i^{\alpha} \sigma_j^{\alpha}, \forall~i \neq j</d-math> , the subtraction of the identity matrix takes care that the nodes are not connected with themselves. The average over all the data instances <d-math>\alpha</d-math> is also often written as <d-math>\langle \sigma_i \sigma_j \rangle_{\text{Data}}</d-math>. This weight matrix leads to a energy landscape where each training vector is exactly a local minimum. And if we feed a slight variation of one of the input vectors into the network, the update rule will make them converge to the configuration that is associated with the closest energy minimum. The memory capacity of Hopfield networks is very limited and the more data we want to memorize, the higher is the chance to get so called spurious minima. These are local energy minima which minimize the energy for configurations that are not part of the training and therefore will lead to wrong memories. A very nice introduction into Hopfield networks, Hebbian learning and why spurious minima appear can be found here <d-footnote> Hebbian learning from page 354, <a href="http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf">http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf</a></d-footnote></p>
-<p>In <d-cite key="hopfield1983unlearning"></d-cite> Hopfield studied the effect of “unlearning” on the performance of Hopfield networks. They found that "unlearning" can help to get rid of supurous minima and therefore has a stabilizing effect on the memory of such a network. For unlearning we expand the update rule <d-math>w_{i,j} \leftarrow \langle \sigma_i \sigma_j \rangle_{\text{Data}}</d-math> to <d-math>w_{i,j} \leftarrow \langle \sigma_i \sigma_j \rangle_{\text{Data}} - \epsilon \langle \sigma_i' \sigma_j' \rangle</d-math>. To obtain <d-math>\vec{\sigma}'</d-math>, the network is initialized in a random configuration <d-math>\vec{\sigma}</d-math> and the nodes are updated according to the update rule Eq. <d-footnote>Hopfield update rule <d-math> \sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\text{if }}\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\text{otherwise,}}\end{array}}\right.</d-math></d-footnote> until the network equilibrates to <d-math>\vec{\sigma}'</d-math>. Therefore the configuration <d-math>\vec{\sigma}'</d-math> is a local minimum of the energy landscape and the term <d-math>- \epsilon \langle \sigma_i' \sigma_j' \rangle</d-math> increases the energy of this minimum by a small factor <d-math>\epsilon<1</d-math>. This plays against the first term of the update rule <d-math>\langle \sigma_i \sigma_j \rangle_{\text{Data}}</d-math> which minimizes the energies of the data inputs. But in the end the interplay of these two terms decreases the occurence of spurous minima.</p>
+  <d-math block>\sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\text{if }}\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\text{otherwise,}}\end{array}}\right.</d-math>
 
-<p>
-Later when we discuss the learming procedure of BM we will introduce a new terminology for the learning and the unlearning term. For BM these two terms are often referred to as the positive and the negative phase of the update rule.
-</p>
+  which can be interpreted as a Ising model at zero temperature, because this way a random input configuration <d-math>\vec{\sigma}</d-math> will always converge to the next local minimum. No fluctuations because of temperature will occur. The “training” of a Hopfield network is also deterministic and we update the weight matrix according to the Hebbian learning rule <d-cite> </d-cite> which is simply the outer product of the <d-math>n</d-math> input vectors <d-math>\{ \vec{\sigma}^{\alpha}\}_{\alpha}^n</d-math> that have to be memorised. Therefore the weights <d-math>W = \sum_{\alpha}^n( (\vec{\sigma}^{\alpha})^T \vec{\sigma}^{\alpha} - \mathbb{1}) </d-math>, which can be written as an update rule <d-math>w_{i,j} \leftarrow \sum_{\alpha}^n \sigma_i^{\alpha} \sigma_j^{\alpha}, \forall~i \neq j</d-math> , the subtraction of the identity matrix takes care that the nodes are not connected with themselves. The average over all the data instances <d-math>\alpha</d-math> is also often written as <d-math>\langle \sigma_i \sigma_j \rangle_{\text{Data}}</d-math>. This weight matrix leads to a energy landscape where each training vector is exactly a local minimum. And if we feed a slight variation of one of the input vectors into the network, the update rule will make them converge to the configuration that is associated with the closest energy minimum. The memory capacity of Hopfield networks is very limited and the more data we want to memorize, the higher is the chance to get so called spurious minima. These are local energy minima which minimize the energy for configurations that are not part of the training and therefore will lead to wrong memories. A very nice introduction into Hopfield networks, Hebbian learning and why spurious minima appear can be found here <d-footnote> Hebbian learning from page 354, <a href="http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf">http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf</a></d-footnote></p>
+
+  <p>In <d-cite key="hopfield1983unlearning"></d-cite> Hopfield studied the effect of “unlearning” on the performance of Hopfield networks. They found that "unlearning" can help to get rid of supurous minima and therefore has a stabilizing effect on the memory of such a network. For unlearning we expand the update rule <d-math>w_{i,j} \leftarrow \langle \sigma_i \sigma_j \rangle_{\text{Data}}</d-math> to <d-math>w_{i,j} \leftarrow \langle \sigma_i \sigma_j \rangle_{\text{Data}} - \epsilon \langle \sigma_i' \sigma_j' \rangle</d-math>. To obtain <d-math>\vec{\sigma}'</d-math>, the network is initialized in a random configuration <d-math>\vec{\sigma}</d-math> and the nodes are updated according to the update rule Eq. <d-footnote>Hopfield update rule <d-math> \sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\text{if }}\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\text{otherwise,}}\end{array}}\right.</d-math></d-footnote> until the network equilibrates to <d-math>\vec{\sigma}'</d-math>. Therefore the configuration <d-math>\vec{\sigma}'</d-math> is a local minimum of the energy landscape and the term <d-math>- \epsilon \langle \sigma_i' \sigma_j' \rangle</d-math> increases the energy of this minimum by a small factor <d-math>\epsilon<1</d-math>. This plays against the first term of the update rule <d-math>\langle \sigma_i \sigma_j \rangle_{\text{Data}}</d-math> which minimizes the energies of the data inputs. But in the end the interplay of these two terms decreases the occurence of spurous minima.</p>
+
+  <p>Later when we discuss the learming procedure of BM we will introduce a new terminology for the learning and the unlearning term. For BM these two terms are often referred to as the positive and the negative phase of the update rule.</p>
 
   <div class="row">
-
   <div class="column">
   <p class="slider-label-text">Learning and unlearning</p>
   <p class="figure-text">A learning step decreases the energy of the configurations, which we want to learn.</p>
@@ -442,31 +410,26 @@ Later when we discuss the learming procedure of BM we will introduce a new termi
     <input id="learn_button_id" type="button" value="Reinitialize" onclick="reinitialize_phase()">
     <p class="figure-text">This figure shows how learning and unlearning changes the energy landscape.</p>
   </div>
-
   <div class="doublecolumn">
     <figure style = "width:100%; height:300px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
   <div id = "energy_landscape_figure_id" style="width:100%, height:100%, position:absolute; left:0px; top:0px"></div>
   </figure>
   <script type = "text/javascript" src = "energy_landscape.js" ></script>
-
   </div>
-
-</div>
-
-
+  </div>
 
 <!-- Second Section  4.4  -->
   <a class="marker" href="#section-4.4" id="section-4.4"><span>Finite Temperature</span></a>
-<h3 id="the-ising-model-in-finite-temperature">The Ising model in finite temperature and the Boltzmann machine</h3>
+  <h3 id="the-ising-model-in-finite-temperature">The Ising model in finite temperature and the Boltzmann machine</h3>
 
-<p> In this section we finally go to finite temperature models and we set <d-math>T=1 </d-math>. Therefore the model is not deterministic anymore and all the configurations can occur with a certain probability.
-We will show that as long as  hidden units are not available it is hard or even impossible to learn more complex configuraten. There are several simple examples of datasets that are not learnable by a finite temperature Ising model without hidden units. One of them is the logical XOR gate that has the configurations (-1-1-1, -111, 1-11, 11-1). (ADD REF <d-footnote> Hebbian learning from page 354, <a href="http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf">http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf</a></d-footnote>
-It is not possible to make these four configurations low energy, while all other configurations are at high energy. To avoid this problem one can add a "dummy" spin that can be in an arbitrary state, which we simply do not consider as a result. The states (-1-1-11, -1111, 1-111, 111-1) are learnable and if we consider the first 3 spins our "data" we learned an XOR gate.
-</p>
-<p> In the figure below is a fully functional Ising model with <d-math>T=1 </d-math> where we can add hidden nodes and also make it restricted. Try to make the "Bars and Stripes" images maximally likely by adjusting the weights and biases. You will see that this task is impossible if you don't have hidden units.
-</p>
-<div class="row">
+  <p> In this section we finally go to finite temperature models and we set <d-math>T=1 </d-math>. Therefore the model is not deterministic anymore and all the configurations can occur with a certain probability.
+  We will show that as long as  hidden units are not available it is hard or even impossible to learn more complex configuraten. There are several simple examples of datasets that are not learnable by a finite temperature Ising model without hidden units. One of them is the logical XOR gate that has the configurations (-1-1-1, -111, 1-11, 11-1). (ADD REF <d-footnote> Hebbian learning from page 354, <a href="http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf">http://page.mi.fu-berlin.de/rojas/neural/chapter/K13.pdf</a></d-footnote>
+  It is not possible to make these four configurations low energy, while all other configurations are at high energy. To avoid this problem one can add a "dummy" spin that can be in an arbitrary state, which we simply do not consider as a result. The states (-1-1-11, -1111, 1-111, 111-1) are learnable and if we consider the first 3 spins our "data" we learned an XOR gate.
+  </p>
 
+  <p> In the figure below is a fully functional Ising model with <d-math>T=1 </d-math> where we can add hidden nodes and also make it restricted. Try to make the "Bars and Stripes" images maximally likely by adjusting the weights and biases. You will see that this task is impossible if you don't have hidden units.</p>
+
+  <div class="row">
   <div class="column">
   <p id="weight_slider_text" class="slider-label-text">Weight</p>
   <p id="weight_slider_value" class="slider-label-number"></p>
@@ -478,194 +441,88 @@ It is not possible to make these four configurations low energy, while all other
   <input type="checkbox" onclick="change_layout()" id="hidden_check" name="hidden_check"
          checked>
   <label for="hidden_check">Allow hidden units</label>
-</div>
-
-<div>
+  </div>
+  <div>
   <input type="checkbox" id="restricted_check" name="restricted_check">
   <label for="restricted_check">Make it restricted</label>
-</div>
   </div>
-
+  </div>
   <div class="doublecolumn">
     <p class="slider-label-text">Unnormalized Probability </p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
   <div id = "RBM_complete_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   <script type = "text/javascript" src = "RBM_complete_new.js" ></script>
-
   </div>
+  </div>
+  <div class="triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
+  For this you have to adjust the weights and biases by clicking on the conections and the biases and adjust them with the slider.
+  The color of the nodes indicates in which direction the spins are. This can help you to find the weights for a certain configurations and make its energy high or low. Remember that the wanted configurations should be low energy. And all the others should be higher energy. A way to find the solution for this task is to set the spins of the model to a B&S configuration and make its energy as small as possible. Then change to another B&S configuration and repeat. You will figure out eventually how you "learn" the weights. If you want to have a working solution, click the solution button.</p></div>
 
-</div>
-<div class="triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
-For this you have to adjust the weights and biases by clicking on the conections and the biases and adjust them with the slider.
-The color of the nodes indicates in which direction the spins are. This can help you to find the weights for a certain configurations and make its energy high or low. Remember that the wanted configurations should be low energy. And all the others should be higher energy. A way to find the solution for this task is to set the spins of the model to a B&S configuration and make its energy as small as possible. Then change to another B&S configuration and repeat. You will figure out eventually how you "learn" the weights. If you want to have a working solution, click the solution button.</p></div>
+  <p>Learning certain configurations means that the model parameters have to be adjusted in a way that the model distribution fits the target distribution. This task can be very demanding because all the parameters influence each other and a small change in the wrong direction can influence the probability distribution strongly. In real-world applications of RBMs therefore each training step or parameter update only makes small adjustments.</p>
 
-<p>Learning certain configurations means that the model parameters have to be adjusted in a way that the model distribution fits the target distribution. This task can be very demanding because all the parameters influence each other and a small change in the wrong direction can influence the probability distribution strongly. In real-world applications of RBMs therefore each training step or parameter update only makes small adjustments.</p>
-<p>More complex target distribution cannot be approximated without hidden nodes. To only use a Ising system to model data, where every spin represents a data point, will not be sufficient. A much more expressive model is the Boltzmann machine, where we start to distinguish between visible and hidden spin variables. On first glance there is no difference between the two models except the name of the nodes. But the crucial point is that only the visible units are used to represent data. The hidden units are only there to increase the space of possible configurations and their state will be ignored in the end. This way we can increase the expressivity of the model.</p>
+  <p>More complex target distribution cannot be approximated without hidden nodes. To only use a Ising system to model data, where every spin represents a data point, will not be sufficient. A much more expressive model is the Boltzmann machine, where we start to distinguish between visible and hidden spin variables. On first glance there is no difference between the two models except the name of the nodes. But the crucial point is that only the visible units are used to represent data. The hidden units are only there to increase the space of possible configurations and their state will be ignored in the end. This way we can increase the expressivity of the model.</p>
+
 <!-- Second Section  4.5  -->
   <a class="marker" href="#section-4.5" id="section-4.5"><span>RBM</span></a>
-<h3 id="r-bm-and-sampling">Restricted Models</h3>
+  <h3 id="r-bm-and-sampling">Restricted Models</h3>
 
-<p>As already discussed before, in physics equilibration occurs naturally and if we could implement a Boltzmann machine as a real system we could use the learning-unlearning approach to train the model, because it is actually possible to sample from it. A numerical implementation of a BM on the other side does not allow us to sample from it. The problem is relatively simple: If a random initial configuration <d-math> \vec{\sigma} </d-math>is given, we have to update the spins to get to minimum energy. But if we update a single spin the probabilities for all the other spins to be in a certain direction might change drastically. To equilibrate such a system one would have to update the spins many times one after another and even then there is no gurantee to equilibrate.
-Therefore it is almost impossible to equilibrate to minimum energy if we numerically update spin after spin.
-To overcome this problem the restricted Boltzmann machine has been introduced. The idea here was, if we only allow couplings between the layers and not within the same layer, the probabilities of the single nodes of one layer become independent e.g. for the visible nodes <d-math>p(\vec{v}| \vec{h}) = \prod_i p(v_i | \vec{h}) </d-math>. This allows us to update a whole layer <d-math> \vec{v}</d-math> at a time only dependent on the other layer <d-math> \vec{h}</d-math> and vice versa.. Furthermore, so far we assumed that we have access to the probability distribution of the energy based model <d-math>p(x, \theta)</d-math> or for BM <d-math>p(v,h, \theta)</d-math> and the data <d-math>p(v)</d-math>. But in general this is not true because the partition function <d-math>Z(\theta)</d-math> is not tractable for systems of the size <d-math>N>20</d-math>. Therefore to compare the statistics of the data with the statistics of the model we need to be able to approximate these distributions. For the data this is relatively simple, because we can just average over some data instances, for example over batches. To approximate the model distribution we need configurations that come from the model itself. For a real physical system we therefore would set the parameters of the model, initialize some spin configuration and wait until it equilibrates. We would repeat this step and take many configurations and compare them to the data. Unfortunately we cannot simulate these equilibration dynamics on a computer, because they are computationally very demanding. What we can do is Gibbs sampling. To avoid this problem the graph of the BM can be made bipartite, which means that we separate the nodes in a visible and a hidden layer and don’t allow inter-layer connections. This architecture is called “Restricted Boltzmann Machine”. With this simple trick the conditional probabilities <d-math>p(\vec{v}|\vec{h})</d-math> and <d-math>p(\vec{h}|\vec{v})</d-math> marginalize and therefore we can sample each node of a layer independent of the other nodes of the same layer.</p>
-<p>The question that now remains is how can we efficiently adjust the parameters? Can we somehow derive an update rule simply by comparing the samples from the model with the data? The answer is yes and it is known under the name Contrastive Divergence. If we use the update rule <d-math>W \rightarrow W - \Delta W</d-math> for gradient descent the update rule of CD is:
+  <p>As already discussed before, in physics equilibration occurs naturally and if we could implement a Boltzmann machine as a real system we could use the learning-unlearning approach to train the model, because it is actually possible to sample from it. A numerical implementation of a BM on the other side does not allow us to sample from it. The problem is relatively simple: If a random initial configuration <d-math> \vec{\sigma} </d-math>is given, we have to update the spins to get to minimum energy. But if we update a single spin the probabilities for all the other spins to be in a certain direction might change drastically. To equilibrate such a system one would have to update the spins many times one after another and even then there is no gurantee to equilibrate.
+  Therefore it is almost impossible to equilibrate to minimum energy if we numerically update spin after spin.
+  To overcome this problem the restricted Boltzmann machine has been introduced. The idea here was, if we only allow couplings between the layers and not within the same layer, the probabilities of the single nodes of one layer become independent e.g. for the visible nodes <d-math>p(\vec{v}| \vec{h}) = \prod_i p(v_i | \vec{h}) </d-math>. This allows us to update a whole layer <d-math> \vec{v}</d-math> at a time only dependent on the other layer <d-math> \vec{h}</d-math> and vice versa.. Furthermore, so far we assumed that we have access to the probability distribution of the energy-based model <d-math>p(x, \theta)</d-math> or for BM <d-math>p(v,h, \theta)</d-math> and the data <d-math>p(v)</d-math>. But in general this is not true because the partition function <d-math>Z(\theta)</d-math> is not tractable for systems of the size <d-math>N>20</d-math>. Therefore to compare the statistics of the data with the statistics of the model we need to be able to approximate these distributions. For the data, this is relatively simple, since we can average over some data instances, for example over batches. On the other hand, to approximate the model distribution, we need configurations that come from the model itself. For a real physical system we therefore would set the parameters of the model, initialize some spin configuration and wait until it equilibrates. We would repeat this step and take many configurations and compare them to the data. Unfortunately we cannot simulate these equilibration dynamics on a computer because it is computationally intractable. What we can do is a Monte Carlo method called Gibbs sampling. To avoid this problem the graph of the BM can be made bipartite, which means that we separate the nodes in a visible and a hidden layer and don’t allow inter-layer connections. This architecture is called “Restricted Boltzmann Machine”. With this simple trick the conditional probabilities <d-math>p(\vec{v}|\vec{h})</d-math> and <d-math>p(\vec{h}|\vec{v})</d-math> marginalize and therefore we can sample each node of a layer independent of the other nodes of the same layer.</p>
 
-<d-math block>\Delta W_{i,j} = \langle \frac{ \partial E}{\partial W_{i,j}} \rangle_{\text{Data}} - \langle \frac{\partial E}{\partial W_{i,j}} \rangle_{p_{\theta}} </d-math>
+  <p>The question that now remains: how can we efficiently adjust the parameters? Can we derive an update rule simply by comparing the samples from the model with the data? The answer is yes and it is known under the name Contrastive Divergence. If we use the update rule <d-math>W \rightarrow W - \Delta W</d-math> for gradient descent the update rule of CD is:
 
-If the energy is given by <d-math>E(v,h) = \sum_{i,j} W_{i,j} v_i h_j </d-math> (<strong>sometimes there is a minus sign in front of the sum, which changes the direction</strong>).</p>
-<p>
+  <d-math block>\Delta W_{i,j} = \langle \frac{ \partial E}{\partial W_{i,j}} \rangle_{\text{Data}} - \langle \frac{\partial E}{\partial W_{i,j}} \rangle_{p_{\theta}} </d-math>
 
+  If the energy is given by <d-math>E(v,h) = \sum_{i,j} W_{i,j} v_i h_j </d-math> (<strong>sometimes there is a minus sign in front of the sum, which changes the direction</strong>).</p>
 
-
-<!-- <figure style = "width:100%; height:600px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
+  <!-- <figure style = "width:100%; height:600px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
   <div id = "RBM_complete_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
 
   <script type = "text/javascript" src = "figures/RBM_complete.js" ></script>
   -->
 
-<a class="marker" href="#section-4.6" id="section-4.6"><span>Contrastive Divergenze</span></a>
-<h3 id="r-bm-and-sampling">Contrastive Divergenze</h3>
-<p>Contrastive Divergenze (Cite Hinton) made it possible to train RBMs efficiently. In the original paper the authors explain the CD-algorithm from the following perspective. We would like to model the probability distribution of our data <d-math>p(x) </d-math> with a RBM which is nothing else than a parameterized probability function <d-math> p(x, \theta) </d-math>. Therefore during the training we want to make these two probability distributions as similar as possible. This similarity can be measured by the Kullback-Leibder divergence <d-math> KL(p(x)|p(x, \theta)) = \log(p(x)) \frac{p(x)}{p(x,\theta)} </d-math>. So in the end what we do is stochastic gradient descent with respect to the parameter <d-math> \theta </d-math>. I f we perform the derivatives we find the update rule of the CD-algorithm.
-<d-math block> \Delta W_{i,j} = \langle v_i h_j\rangle_{\text{Data}} - \langle v_i h_j\rangle_{\text{Model}}</d-math>
-Which is exactly the same update rule as already introduced by Hofield with the learning and the unlearning term. The only difference is that there are visible and  hidden units involved and that the same kind of units are not connected. Therefore terms like <d-math>\langle v_i v_j \rangle = 0</d-math>.
-But the intuition behind the CD algorithm is exactly the same. The learning term, <d-math> \langle v_i h_j\rangle_{\text{Data}}</d-math> which for BM is mostly referred to as the positive phase decreases the energy of the configurations of the training data. And the unlearning term <d-math> \langle v_i h_j\rangle_{\text{Model}}</d-math>, which is often referred to as the negative phase, increases the energy of all the configurations that are at equilibrium and therefore at low energy.
-</p>
+  <a class="marker" href="#section-4.6" id="section-4.6"><span>Contrastive Divergence</span></a>
+  <h3 id="r-bm-and-sampling">Contrastive Divergence</h3>
 
-
+  <p>Contrastive Divergence (Cite Hinton) made it possible to train RBMs efficiently. In the original paper the authors explain the CD-algorithm from the following perspective. We would like to model the probability distribution of our data <d-math>p(x) </d-math> with a RBM which is nothing else than a parameterized probability function <d-math> p(x, \theta) </d-math>. Therefore during the training we want to make these two probability distributions as similar as possible. This similarity can be measured by the Kullback-Leibder divergence <d-math> KL(p(x)|p(x, \theta)) = \log(p(x)) \frac{p(x)}{p(x,\theta)} </d-math>. So in the end what we do is stochastic gradient descent with respect to the parameter <d-math> \theta </d-math>. If we calculate the derivatives, we find the update rule of the CD algorithm.
+  <d-math block> \Delta W_{i,j} = \langle v_i h_j\rangle_{\text{Data}} - \langle v_i h_j\rangle_{\text{Model}}</d-math>
+  Which is exactly the same update rule as already introduced by Hofield with the learning and the unlearning term. The only difference is that there are visible and  hidden units involved and that the same kind of units are not connected. Therefore terms like <d-math>\langle v_i v_j \rangle = 0</d-math>.
+  But the intuition behind the CD algorithm is exactly the same. The learning term, <d-math> \langle v_i h_j\rangle_{\text{Data}}</d-math> which for BM is mostly referred to as the positive phase decreases the energy of the configurations of the training data. And the unlearning term <d-math> \langle v_i h_j\rangle_{\text{Model}}</d-math>, which is often referred to as the negative phase, increases the energy of all the configurations that are at equilibrium and therefore at low energy.
+  </p>
 
   <h2>Training: the update rule for energy-based models<strong>[Work-in-progress]</strong></h2>
 
-    <p>How can we train energy-based models to generate good samples? The common starting point is to begin with a mathematically motivated cost function, e.g., the Kullback-Leiber divergence or the log-likelihood, which represents how probable it is for the model to produce samples which are in a target distribution. The gradient of this cost formula is taken, and, after some manipulation, one arrives at a specific analytic formula which provides a first-order update rule for the model's parameters. If the energy function is <d-math>E(x) = \sum_i \theta_i x_i</d-math>, with the
-    parameters of the model given by <d-math>\theta</d-math> <strong>[NB: for now, ignoring hidden/visible or RBM distinction]</strong>, and <d-math>\eta</d-math> is some chosen learning rate, then the update rule has the compact form
-    </p>
-    <d-math block>\theta_i\rightarrow\theta_i + \eta \left[\langle x_i \rangle_{\mathrm{data}} - \langle x_i\rangle_{\mathrm{model}}\right].</d-math>
-    <p>
-    In this update rule, averages <d-math>\langle\cdots\rangle </d-math> of the quantities <d-math>x_i</d-math> are taken with respect to both the data distribution (i.e., by averaging these values in the training dataset) and the distribution produced by the model (this is usually estimated by sampling from the model a finite number of times). After each step of gradient descent, these expectation values should get more and more similar to the corresponding values from the data distribution.
-    </p>
-
-    <p>Rather than deriving this equation, as is done in many other treatments, we will instead try to give some physical intuition about it, in particular how it relates to equilibrium. Our starting point will be to picture both our model and the training data as physical systems. The identification of binary variables with physical spins is common, but a number of other physical systems can also provide good intuition, like the particles in a room. These systems (the dataset and the model) can take many possible configurations. Each configuration <d-math>x</d-math> has an an associated energy <d-math>E(x)</d-math>. In physics, the probability of observing a particular configuration of a system (e.g., all the spins aligned upwards, or all the gases condensed in one corner of the room) is proportional to the energy of that configuration.
-    </p>
-
-    <p>
-    In textbook physics (as encountered in a high-school curriculum, for instance), energy is the product of <i>force</i> and <i>position</i>: <d-math>E = F\times x</d-math>. For example, the gravitational force felt on Earth is equal to <d-math>F=mg</d-math>, and position is measured by the height <d-math>h</d-math> from the surface. The energy associated to gravity is thus given by the product <d-math>E = mgh</d-math>. If we want to change the position of an object, we need to apply an upwards force which counteracts the force of gravity. This will generate changes in position. Conveniently, we can often break down energy into a product of so-called <i>conjugate variables</i>, analogous to a force and a position, even if the quantities are physically nothing like forces or positions. These quantities have the official-sounding names of <i>generalized forces</i> and <i>generalized coordinates</i> (or generalized displacements). The only real intuition we need is that generalized forces drive changes in the values of generalized coordinates (like a force is needed to move an object against gravity). One example of a conjugate variable pair is the pressure and volume of an enclosed gas. Changes in pressure <d-math>p</d-math> drive changes in volume <d-math>V</d-math> (like blowing up a balloon or expanding a piston). Pressure thus has the role of a generalized force, and volume that of a generalized coordinate, with the associated energy being their product <d-math>E=pV</d-math>. More generally, an energy function can be built up from a number of distinct generalized force/coordinate pairs <d-math>E = \sum_i F_i q_i</d-math>.
-    </p>
-
-    <p>
-    Now we connect back to the energy-based models described above. We can generically write the energy functions of these models as <d-math>E(x) = \sum_i \theta_i x_i</d-math>, where the parameters <d-math>\theta_i</d-math> are the weights and biases of the model and <d-math>x_i</d-math> contain the random variables (the visible units, the hidden units, and their products). This energy function has the same form as discussed above. Specifically, we will identify the model parameters (the <d-math>\theta_i</d-math>) as the coordinates, and the random variables (the <d-math>x_i</d-math>) with the forces (for compactness, we drop the word 'generalized' in the remaining discussions).
-    </p>
-
-    <p>
-    Still needed: introduce external systems; these also provide a force onto the system, giving changes to coordinates. In principle, system pushes on environment and environment pushes on system; however, environment is so large that the change in it's coordinates is typically not noticeable (e.g., standing on the Earth's surface does not move the Earth any noticable amount). The generalized forces from large external systems thus do not change, and provide a steady baseline. This are represented by the expectation values <d-math>\langle x_i \rangle_{\mathrm{data}}</d-math>.
-    </p>
-
-    <p>
-    Still needed: discuss how to mimic the evolution of a system subject to forces as part of our training procedure. For small time steps, the coordinates of the system change in response to the all forces. Eventually, we want the coordinates to settle on a steady value. This is an equilibrium point, where all forces counterbalance eachother. It is at this point where all expectation values are equal <d-math>\langle x_i \rangle_{\mathrm{data}} = \langle x_i \rangle_{\mathrm{model}}</d-math>, and the parameter updates go to zero. This also means that the sufficient statistics of our model (the expectation values) match the corresponding values from the external dataset. If our energy-based model is flexible enough to capture the true distribution, then these statistics are indeed sufficient.
-    </p>
-
-
-  <h2>A Brief Survey of Techniques</h2>
-
-  <p>Before diving in: if you haven’t encountered t-SNE before, here’s what you need to know about the math behind it. The goal is to take a set of points in a high-dimensional space and find a faithful representation of those points in a lower-dimensional space, typically the 2D plane. The algorithm is non-linear and adapts to the underlying data, performing different transformations on different regions. Those differences can be a major source of confusion.
+  <p>How can we train energy-based models to generate good samples? The common starting point is to begin with a mathematically motivated cost function, e.g., the Kullback-Leiber divergence or the log-likelihood, which represents how probable it is for the model to produce samples which are in a target distribution. The gradient of this cost formula is taken, and, after some manipulation, one arrives at a specific analytic formula which provides a first-order update rule for the model's parameters. If the energy function is <d-math>E(x) = \sum_i \theta_i x_i</d-math>, with the
+  parameters of the model given by <d-math>\theta</d-math> <strong>[NB: for now, ignoring hidden/visible or RBM distinction]</strong>, and <d-math>\eta</d-math> is some chosen learning rate, then the update rule has the compact form
   </p>
 
-  <p>This is the first paragraph of the article. Test a long&thinsp;&mdash;&thinsp;dash -- here it is.
+  <d-math block>\theta_i\rightarrow\theta_i + \eta \left[\langle x_i \rangle_{\mathrm{data}} - \langle x_i\rangle_{\mathrm{model}}\right].</d-math>
+
+  <p>In this update rule, averages <d-math>\langle\cdots\rangle </d-math> of the quantities <d-math>x_i</d-math> are taken with respect to both the data distribution (i.e., by averaging these values in the training dataset) and the distribution produced by the model (this is usually estimated by sampling from the model a finite number of times). After each step of gradient descent, these expectation values should get more and more similar to the corresponding values from the data distribution.
   </p>
 
-  <p>Test for owner's possessive. Test for "quoting a passage." And another sentence. Or two. Some flopping fins; for diving.
+  <p>Rather than deriving this equation, as is done in many other treatments, we will instead try to give some physical intuition about it, in particular how it relates to equilibrium. Our starting point will be to picture both our model and the training data as physical systems. The identification of binary variables with physical spins is common, but a number of other physical systems can also provide good intuition, like the particles in a room. These systems (the dataset and the model) can take many possible configurations. Each configuration <d-math>x</d-math> has an an associated energy <d-math>E(x)</d-math>. In physics, the probability of observing a particular configuration of a system (e.g., all the spins aligned upwards, or all the gases condensed in one corner of the room) is proportional to the energy of that configuration.
   </p>
 
-  <aside>Some text in an aside, margin notes, etc...</aside>
-
-  <p>Here's a test of an inline equation <d-math>c = a^2 + b^2</d-math>. Also with configurable katex standards just using inline '$' signs: $$x^2$$ And then there's a block equation:
+  <p>In textbook physics, energy is the product of <i>force</i> and <i>position</i>: <d-math>E = F\times x</d-math>. For example, the gravitational force felt on Earth is equal to <d-math>F=mg</d-math>, and position is measured by the height <d-math>h</d-math> from the surface. The energy associated to gravity is thus given by the product <d-math>E = mgh</d-math>. If we want to change the position of an object, we need to apply an upwards force which counteracts the force of gravity. This will generate changes in position. Conveniently, we can often break down energy into a product of so-called <i>conjugate variables</i>, analogous to a force and a position, even if the quantities are physically nothing like forces or positions. These quantities have the official-sounding names of <i>generalized forces</i> and <i>generalized coordinates</i> (or generalized displacements). The only real intuition we need is that generalized forces drive changes in the values of generalized coordinates (like a force is needed to move an object against gravity). One example of a conjugate variable pair is the pressure and volume of an enclosed gas. Changes in pressure <d-math>p</d-math> drive changes in volume <d-math>V</d-math> (like blowing up a balloon or expanding a piston). Pressure thus has the role of a generalized force, and volume that of a generalized coordinate, with the associated energy being their product <d-math>E=pV</d-math>. More generally, an energy function can be built up from a number of distinct generalized force/coordinate pairs <d-math>E = \sum_i F_i q_i</d-math>.
   </p>
 
-  <d-math block>
-    c = \pm \sqrt{ \sum_{i=0}^{n}{a^{222} + b^2}}
-  </d-math>
+  <p>Now we connect back to the energy-based models described above. We can generically write the energy functions of these models as <d-math>E(x) = \sum_i \theta_i x_i</d-math>, where the parameters <d-math>\theta_i</d-math> are the weights and biases of the model and <d-math>x_i</d-math> contain the random variables (the visible units, the hidden units, and their products). This energy function has the same form as discussed above. Specifically, we will identify the model parameters (the <d-math>\theta_i</d-math>) as the coordinates, and the random variables (the <d-math>x_i</d-math>) with the forces (for compactness, we drop the word 'generalized').</p>
 
-  <p>
-  Math can also be quite involved:
+  <p>Still needed: introduce external systems; these also provide a force onto the system, giving changes to coordinates. In principle, system pushes on environment and environment pushes on system; however, environment is so large that the change in it's coordinates is typically not noticeable (e.g., standing on the Earth's surface does not move the Earth any noticable amount). The generalized forces from large external systems thus do not change, and provide a steady baseline. This are represented by the expectation values <d-math>\langle x_i \rangle_{\mathrm{data}}</d-math>.
   </p>
 
-  <d-math block>
-    \frac{1}{\Bigl(\sqrt{\phi \sqrt{5}}-\phi\Bigr) e^{\frac25 \pi}} = 1+\frac{e^{-2\pi}} {1+\frac{e^{-4\pi}} {1+\frac{e^{-6\pi}} {1+\frac{e^{-8\pi}} {1+\cdots} } } }
-  </d-math>
-
-  <a class="marker" href="#section-1.1" id="section-1.1"><span>1.1</span></a>
-
-  <h3>Citations</h3>
-
-  <p>
-  <d-slider style="width: 400px;" id="testslider"></d-slider>
+  <p>Still needed: discuss how to mimic the evolution of a system subject to forces as part of our training procedure. For small time steps, the coordinates of the system change in response to the all forces. Eventually, we want the coordinates to settle on a steady value. This is an equilibrium point, where all forces counterbalance eachother. It is at this point where all expectation values are equal <d-math>\langle x_i \rangle_{\mathrm{data}} = \langle x_i \rangle_{\mathrm{model}}</d-math>, and the parameter updates go to zero. This also means that the sufficient statistics of our model (the expectation values) match the corresponding values from the external dataset. If our energy-based model is flexible enough to capture the true distribution, then these statistics are indeed sufficient.
   </p>
 
-  <p>
-  We can<d-cite key="mercier2011humans"></d-cite> also cite <d-cite key="gregor2015draw,mercier2011humans,openai2018charter"></d-cite> external publications. <d-cite key="dong2014image,dumoulin2016guide,mordvintsev2015inceptionism"></d-cite>.
-We should also be testing footnotes<d-footnote>This will become a hoverable footnote. This will become a hoverable footnote. This will become a hoverable footnote. This will become a hoverable footnote. This will become a hoverable footnote. This will become a hoverable footnote. This will become a hoverable footnote. This will become a hoverable footnote.</d-footnote>. There are multiple footnotes, and they appear in the appendix<d-footnote>Given I have coded them right. Also, here's math in a footnote: <d-math>c = \sum_0^i{x}</d-math>. Also, a citation. Box-ception<d-cite key='gregor2015draw'></d-cite>!</d-footnote> as well.
-</p>
+<!-- Second Section  4  -->
+  <a class="marker" href="#section-5" id="section-5"><span>Conclusion</span></a>
+  <h2 id="conclusion">Conclusion</h2>
 
-  <a class="marker" href="#section-2" id="section-2"><span>2</span></a>
-
-  <h2>Displaying code snippets</h2>
-
-  <p>
-  Some inline javascript:<d-code language="javascript">var x = 25;</d-code>. And here's a javascript code block.
-  </p>
-
-  <d-code block language="javascript">
-      var x = 25;
-      function(x){
-        return x * x;
-      }
-  </d-code>
-
-  <p>
-  We also support python.
-  </p>
-  <d-code block language="python">
-    # Python 3: Fibonacci series up to n
-    def fib(n):
-      a, b = 0, 1
-        while a < n:
-          print(a, end=' ')
-          a, b = b, a+b
-  </d-code>
-  <p>And a table</p>
-  <table>
-      <thead>
-        <tr><th>First</th><th>Second</th><th>Third</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>23</td><td>654</td><td>23</td></tr>
-        <tr><td>14</td><td>54</td><td>34</td></tr>
-        <tr><td>234</td><td>54</td><td>23</td></tr>
-      </tbody>
-    </table>
-  <d-figure id="last-figure"></d-figure>
-  <script>
-    const figure = document.querySelector("d-figure#last-figure");
-    const initTag = document.createElement("span");
-    initTag.textContent = "initialized!"
-    figure.appendChild(initTag);
-    figure.addEventListener("ready", function() {
-      const initTag = figure.querySelector("span");
-      initTag.textContent = "ready"
-      console.log('ready')
-    });
-    figure.addEventListener("onscreen", function() {
-      const initTag = figure.querySelector("span");
-      initTag.textContent = "onscreen"
-      console.log('onscreen')
-    });
-    figure.addEventListener("offscreen", function() {
-      const initTag = figure.querySelector("span");
-      initTag.textContent = "offscreen!"
-      console.log('offscreen')
-    });
-  </script>
-  <p>That's it for the example article!</p>
+  <p><b>PW: we should finish the conclusions with a paragraph on how these insights will help develop new energy-based models, e.g., new QBMs, continuous-valued stuff, what-not.</b></p>
 
 </d-article>
 
