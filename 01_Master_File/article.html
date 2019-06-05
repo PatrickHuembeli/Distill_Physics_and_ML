@@ -191,7 +191,7 @@ display: table;
 
   Energy-based models rely on the principle of maximum entropy. From the principle of maximum entropy one obtains the Boltzmann distribution that describes a system at thermal equilibrium at finite temperature.
   The nature of this system will be defined by the choice of the constraints under which we want to maximise the entropy and the sufficiency of their statistics.
-  We will have a brief discussion about energy-based models and the connection of energy and probability which will lead us to the first concrete ML model, the Hopfield network. We will draw the connection of the sampling procedure of these models and how physical system equilibrate. The introduction of hidden and visible units will finally lead us to the Boltzmann machine. We will emphasise why the use of hidden units is beneficial for ML purposes but also what it physically means. And finally we will emphasise the importance of the introduction of a bipartition of the graph of the Boltzmann machine, which is commonly known as a restricted Boltzmann machine.
+  We will have a brief discussion about energy-based models and the connection of energy and probability which will lead us to the first concrete machine learning model, the Hopfield network. We will draw the connection of the sampling procedure of these models and how physical system equilibrate. The introduction of hidden and visible units will finally lead us to the Boltzmann machine. We will emphasise why the use of hidden units is beneficial for machine learning purposes, but also what it physically means. And finally we will emphasise the importance of the introduction of a bipartition of the graph of the Boltzmann machine, which is commonly known as a restricted Boltzmann machine.
 
 <!-- Second Section  2.1  -->
   <a class="marker" href="#section-2.1" id="section-2.1"><span>Maximum Entropy</span></a>
@@ -278,7 +278,7 @@ display: table;
   </figure>
   </div>
   <div class="column">
-    <p class="figure-text">Boltzmann machine: The BM graph is fully connected. The visible nodes (blue) are clamped to the input data. The hidden nodes (yellow) are free parameters.</p>
+    <p class="figure-text">Boltzmann machine: The Boltzmann machine graph is fully connected. The visible nodes (blue) are clamped to the input data. The hidden nodes (yellow) are free parameters.</p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_BM">
   <div id = "architecture_BM_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
@@ -308,7 +308,7 @@ display: table;
   </div>
   <script type = "text/javascript" src = "image_equilibration_script.js" ></script>
 
-  <div class="triplecolumn"><p class="figure-text"><b>Sampling through equilibration:(THE FIGURE STILL HAS TO BE ADAPTED TO THE CAPTION)</b> This figure shows a reszricted Boltzmann machine, where the visible units are initialized (a) randomly (b) in a MNIST digit (c) with a partially damaged MNIST digit. In a restricted BM the equilibration is sequentially, where the hidden and the visible layer is sampled one after another dependend of the configuration of the other layer. The energy during the equilibration process will go to a lower value.</p></div>
+  <div class="triplecolumn"><p class="figure-text"><b>Sampling through equilibration:(THE FIGURE STILL HAS TO BE ADAPTED TO THE CAPTION)</b> This figure shows a restricted Boltzmann machine, where the visible units are initialized (a) randomly (b) in a MNIST digit (c) with a partially damaged MNIST digit. In an RBM, the equilibration is sequentially, where the hidden and the visible layer is sampled one after another dependend of the configuration of the other layer. The energy during the equilibration process will go to a lower value.</p></div>
 
 <!-- Second Section  3.1  -->
   <a class="marker" href="#section-3.1" id="section-3.1"><span>Sampling in physics</span></a>
@@ -331,10 +331,10 @@ display: table;
 
 
 <!-- Second Section  3.2  -->
-  <a class="marker" href="#section-3.2" id="section-3.2"><span>Sampling in ML</span></a>
-  <h3 id="sampling-in-ml">Sampling in ML</h3>
+  <a class="marker" href="#section-3.2" id="section-3.2"><span>Sampling in machine learning</span></a>
+  <h3 id="sampling-in-ml">Sampling in machine learning</h3>
 
-  <p>In ML, we do not have an equilibration process that drives our system into a low energy configuration. We therefore have to simulate this process. But there are several methods how we can imitate this behaviour. To sample from a Hopfield network, we samplet The Boltzmann distribution at zero temperature: the lowest energy is always occupied with 100% probability. Therefore in a potential well, equilibration can only go into the direction of lower energy. Therefore to find a rule of equilibration at zero temperature for a single spin <d-math>\sigma_i</d-math>
+  <p>In machine learning, we do not have an equilibration process that drives our system into a low energy configuration. We therefore have to simulate this process. But there are several methods how we can imitate this behaviour. To sample from a Hopfield network, we samplet The Boltzmann distribution at zero temperature: the lowest energy is always occupied with 100% probability. Therefore in a potential well, equilibration can only go into the direction of lower energy. Therefore to find a rule of equilibration at zero temperature for a single spin <d-math>\sigma_i</d-math>
   we only have to find out which local spin direction is favourable.
   For the given Ising energy function <d-footnote> <d-math>E(\vec {\sigma}) = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i</d-math></d-footnote>, if
   <d-math block> E(\sigma_i=-1) - E(\sigma_i=+1)  \geq 0</d-math>
@@ -353,9 +353,9 @@ display: table;
 <!-- Second Section  4  -->
   <a class="marker" href="#section-4" id="section-4"><span>Training</span></a>
   <h2 id="training">Training</h2>
-   We will show how the contrastive divergence algorithm <d-cite key="carreira-perpinan_contrastive_nodate"></d-cite> naturally follows from Hopfield's ideas of learning and unlearning. We will put this in contrast to the minimization of the Kullback-Leibler (KL) distance that is commonly used in ML literature and finally we offer an alternative interpretation of learning via an equilibration approach.
+   We will show how the contrastive divergence algorithm <d-cite key="carreira-perpinan_contrastive_nodate"></d-cite> naturally follows from Hopfield's ideas of learning and unlearning. We will put this in contrast to the minimization of the Kullback-Leibler (KL) distance that is commonly used in the machine learning literature and finally we offer an alternative interpretation of learning via an equilibration approach.
 
-  <p>If we go back to image of a experimenter standing in front of a physical implementation of a energy function the question now arises: what do we need to train such a system on a given data set? Because, as discussed before, the only thing we can do is sampling from this machine. Therefore training a BM means that we have to adjust the couplings and local fields of a randomly initialized spin model until its configurations show the same distribution as a our training data. For this we have to come up with an update rule for the model parameters simply by comparing the samples with the training data. In this section we will have a deeper look at this procedure.</p>
+  <p>If we go back to image of a experimenter standing in front of a physical implementation of a energy function the question now arises: what do we need to train such a system on a given data set? Because, as discussed before, the only thing we can do is sampling from this machine. Therefore training a Boltzmann machine means that we have to adjust the couplings and local fields of a randomly initialized spin model until its configurations show the same distribution as a our training data. For this we have to come up with an update rule for the model parameters simply by comparing the samples with the training data. In this section we will have a deeper look at this procedure.</p>
 
   <div class="row">
   <div class="column">
