@@ -68,45 +68,6 @@ body {
 }
 
 
-/* Slider Style */
-
-line.track {
-  stroke: #000;
-  stroke-opacity: 0.1;
-  stroke-width: 10px;
-  shape-rendering: crispEdges;
-}
-
-line.track-inset {
-  stroke: #ddd;
-  stroke-width: 8px; /* How thick is slider bar */
-}
-
-line.track, /* make round edges  */
-    .track-inset,
-    .track-overlay {
-  stroke-linecap: round;
-}
-
-line.track-overlay {
-  pointer-events: stroke;
-  stroke-width: 50px;
-  stroke: transparent;
-  cursor: crosshair;
-}
-
-circle.handle {
-  fill: #fff;
-  stroke: #000;
-  stroke-opacity: 0.5;
-  stroke-width: 1.25px;
-}
-
-
-g.ticks {
-  font: 12px sans-serif;
-}
-
 
 /* Plot Style */
 
@@ -146,59 +107,8 @@ g.guides circle {
 }
 
 
-/* Style for 2-level system */
-/* 
-.lines {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 2px;
-}
 
-
-
-
-
-
-
-.mouse_area {
-  opacity: 0;
-}
-.guides {
-  stroke-width: 1px;
-}
-.guides line {
-  stroke: #BBF;
-  shape-rendering: crispEdges;
-}
-.guides circle {
-  fill: #BBF;
-  stroke: #348;
-  opacity: 0.2;
-}
-
-
-.rules line, .rules path {
-  shape-rendering: crispEdges;
-  stroke: #000;
-}
-
-.rules .tick {
-}
-.rules .minor {
-  stroke: #BBB;
-}
-.rules .domain {
-  fill: none;
-}
-
-/* 
-.grid .tick {
-  stroke: #CCC;
-}
- */
-
-.axis {
-  // default styling
+/*.axis {
   fill: none;
   path, line {
     shape-rendering: crispEdges;
@@ -211,5 +121,82 @@ g.guides circle {
   fill: none;
   stroke: #348;
   stroke-width: 3px;
+}*/
+ 
+* {
+box-sizing: border-box;
 }
- */
+
+div.column {
+float: left;
+width: 233px; /*This is 33% of the width in normal scale */
+padding: 10px;
+/*border: 2px solid red;
+border-radius: 5px;
+border-spacing: 15px; */
+}
+
+div.doublecolumn {
+  float: left;
+  width: 466px;
+  padding: 10px;
+ /* border: 2px solid red;
+  border-radius: 5px;
+  border-collapse: separate;
+  border-spacing: 15px;
+*/
+
+}
+
+div.triplecolumn {
+float: left;
+width: 700px;
+padding: 10px;
+/*border: 2px solid black;
+border-radius: 5px;
+ border-spacing: 15px; */
+}
+div.caption-triplecolumn {
+float: left;
+width: 700px;
+padding: 20px;
+border-radius: 14px;
+background-color: rgba(0,0,0,0.01);
+opacity: 1.0;
+/*   border-spacing: 15px; */
+}
+div.row {
+float: left;
+width: 702px;
+padding: 1px;
+border: 0.5px solid lightgrey;
+border-radius: 14px;
+/*   border-spacing: 15px; */
+}
+p.slider-label-text {
+  float: left;
+  width: 50%;
+  padding: 5px;
+  font: 14px sans-serif;
+}
+
+p.slider-label-number {
+  float: left;
+  width: 50%;
+  padding: 5px;
+  font: 14px sans-serif;
+}
+
+.title-text {
+  float: right;
+  width: 50%;
+  padding: 5px;
+  font: 16px sans-serif;
+}
+
+p.figure-text {
+  color: rgba(0,0,0,0.6);
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+}
+

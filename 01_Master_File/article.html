@@ -28,9 +28,9 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1" >
   <meta charset="utf8">
-  <link rel="stylesheet" href="style.css">
+  <link href="style.css" rel="stylesheet" type="text/css">
 </head>
-
+<!--
 <style>
 * {
 box-sizing: border-box;
@@ -99,16 +99,8 @@ border: none;
   font-size: 13px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
 }
+</style> -->
 
-/* Clearfix (clear floats) */
-/*
-.row::after {
-content: "";
-clear: both;
-display: table;
-}
-*/
-</style>
 
 
 <body>
@@ -299,8 +291,13 @@ display: table;
 
   <div class="row">
 
-  <div class="triplecolumn">
-    <p class="figure-text">add some text here</p>
+  <div class="column">
+  <p class="slider-label-text">Learning and unlearning</p>
+  <p class="figure-text">A learning step decreases the energy of the configurations, which we want to learn.</p>
+    <input id="equilibrate_button_id" type="button" value="Equilibration step" onclick="equilibration_step_rbm()">
+    <p class="figure-text">This figure shows how learning and unlearning changes the energy landscape.</p>
+  </div>
+  <div class="doublecolumn">
     <figure style = "width:700px; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_Hopfield">
   <div id = "image_equilibration_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
@@ -439,7 +436,7 @@ display: table;
   <script type = "text/javascript" src = "RBM_complete_new.js" ></script>
   </div>
   </div>
-  <div class="triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
+  <div class="caption-triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
   For this you have to adjust the weights and biases by clicking on the conections and the biases and adjust them with the slider.
   The color of the nodes indicates in which direction the spins are. This can help you to find the weights for a certain configurations and make its energy high or low. Remember that the wanted configurations should be low energy. And all the others should be higher energy. A way to find the solution for this task is to set the spins of the model to a B&S configuration and make its energy as small as possible. Then change to another B&S configuration and repeat. You will figure out eventually how you "learn" the weights. If you want to have a working solution, click the solution button.</p></div>
 
