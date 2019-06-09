@@ -2,7 +2,7 @@ const identity_img_equil = "#image_equilibration_id"
 
 var margin = {right: 50, left: 50}, // position of slider in color field
     width = 700
-    height = 600
+    height = 550
 
 var svg_imgequil = d3.select(identity_img_equil)
     .append("svg")
@@ -30,7 +30,7 @@ var which_number_index = 0 // defines what number is highlighted (0,1 or 9))
 var total_equilibration_steps = 1
 var which_equilibration_step_hidden = 1 // how many equil steps have been done.
 var which_equilibration_step_visible = 1 // how many equil steps have been done.
-
+var max_equilibration_steps = 16
 // This is all for the NN canvas 
 // ---------------------------------------------
 // add foreign object to svg
@@ -71,7 +71,7 @@ var image_nr = [0,1,2,3,4,5,6,7,8]
 main_image = svg_imgequil.append('image')
     .attr('id', 'main_img_big_id')
     .attr('xlink:href', folder_path+folder_nr[0] + images_visible[0] +0+'.jpg')
-    .attr("x", 300)
+    .attr("x", 500)
     .attr("y", 20)
     .attr("width", main_img_width)
     .attr("height", main_img_height)
@@ -135,7 +135,7 @@ images = svg_imgequil.selectAll()
     .enter()
     .append("image")
     .attr('xlink:href', function(d){return folder_path +folder_nr[d]+images_visible[d] +0+'.jpg'})
-    .attr("x", function(d, i){return img_width*i + i*img_margin})
+    .attr("x", function(d, i){return 200+ img_width*i + i*img_margin})
     .attr("y", 20) 
     .attr("width", img_width)
     .attr("height", img_height)
@@ -158,19 +158,25 @@ images = svg_imgequil.selectAll()
 
 
 var hidden_container = svg_imgequil.append("svg")
-    .attr("x", 230)
-    .attr("y", 200)
+    .attr("x", 350)
+    .attr("y", 210)
     .attr("width", 500)
     .attr("height", 500)
     .attr('id','HiddenContainer'); 
     
 var NN_container = svg_imgequil.append("svg")
-    .attr("x", 0)
-    .attr("y", 200)
+    .attr("x", 120)
+    .attr("y", 210)
     .attr("width", 500)
     .attr("height", 800)
     .attr('id','NNContainer'); 
 
+var Energy_Plot_Container = svg_imgequil.append("svg")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 200)
+    .attr("height", 200)
+    .attr('id','NNContainer')
 // Transform compressed image to neural network
 // -----------------------------------------------------------------------------
 // Define global variables
@@ -207,7 +213,7 @@ function equilibration_step_rbm(){
         d3.select('#main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
         d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
         d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+Math.ceil(total_equilibration_steps/2)+'.jpg')
-	if (total_equilibration_steps < 16){
+	if (total_equilibration_steps < max_equilibration_steps){
 	total_equilibration_steps += 1}
 	console.log(total_equilibration_steps)
 	initialize_NN()
@@ -273,6 +279,10 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
         .transition()
         .duration(2000)
         .style("fill", function(d) { return hidden_colors[d[2]]}) 
+
+       circle_energy_equilbration.attr("cx", x_scale_eq_plot(total_equilibration_steps) )
+    		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps].y))
+    		.attr("r", 4)
     }
     else{ // This is for the first run
    
@@ -338,5 +348,60 @@ async function initialize_NN() {
 
 initialize_NN()
 
+// Append Energy Curve
+// The number of datapoints for the graph
+var number_of_steps = max_equilibration_steps*2;
+// The number of actual points for images
+var n_points = 6;
+var margin_energy_plot = 10
 
+// 5. X scale will use the index of our data
+var x_scale_eq_plot = d3.scaleLinear()
+    .domain([0, number_of_steps-1]) // input
+    .range([margin_energy_plot, Energy_Plot_Container.attr("width")-2*margin_energy_plot]); // output
 
+// 6. Y scale will use the randomly generate number 
+var y_scale_eq_plot = d3.scaleLinear()
+    .domain([0, 1]) // input 
+    .range([Energy_Plot_Container.attr("height")-2*margin_energy_plot, margin_energy_plot]); // output 
+
+//console.log(height_new)
+// 7. d3's line generator
+var plot_eq_energy_line = d3.line()
+    .x(function(d, i) { return x_scale_eq_plot(i); }) // set the x values for the line generator
+    .y(function(d) { return y_scale_eq_plot(d.y); }) // set the y values for the line generator 
+    .curve(d3.curveMonotoneX) // apply smoothing to the line
+
+// 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
+var plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2)+0.45 } })
+
+strokewidth_eq_plot = 2
+energy_plot_frame = Energy_Plot_Container.append("rect")
+	.attr("x", 2*strokewidth_eq_plot)
+	.attr("y", 2*strokewidth_eq_plot)
+	.attr("rx", 20)
+    	.attr("ry", 20)
+	.attr("width", Energy_Plot_Container.attr("width")-20)
+	.attr("height", Energy_Plot_Container.attr("height")-20)
+	.attr("fill", "none")
+	.attr("stroke-width", strokewidth_eq_plot)
+        .attr("stroke", "grey")
+	.attr("stroke-opacity", 0.5);
+
+line_energy_2 = Energy_Plot_Container.append("path")
+    .datum(plot_eq_energy_data) // 10. Binds data to the line 
+    .attr("class", "plotline") // Assign a class for styling
+    .attr("d", plot_eq_energy_line)
+	.style("stroke", "blue")
+	.style("stroke-opacity", 0.3)
+
+circle_energy_equilbration = Energy_Plot_Container.append("circle") // Uses the enter().append() method
+    //.attr("class", "dot") // Assign a class for styling
+    .attr("cx", x_scale_eq_plot(total_equilibration_steps) )
+    .attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps].y))
+    .attr("r", 4)
+    .attr("fill", "blue")
+    .attr("opacity", 0.8)
+
+console.log(x_scale_eq_plot(1))
+console.log(x_scale_eq_plot(2), y_scale_eq_plot(plot_eq_energy_data[2].y))

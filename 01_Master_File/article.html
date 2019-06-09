@@ -291,21 +291,18 @@ border: none;
 
   <div class="row">
 
-  <div class="column">
-  <p class="slider-label-text">Learning and unlearning</p>
-  <p class="figure-text">A learning step decreases the energy of the configurations, which we want to learn.</p>
-    <input id="equilibrate_button_id" type="button" value="Equilibration step" onclick="equilibration_step_rbm()">
-    <p class="figure-text">This figure shows how learning and unlearning changes the energy landscape.</p>
-  </div>
-  <div class="doublecolumn">
-    <figure style = "width:700px; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_Hopfield">
+  <div class="triplecolumn">
+    <figure style = "width:100%; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_Hopfield">
   <div id = "image_equilibration_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
+  </div>
+  <div class="triplecolumn">
+	  <p class="figure-text"> One  <input id="equilibrate_button_id" type="button" value="Equilibration step" onclick="equilibration_step_rbm()"> brings the damaged initial configuration closer to a low energy configuration. The hidden and the visible layers are updated one after another. </p><p class="figure-text"><b>Sampling through equilibration:</b> This figure shows a restricted Boltzmann machine, where the visible units are initialized with a partially damaged MNIST digit and the hidden units are initiallized all in the same direction. In an RBM, the equilibration is sequentially, where the hidden and the visible layer is sampled one after another dependend of the configuration of the other layer. The energy during the equilibration process will go to a lower value.</p>
   </div>
   </div>
   <script type = "text/javascript" src = "image_equilibration_script.js" ></script>
 
-  <div class="triplecolumn"><p class="figure-text"><b>Sampling through equilibration:(THE FIGURE STILL HAS TO BE ADAPTED TO THE CAPTION)</b> This figure shows a restricted Boltzmann machine, where the visible units are initialized (a) randomly (b) in a MNIST digit (c) with a partially damaged MNIST digit. In an RBM, the equilibration is sequentially, where the hidden and the visible layer is sampled one after another dependend of the configuration of the other layer. The energy during the equilibration process will go to a lower value.</p></div>
+  <div class="triplecolumn"></div>
 
 <!-- Second Section  3.1  -->
   <a class="marker" href="#section-3.1" id="section-3.1"><span>Sampling in physics</span></a>

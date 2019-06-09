@@ -23,7 +23,7 @@ var y_scale = d3.scaleLinear()
     .domain([0, 1]) // input 
     .range([height_new, 0]); // output 
 
-console.log(height_new)
+//console.log(height_new)
 // 7. d3's line generator
 var plot_line = d3.line()
     .x(function(d, i) { return x_scale(i); }) // set the x values for the line generator
