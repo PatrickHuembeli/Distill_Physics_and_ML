@@ -27,7 +27,9 @@ var compressed_size = 10,
 var distance_hidden = 230 // how far are hidden and visible appart
 
 var which_number_index = 0 // defines what number is highlighted (0,1 or 9))
-var which_equilibration_step = 1 // how many equil steps have been done.
+var total_equilibration_steps = 1
+var which_equilibration_step_hidden = 1 // how many equil steps have been done.
+var which_equilibration_step_visible = 1 // how many equil steps have been done.
 
 // This is all for the NN canvas 
 // ---------------------------------------------
@@ -149,7 +151,7 @@ images = svg_imgequil.selectAll()
                 d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+'resized_'+images_visible[d]+0+'.jpg')
                 d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+images_hidden[d]+0+'.jpg')
 	        which_number_index = d
-	        which_equilibration_step = 1
+	        total_equilibration_steps = 1
                 initialize_NN()
     		});
 
@@ -202,12 +204,12 @@ function getwholeImage_new(url, threshold) {
 
 function equilibration_step_rbm(){
 	console.log('test')
-        d3.select('#main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+which_equilibration_step+'.jpg')
-        d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+which_equilibration_step+'.jpg')
-        d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+which_equilibration_step+'.jpg')
-	if (which_equilibration_step < 8){
-	which_equilibration_step += 1}
-	console.log(which_equilibration_step)
+        d3.select('#main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
+        d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
+        d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+Math.ceil(total_equilibration_steps/2)+'.jpg')
+	if (total_equilibration_steps < 16){
+	total_equilibration_steps += 1}
+	console.log(total_equilibration_steps)
 	initialize_NN()
 }
 
@@ -224,30 +226,48 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
         d3.selectAll(".weightline1")
             //.data(points)
 	    .transition()
-	    .duration(2000) 
-            .attr('stroke', 'black')
-	    .attr('opacity', '0.4')
+	    .duration(100) 
+            .attr('stroke', 'blue')
+	    .attr('opacity', '0.1')
 	    .transition()
             .duration(2000)
             .attr('stroke', 'black')
 	    .attr('opacity', '0.1')
-        d3.selectAll(".weightline2")
-            //.data(points)
-	    .transition()
-	    .duration(2000) 
-            .attr('stroke', 'black')
-	    .attr('opacity', '0.4')
-	    .transition()
-            .duration(2000)
-            .attr('stroke', 'black')
-	    .attr('opacity', '0.1')
+//        d3.selectAll(".weightline2")
+//            //.data(points)
+//	    .transition()
+//	    .duration(2000) 
+//            .attr('stroke', 'black')
+//	    .attr('opacity', '0.4')
+//	    .transition()
+//            .duration(2000)
+//            .attr('stroke', 'black')
+//	    .attr('opacity', '0.1')
 
-	d3.select("#NNContainer").selectAll("circle")
+	d3.selectAll(".visible_units_circles")
             .data(points)
 	    .transition()
 	    .duration(2000)
             .style("fill", function(d) { return colors[d[2]] });
         
+   if (total_equilibration_steps%2 == 1 ){
+	   console.log("even")
+    	d3.selectAll('.equilibrationcircles')
+	        .transition().duration(2000)
+            	.attr('cx', function(d){return (10 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
+            //.attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
+            	.attr('cy', function(d){return (10+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
+            //.attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
+	    }
+   else {console.log("odd")
+    	d3.selectAll('.equilibrationcircles')
+	        .transition().duration(2000)
+            	//.attr('cx', function(d){return (10 +  neuron_margin_x*points[0][0] - 5*points[0][0] )})
+            	.attr('cx', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
+            	//.attr('cy', function(d){return (10+neuron_margin_x*points[0][1]+ 5*points[0][0] )})
+            	.attr('cy', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
+	   }
+
         d3.select("#HiddenContainer").selectAll("circle")
 	.data(hidden_points)   
         .transition()
@@ -262,9 +282,9 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
             .enter()    
             .append("line")
 	    .attr("class", "weightline1")
-            .attr('x1', function(d){return (10 +  neuron_margin_x*points[0][0] - 5*points[0][0] )})
+            .attr('x1', function(d){return (10 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
             .attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
-            .attr('y1', function(d){return (10+neuron_margin_x*points[0][1]+ 5*points[0][0] )})
+            .attr('y1', function(d){return (10+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
             .attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
             .attr('stroke', 'black')
             .attr('opacity', '0.1')
@@ -272,19 +292,21 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
     d3.select("#NNContainer").selectAll()
             .data(points)
             .enter()    
-            .append("line")
-	    .attr("class", "weightline2")
-            .attr('x1', function(d){return (10 +  neuron_margin_x*points[90][0] - 5*points[90][0] )})
-            .attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
-            .attr('y1', function(d){return (10+neuron_margin_x*points[90][1]+ 5*points[90][0] )})
-            .attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
-            .attr('stroke', 'black')
+            .append("circle")
+	    .attr("class", "equilibrationcircles")
+            .attr('cx', function(d){return (10 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
+            //.attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
+            .attr('cy', function(d){return (10+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
+            //.attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
+            .attr('fill', 'blue')
+	    .attr('r', 8)
             .attr('opacity', '0.1')
     // Add visible nodes
    d3.select("#NNContainer").selectAll()
         .data(points)
         .enter()
         .append("circle")
+	.attr("class", "visible_units_circles")    
         .style("fill", function(d) { return colors[d[2]]})
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0] - 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)
