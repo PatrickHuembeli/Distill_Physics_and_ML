@@ -11,20 +11,23 @@ var svg_imgequil = d3.select(identity_img_equil)
     .attr("width", width)
     .attr("height", height);
 
-var img_width = 128 // This is the size of the image in the svg
-    img_height = 128
+var img_width = 80 // This is the size of the image in the svg
+    img_height = 80
     img_margin = 10
+
+var main_img_width = 128
+    main_img_height = 128
 
 var compressed_size = 10,
     canvas_width = 10,
     canvas_height = 20,
-    neuron_margin_x = 28,
+    neuron_margin_x = 10,
     neuron_radius = 8;
 
 var distance_hidden = 230 // how far are hidden and visible appart
 
 var which_number_index = 0 // defines what number is highlighted (0,1 or 9))
-var which_equilibration_step = 0 // how many equil steps have been done.
+var which_equilibration_step = 1 // how many equil steps have been done.
 
 // This is all for the NN canvas 
 // ---------------------------------------------
@@ -66,10 +69,10 @@ var image_nr = [0,1,2,3,4,5,6,7,8]
 main_image = svg_imgequil.append('image')
     .attr('id', 'main_img_big_id')
     .attr('xlink:href', folder_path+folder_nr[0] + images_visible[0] +0+'.jpg')
-    .attr("x", 50)
-    .attr("y", 180)
-    .attr("width", img_width)
-    .attr("height", img_height)
+    .attr("x", 300)
+    .attr("y", 20)
+    .attr("width", main_img_width)
+    .attr("height", main_img_height)
     
 compressed_image = svg_imgequil.append('image')
     .attr('id', 'compressed_img_id')
@@ -88,7 +91,7 @@ hidden_compressed_image = svg_imgequil.append('image')
     .attr("height", img_height/2)
 
 // This lines make the images invisible
-//document.getElementById("hidden_compressed_img_id").style.display = "none";
+document.getElementById("hidden_compressed_img_id").style.display = "none";
 document.getElementById("compressed_img_id").style.display = "none";
 
 path_for_pixel =  folder_path+'zero/resized_damaged_zeros_visible_'+main_image_var+'.jpg'
@@ -144,22 +147,23 @@ images = svg_imgequil.selectAll()
 	        console.log(path_vis),    
                 d3.select('#main_img_big_id').attr('xlink:href', path_vis),
                 d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+'resized_'+images_visible[d]+0+'.jpg')
+                d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+images_hidden[d]+0+'.jpg')
 	        which_number_index = d
-	        which_equilibration_step = 0
+	        which_equilibration_step = 1
                 initialize_NN()
     		});
 
 
 
 var hidden_container = svg_imgequil.append("svg")
-    .attr("x", 450)
+    .attr("x", 230)
     .attr("y", 200)
     .attr("width", 500)
     .attr("height", 500)
     .attr('id','HiddenContainer'); 
     
 var NN_container = svg_imgequil.append("svg")
-    .attr("x", 220)
+    .attr("x", 0)
     .attr("y", 200)
     .attr("width", 500)
     .attr("height", 800)
@@ -175,7 +179,7 @@ var initialize_flag = false
 //context = canvas.node().getContext("2d");
 
 
-function getwholeImage_new(url) {
+function getwholeImage_new(url, threshold) {
   var img = new Image();
   img.src = url;
   var canvas = document.createElement('canvas');
@@ -186,7 +190,7 @@ function getwholeImage_new(url) {
   imgData = context.getImageData(0, 0, canvas.width, canvas.height)
   data_image_full = context.getImageData(0, 0, canvas.width, canvas.height).data
   data_image_one_channel = every_nth(data_image_full, 4)
-  raw_data = binarizeArray(data_image_one_channel, 100) // This value gives threshold for black and white	
+  raw_data = binarizeArray(data_image_one_channel, threshold) // This value gives threshold for black and white	
   var points = [];
   for (var s=0; s<compressed_size*compressed_size; s++){
   	x = s % compressed_size,
@@ -198,9 +202,10 @@ function getwholeImage_new(url) {
 
 function equilibration_step_rbm(){
 	console.log('test')
-        d3.select('#main_img_big_id').attr('xlink:href', ),
+        d3.select('#main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+which_equilibration_step+'.jpg')
         d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+which_equilibration_step+'.jpg')
-        if (which_equilibration_step < 8){
+        d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+which_equilibration_step+'.jpg')
+	if (which_equilibration_step < 8){
 	which_equilibration_step += 1}
 	console.log(which_equilibration_step)
 	initialize_NN()
@@ -213,20 +218,41 @@ function equilibration_step_rbm(){
 async function update_drawing() {
     await new Promise(r => setTimeout(r, 200)); // Wait a short time until data is really loaded.
     
-points = getwholeImage_new(d3.select('#compressed_img_id').attr('xlink:href'))	
-console.log(points)
-
-
+points = getwholeImage_new(d3.select('#compressed_img_id').attr('xlink:href'), 100)	
+hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('xlink:href'), 20)	
     if (initialize_flag){
-        d3.select("#NNContainer").selectAll("circle")
+        d3.selectAll(".weightline1")
+            //.data(points)
+	    .transition()
+	    .duration(2000) 
+            .attr('stroke', 'black')
+	    .attr('opacity', '0.4')
+	    .transition()
+            .duration(2000)
+            .attr('stroke', 'black')
+	    .attr('opacity', '0.1')
+        d3.selectAll(".weightline2")
+            //.data(points)
+	    .transition()
+	    .duration(2000) 
+            .attr('stroke', 'black')
+	    .attr('opacity', '0.4')
+	    .transition()
+            .duration(2000)
+            .attr('stroke', 'black')
+	    .attr('opacity', '0.1')
+
+	d3.select("#NNContainer").selectAll("circle")
             .data(points)
-            .style("fill", function(d) { return colors[d[2]] 
-                                    console.log(d)});
+	    .transition()
+	    .duration(2000)
+            .style("fill", function(d) { return colors[d[2]] });
         
         d3.select("#HiddenContainer").selectAll("circle")
+	.data(hidden_points)   
         .transition()
         .duration(2000)
-        .style("fill", function(d) { return hidden_colors[Math.round(Math.random())]}) 
+        .style("fill", function(d) { return hidden_colors[d[2]]}) 
     }
     else{ // This is for the first run
    
@@ -235,6 +261,7 @@ console.log(points)
             .data(points)
             .enter()    
             .append("line")
+	    .attr("class", "weightline1")
             .attr('x1', function(d){return (10 +  neuron_margin_x*points[0][0] - 5*points[0][0] )})
             .attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
             .attr('y1', function(d){return (10+neuron_margin_x*points[0][1]+ 5*points[0][0] )})
@@ -246,9 +273,10 @@ console.log(points)
             .data(points)
             .enter()    
             .append("line")
-            .attr('x1', function(d){return (10 +  neuron_margin_x*points[99][0] - 5*points[99][0] )})
+	    .attr("class", "weightline2")
+            .attr('x1', function(d){return (10 +  neuron_margin_x*points[90][0] - 5*points[90][0] )})
             .attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
-            .attr('y1', function(d){return (10+neuron_margin_x*points[99][1]+ 5*points[99][0] )})
+            .attr('y1', function(d){return (10+neuron_margin_x*points[90][1]+ 5*points[90][0] )})
             .attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
             .attr('stroke', 'black')
             .attr('opacity', '0.1')
@@ -266,11 +294,11 @@ console.log(points)
     
        // Add hidden nodes
     d3.select("#HiddenContainer").selectAll()
-        .data(points)
+        .data(hidden_points)
         .enter()
         .append("circle")        
         .attr("class", "hidden_nodes")
-        .style("fill", function(d) { return hidden_colors[Math.round(Math.random())]}) 
+        .style("fill", function(d) { return hidden_colors[d[2]]}) 
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0]- 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)  
         .attr("opacity", 0.5) 
