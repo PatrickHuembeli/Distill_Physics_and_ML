@@ -1,9 +1,9 @@
 const identity_test = "#test_figure_id"
-
 // myFunction reads from slider and updates everything
 // Fct of Slider 1
+document.getElementById("temperature_slider").style.borderRadius = "7px";
 function temp_slider(val) {
-  slider_text = document.getElementById("temperature_slider")
+  slider_text = document.getElementById("temperature_slider")  	
   slider_text.innerHTML = val //this updates <p> where values is written
 //   slider_text.style.backgroundColor = "yellow";
   slider_element = document.getElementById("temp_slider_id")
@@ -31,7 +31,7 @@ function energy_slider(val) {
   y = y_line2 - (y_line2-y_line1)*x_e(val)/10
   line1.attr("y1", y);
   line1.attr("y2", y);
-  text1.attr("y",y)
+  text1.attr("y",y-30)
   circle2.attr("cy", y);
 }
 
@@ -56,7 +56,7 @@ var centre = width/2
     width_plot = 200 // Size plot
     hight_plot = 200
     x_2level = 310 // 2level sys position
-    x_text_prob = 600
+    x_text_prob = 280
     variable = 0
     plot_steps = 500
 
@@ -97,16 +97,16 @@ circle2 = svg2.append("circle")
              .attr("cy", y_line1)
              .attr("r", 20);                         
              
+text2= svg2.append("text")
+            .attr("class", "general_text")
+            .attr("x", x_text_prob)
+            .attr("y", y_line2+35)
+            .text("p₀: "); 
+            
 text1 = svg2.append("text")
             .attr("class", "general_text")
             .attr("x", x_text_prob)
-            .attr("y", y_line1)
-            .text("p₀: "); 
-            
-text2 = svg2.append("text")
-            .attr("class", "general_text")
-            .attr("x", x_text_prob)
-            .attr("y", y_line2)
+            .attr("y", function(d){return y_line1+35})
             .text("p₁: ");            
                                                  
 // -----------------------------------------------------------------------------

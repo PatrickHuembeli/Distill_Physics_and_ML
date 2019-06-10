@@ -148,7 +148,7 @@ var energy_text = svg.append("text")
                         .attr("x", 20)
                         .attr("y", 20)
                         .attr("font-size", 20)
-                        .text("Energy: "+calc_energy(spins))
+                        //.text("Energy: "+calc_energy(spins))
                         
 
 var center_x = (width / 2);
@@ -327,19 +327,6 @@ for(var i=vunits; i<spins[1].length; i++) {
 }
 }
 
-var calc_energy = function(spins){
-    var energy = 0
-    for (var i = 0; i<spins[0].length; i++) {
-        for (var j = 0; j<spins[1].length; j++) {
-        spin = spins[0][i]
-//         console.log(connection_data, i*(2-1) +j)
-        if (spins[0][i] == 0 || spins[1][j] == 0){weight = 0}
-        else {weight = connection_data[i*(2-1) +j ][2]}
-        energy += spins[0][i]*spins[1][j]*weight;}}
-//     console.log(energy)
-//     console.log(spins)
-    return energy
-}
 
 // Generate Data for the connections
 // Generate random weights
