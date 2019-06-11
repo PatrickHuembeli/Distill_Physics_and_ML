@@ -305,20 +305,18 @@
   <p>In <d-cite key="hopfield1983unlearning"></d-cite> Hopfield studied the effect of “unlearning” on the performance of Hopfield networks. They found that "unlearning" can help to get rid of supurous minima and therefore has a stabilizing effect on the memory of such a network. For unlearning, we expand the update rule <d-math>w_{i,j} \leftarrow \langle \sigma_i \sigma_j \rangle_{\text{Data}}</d-math> to <d-math>w_{i,j} \leftarrow \langle \sigma_i \sigma_j \rangle_{\text{Data}} - \epsilon \langle \sigma_i' \sigma_j' \rangle</d-math>. To obtain <d-math>\vec{\sigma}'</d-math>, the network is initialized in a random configuration <d-math>\vec{\sigma}</d-math> and the nodes are updated according to the update rule Eq. <d-footnote>Hopfield update rule <d-math> \sigma_{i}\leftarrow \left\{{\begin{array}{ll}+1~{\text{if }}\sum _{{j}}{w_{{ij}}\sigma_{j}}\geq h _{i},\\-1~{\text{otherwise,}}\end{array}}\right.</d-math></d-footnote> until the network equilibrates to <d-math>\vec{\sigma}'</d-math>. Therefore the configuration <d-math>\vec{\sigma}'</d-math> is a local minimum of the energy landscape and the term <d-math>- \epsilon \langle \sigma_i' \sigma_j' \rangle</d-math> increases the energy of this minimum by a small factor <d-math>\epsilon<1</d-math>. This plays against the first term of the update rule <d-math>\langle \sigma_i \sigma_j \rangle_{\text{Data}}</d-math> which minimizes the energies of the data inputs. The interplay of these two terms decreases the occurence of spurous minima. In the training of Boltzmann machines, similar terms appear, but they are often referred to as the positive and the negative phase.</p>
 
   <div class="row">
-  <div class="column">
-  <p class="slider-label-text">Learning and unlearning</p>
-  <p class="figure-text">A learning step decreases the energy of the configurations, which we want to learn.</p>
+  <div class="triplecolumn">
     <input id="learn_button_id" type="button" value="Learning step" onclick="learn_phase()">
-  <p class="figure-text">A unlearning step increases the energy of all configurations that are in a local energy minima. </p>
     <input id="learn_button_id" type="button" value="Unlearning step" onclick="unlearn_phase()">
-  <p class="figure-text">Reinitialize the weights randomly.</p>
     <input id="learn_button_id" type="button" value="Reinitialize" onclick="reinitialize_phase()">
-    <p class="figure-text">This figure shows how learning and unlearning changes the energy landscape.</p>
   </div>
-  <div class="doublecolumn">
+  <div class="triplecolumn">
     <figure style = "width:100%; height:300px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
   <div id = "energy_landscape_figure_id" style="width:100%, height:100%, position:absolute; left:0px; top:0px"></div>
   </figure>
+  <div class="triplecolumn">
+	  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized spin system has a energy landscape with many different local minima, which in physics is often referred to as the spinglass phase <d-cite> </d-cite>. Learning a certain configuration (red dots) in energy based models means we need to decrease its energy. But only by learning a configuration we do not get rid of spurious minima that contain unwanted configuration (yellow). They have to be unlearned.</p>
+  </div> 
   <script type = "text/javascript" src = "energy_landscape.js" ></script>
   </div>
   </div>
@@ -353,7 +351,6 @@
   </div>
   </div>
   <div class="doublecolumn">
-    <p class="slider-label-text">Unnormalized Probability </p>
     <figure style = "width:100%; height:320px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
   <div id = "RBM_complete_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
