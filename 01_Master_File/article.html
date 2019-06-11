@@ -30,79 +30,6 @@
   <meta charset="utf8">
   <link href="style.css" rel="stylesheet" type="text/css">
 </head>
-<!--
-<style>
-* {
-box-sizing: border-box;
-}
-
-.column {
-float: left;
-width: 233px; /*This is 33% of the width in normal scale */
-padding: 10px;
-border: 2px solid red;
-border-radius: 5px;
-/*   border-spacing: 15px; */
-}
-
-.doublecolumn {
-  float: left;
-  width: 466px;
-  padding: 10px;
-  border: 2px solid red;
-  border-radius: 5px;
-/*
-  border-collapse: separate;
-  border-spacing: 15px;
-*/
-
-}
-
-.triplecolumn {
-float: left;
-width: 700px;
-padding: 10px;
-border: 2px solid black;
-border-radius: 5px;
-/*   border-spacing: 15px; */
-}
-.row {
-float: left;
-width: 720px;
-padding: 1px;
-border: none;
-/*   border-spacing: 15px; */
-}
-.slider-label-text {
-  float: left;
-  width: 50%;
-  padding: 5px;
-  font: 14px sans-serif;
-}
-
-.slider-label-number {
-  float: left;
-  width: 50%;
-  padding: 5px;
-  font: 14px sans-serif;
-}
-
-.title-text {
-  float: right;
-  width: 50%;
-  padding: 5px;
-  font: 16px sans-serif;
-}
-
-.figure-text {
-  color: rgba(0,0,0,0.6);
-  font-size: 13px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-}
-</style> -->
-
-
-
 <body>
   <distill-header></distill-header>
 <d-front-matter>
@@ -252,7 +179,7 @@ border: none;
   Therefore we set the constraints to <d-math>\langle r_k \rangle = \langle \sigma_i \sigma_j\rangle</d-math> and <d-math>\langle r_k \rangle = \langle \sigma_i \rangle</d-math>.
 
   We want to emphasise at this point that for real world machine learning applications higher-order correlations between input nodes are important and the choice of single-spin and two-spin expectation values in general is not sufficient to capture them. So far this model is simply an Ising spin system, where every spin represents a node (e.g. pixel) of our input data. To overcome this issue of low order correlations we will later use a part of the spins in the system as mediators between input nodes, which we we call hidden units.</p>
-
+  <p><b> This is only a test cite</b>We can<d-cite key="mercier2011humans"></d-cite> also cite <d-cite key="gregor2015draw,mercier2011humans"></d-cite>
 <!-- Second Section  2.4  -->
   <a class="marker" href="#section-2.4" id="section-2.4"><span>Architectures</span></a>
   <h3 id="architecture">Architectures</h3>
@@ -342,7 +269,7 @@ border: none;
   </p>
 
   <p>For finite temperature we still compare the energy difference when one spin is changed
-  <d-math>\Delta E =  E(\sigma_i) - E(-\sigma_i)</d-math>, but now there is a probability to change the configuration even though the energy is increased by this step. The update rule is expanded the following way: If a change of the spin decreases the energy <d-math>\Delta E \geq 0</d-math> the spin will be changed and we update to <d-math>\sigma_i \leftarrow -\sigma_i</d-math>. But if a change would increase the energy <d-math>\Delta E \leq 0</d-math> we still have the probability <d-math>p(\sigma_i) \prop \exp(-\beta \Delta E) </d-math> that we change the spin.</p>
+  <d-math>\Delta E =  E(\sigma_i) - E(-\sigma_i)</d-math>, but now there is a probability to change the configuration even though the energy is increased by this step. The update rule is expanded the following way: If a change of the spin decreases the energy <d-math>\Delta E \geq 0</d-math> the spin will be changed and we update to <d-math>\sigma_i \leftarrow -\sigma_i</d-math>. But if a change would increase the energy <d-math>\Delta E \leq 0</d-math> we still have the probability <d-math>p(\sigma_i) \propto \exp(-\beta \Delta E) </d-math> that we change the spin.</p>
 
 <!-- Second Section  4  -->
   <a class="marker" href="#section-4" id="section-4"><span>Training</span></a>
@@ -416,18 +343,18 @@ border: none;
   <p id="bias_slider_value" class="slider-label-number" width="50%"></p>
     <input id="bias_slider_id" value=0 type="range" oninput="slider_bias_just_text(this.value)" onchange="slider_bias_fct_RBM(this.value,1)" min="-2" max="2" step="0.01">
   <div>
-  <input type="checkbox" onclick="change_layout()" id="hidden_check" name="hidden_check"
+  <input type="checkbox" onclick="change_layout_hidden()" id="hidden_check" name="hidden_check"
          checked>
   <label for="hidden_check">Allow hidden units</label>
   </div>
   <div>
-  <input type="checkbox" id="restricted_check" name="restricted_check">
+  <input type="checkbox" onclick="change_layout_restricted()" id="restricted_check" name="restricted_check">
   <label for="restricted_check">Make it restricted</label>
   </div>
   </div>
   <div class="doublecolumn">
     <p class="slider-label-text">Unnormalized Probability </p>
-    <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
+    <figure style = "width:100%; height:320px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
   <div id = "RBM_complete_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   <script type = "text/javascript" src = "RBM_complete_new.js" ></script>
@@ -489,6 +416,29 @@ If a particular expectation value (or coordinate) <d-math>\langle x_k\rangle</d-
 
   <p><b>PW: we should finish the conclusions with a paragraph on how these insights will help develop new energy-based models, e.g., new QBMs, continuous-valued stuff, what-not.</b></p>
 
+  <script>
+    const figure = document.querySelector("d-figure#last-figure");
+    const initTag = document.createElement("span");
+    initTag.textContent = "initialized!"
+    figure.appendChild(initTag);
+    figure.addEventListener("ready", function() {
+      const initTag = figure.querySelector("span");
+      initTag.textContent = "ready"
+      console.log('ready')
+    });
+    figure.addEventListener("onscreen", function() {
+      const initTag = figure.querySelector("span");
+      initTag.textContent = "onscreen"
+      console.log('onscreen')
+    });
+    figure.addEventListener("offscreen", function() {
+      const initTag = figure.querySelector("span");
+      initTag.textContent = "offscreen!"
+      console.log('offscreen')
+    });
+  </script>
+
+
 </d-article>
 
 <d-appendix>
@@ -497,8 +447,34 @@ If a particular expectation value (or coordinate) <d-math>\langle x_k\rangle</d-
   <p>Some text describing who did what.</p>
   <h3>Reviewers</h3>
   <p>Some text with links describing who reviewed the article.</p>
+<d-footnote-list></d-footnote-list>
+  <d-citation-list></d-citation-list>
+  <!--  <d-bibliography src="bibliography.bib"></d-bibliography> -->
+<d-bibliography>
+    <script type="text/bibtex">
+      @article{gregor2015draw,
+        title={DRAW: A recurrent neural network for image generation},
+        author={Gregor, Karol and Danihelka, Ivo and Graves, Alex and Rezende, Danilo Jimenez and Wierstra, Daan},
+        journal={arXiv preprint arXiv:1502.04623},
+        year={2015},
+        url ={https://arxiv.org/pdf/1502.04623.pdf}
+      }
+      @article{mercier2011humans,
+        title={Why do humans reason? Arguments for an argumentative theory},
+        author={Mercier, Hugo and Sperber, Dan},
+        journal={Behavioral and brain sciences},
+        volume={34},
+        number={02},
+        pages={57--74},
+        year={2011},
+        publisher={Cambridge Univ Press},
+        doi={10.1017/S0140525X10000968}
+      }
+    </script>
+  </d-bibliography>
 
-  <d-bibliography src="bibliography.bib"></d-bibliography>
+  <distill-appendix> </distill-appendix>
+
 </d-appendix>
 
 <distill-footer></distill-footer>

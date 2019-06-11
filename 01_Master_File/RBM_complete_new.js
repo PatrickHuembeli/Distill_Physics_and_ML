@@ -13,15 +13,13 @@ var slider_weight = document.getElementById("weight_slider_id")
 console.log(slider_weight)
 // slider_weight.value = -1
 
-function change_layout(){console.log("test")}
-
 // Default Variables
 var h_units = 2
 var v_units = 4
 var total_spins = h_units + v_units
 
 var width = 700;
-var height = 500;
+var height = 250;
 var radius = 15.0
 var space = 50.0
 
@@ -48,6 +46,12 @@ var svg_RBMcomplete = d3.select(RBM_complete)
     .attr("width", width) // use whole space given in article
     .attr("height", height); // This is height of figure without 'selectors'
 
+var svg_RBMcomplete_histo = d3.select(RBM_complete)
+    .append("svg")
+    .attr("id", "RBM_sampler_histo")
+    .attr('class','figures')
+    .attr("width", width) // use whole space given in article
+    .attr("height", height); // This is height of figure without 'selectors'
 // VERY IMPORTANT WE WILL HAVE TO CHANGE THIS WIDTH PARAMETER TO 100% TO ADAPT FIGURE SIZE FOR DIFFERENT DEVICES.
 
 //==============================================================================
@@ -78,8 +82,9 @@ energy_text = svg_RBMcomplete.append("text")
                         .text("Energy: "+energy_fct(spins_new))
 
 nodes_svg = svg_RBMcomplete.append("svg")
+			.attr("id", "RBM_complete_main_svg")
 
-function background_rectangles(){
+function background_rectangles_hidden_visible(){
 vis_background_rect_width = 250
 vis_background_rect_height = 130
 hid_background_rect_height = 100
@@ -105,9 +110,9 @@ nodes_svg.append("rect")
 	.attr("rx", 10)
 	}
 
-background_rectangles()
+background_rectangles_hidden_visible()
 // Generate the actual graph
-generate_RBM_distribution()
+//generate_RBM_distribution()
 // Initialize variables for probabilities
 visible_vecs = permutations_of_vector(v_units)
 hidden_vecs = permutations_of_vector(h_units)
@@ -136,8 +141,8 @@ var y_histogram = d3.scaleLinear()
 
 var histo_width = 30
 var histo_height = 200
-var histo_y_pos = 250
-histogram_svg = svg_RBMcomplete.append("g")
+var histo_y_pos = 10
+histogram_svg = svg_RBMcomplete_histo.append("g")
 
 // append the bar rectangles to the svg element
 histogram_svg.selectAll("rect")
@@ -283,7 +288,7 @@ console.log(weight_matrix)
 // Genearte the RBM Graph
 // =============================================================================
 
-function generate_RBM_distribution(){
+//function generate_RBM_distribution(){
 
 // Define tooltips for hovering information
 var tooltip = d3.select("body") //This is in body not svg
@@ -411,7 +416,7 @@ var tooltip = d3.select("body") //This is in body not svg
 	      value.innerHTML =  arg	
                weight_slider_index = index
       })	
-    } 
+//    } 
     
 // -----------------------------------------------------------------------------
 // EVERYTHING ABOUT PROBABILITIES OF BM
@@ -644,4 +649,108 @@ add_visible_configs(histo_pos_gen(2), histo_y_pos, 4, 10, [1,1,0,0])
 add_visible_configs(histo_pos_gen(3), histo_y_pos, 4, 10, [0,1,0,1])
 add_visible_configs(histo_pos_gen(4), histo_y_pos, 4, 10, [1,1,1,1])
 add_visible_configs(histo_pos_gen(5), histo_y_pos, 4, 10, [0,0,0,0])
+function change_layout_hidden(){
+hidden_active = select_hidden.checked 
+restricted_active = select_restricted.checked
 
+if (hidden_active == false){
+	if (restricted_active){ console.log("geht nicht !!!")
+	select_hidden.checked = true
+	window.alert("You cannot make a spin system restricted without hidden units.");
+	return	
+	}	
+}
+change_layout()
+}
+
+function change_layout_restricted(){
+hidden_active = select_hidden.checked 
+restricted_active = select_restricted.checked
+
+if (hidden_active == false){
+	if (restricted_active){ console.log("geht nicht !!!")
+	select_restricted.checked = false
+	window.alert("You cannot make a spin system restricted without hidden units.");
+	return	
+	}	
+}
+change_layout()
+}
+
+// Selectors update function
+function change_layout(){console.log("test")
+document.getElementById("weight_slider_id").value = 0.0 
+weight_slider_index = 0
+
+
+all_connections = make_connection_new()
+connection_graph = all_connections[0]
+weight_matrix = all_connections[1]
+
+idx1 = connection_graph[weight_slider_index][0]	
+idx2 = connection_graph[weight_slider_index][1]	    
+text = document.getElementById("weight_slider_text")
+text.innerHTML =  "Weight: ("+ idx1+", "+idx2+")"	
+energy_text.text("Energy: 0")    
+//histogram_data = p_total_v(visible_vecs, hidden_vecs)
+histogram_data = []  
+for (j=0; j<configuration_to_learn.length; j++){
+	histogram_data.push(prob_of_v(configuration_to_learn[j], hidden_vecs))}
+update_histogram(histogram_data)         
+console.log(histogram_data)  
+	console.log(hidden_active, restricted_active, connection_graph)
+
+
+value = document.getElementById("weight_slider_value")
+value.innerHTML =  0	
+	
+console.log(d3.select("#RBM_sampler").selectAll("line"))
+d3.select("#RBM_sampler").selectAll("line").remove() 
+d3.select("#RBM_sampler").selectAll("line")
+        .data(connection_graph)
+        .enter()
+        .append("line")
+        .attr("id", function(d){return 'weight_h' + d[0] + '' + d[1]})
+    //     .attr("class", "RBM_line")
+        .attr("stroke","rgb(0,0,0,0.5)") //These attr are defined by class
+        .attr("stroke-width", 4.0)
+        .attr("x1", line_pos_gen_x1)
+        .attr("y1", line_pos_gen_y1)
+        .attr("x2", line_pos_gen_x2)
+        .attr("y2", line_pos_gen_y2)
+        .on("mouseover", function(d) {
+            tooltip.text('Coupling:' + d[0] +',' + d[1]+ ' Strength: '+ weight_matrix[d[0]][d[1]])
+                    .style("visibility", "visible")
+         d3.select(this).attr("stroke","rgb(0,0,0,1.0)")           ;
+      })
+  
+       .on("mousemove", function(d) {
+            tooltip.style("top", (event.pageY+10)+ "px")
+            .style("left", event.pageX+10 + "px")
+            d3.select(this).attr("stroke","rgb(0,0,0,1.0)");
+      })
+  
+      .on("mouseout", function() {tooltip.style("visibility", "hidden")
+      d3.select(this).attr("stroke","rgb(0,0,0,0.5)");
+      })
+      .on("click", function(d){
+               line = d3.select(this)
+                   coupling = d
+               index = connection_graph.indexOf(coupling)
+                   var idx1 = connection_graph[index][0]	
+                   var idx2 = connection_graph[index][1]	    
+                   arg = weight_matrix[idx1][idx2]
+	           slider_weight.value = arg
+               //text = d3.select("#weighttext")
+               //text.text(function(){return "Weight: ("+ idx1+', ' + idx2+')'})
+	      text = document.getElementById("weight_slider_text")
+	      text.innerHTML =  "Weight: ("+ idx1+", "+idx2+")"	
+	      value = document.getElementById("weight_slider_value")
+	      value.innerHTML =  arg	
+               weight_slider_index = index
+      })	
+
+}
+
+console.log(d3.select("#RBM_complete_main_svg").selectAll("line"))
+console.log(d3.select("#RBM_sampler").selectAll("line"))
