@@ -22,6 +22,10 @@ function temp_slider(val) {
   update(x_temp(val)); 
 }
 
+function update_number_temp(val){
+	document.getElementById("temperature_slider").innerHTML = val
+}
+
 function energy_slider(val) {
   tempp = document.getElementById("temperature_slider").innerHTML
   document.getElementById("energy_slider").innerHTML = val
@@ -33,6 +37,10 @@ function energy_slider(val) {
   line1.attr("y2", y);
   text1.attr("y",y-30)
   circle2.attr("cy", y);
+}
+
+function update_number_e(val){
+	document.getElementById("energy_slider").innerHTML=val
 }
 
 var margin = {right: 0, left: 0}, // position of slider in color field

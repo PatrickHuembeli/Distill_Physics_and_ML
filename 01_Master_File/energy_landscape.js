@@ -78,10 +78,11 @@ circle_energy = svg.selectAll(".dot")
     .attr("class", "dot") // Assign a class for styling
     .attr("cx", function(d, i) { return xScale(i) })
     .attr("cy", function(d) { return yScale(d.y) })
-    .attr("r", 3)
+    .attr("r", 5)
     .attr("id", function(d,i){return "noisy_images"+i})
 	.on("click", function(d,i){
-	    			console.log(i)
+		    		image_for_node.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg')	})
+	.on("mouseover", function(d,i){
 		    		image_for_node.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg')	})
    
 for (j=0;j<points_data.length;j++){
@@ -99,8 +100,16 @@ learn_adjust = 0.1
 unlearn_adjust = 0.05
 
 function learn_phase(){
-	for (j=0; j<neighbour1.length;j++){dataset[neighbour1[j]].y = dataset[neighbour1[j]].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[j])/2)}//*Math.exp(-learning_steps/4)}
-	for (j=0; j<neighbour2.length;j++){dataset[neighbour2[j]].y = dataset[neighbour2[j]].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[j])/2)}//*Math.exp(-learning_steps/4)}
+	if (dataset[8].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[3])/2)>0.001){ 
+	// This if loop checks that the red dot never goes outside the image
+		for (j=0; j<neighbour1.length;j++){
+			dataset_update1 =  dataset[neighbour1[j]].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[j])/2)//*Math.exp(-learning_steps/4)
+			console.log(dataset_update1, neighbour1[3])
+			dataset[neighbour1[j]].y = dataset_update1}}
+	if (dataset[24].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[3])/2)>0){ 
+	for (j=0; j<neighbour2.length;j++){
+		dataset_update2 =  dataset[neighbour2[j]].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[j])/2)//*Math.exp(-learning_steps/4)
+		dataset[neighbour2[j]].y = dataset_update2}}	
 	update_line()
 	learning_steps +=1
 }

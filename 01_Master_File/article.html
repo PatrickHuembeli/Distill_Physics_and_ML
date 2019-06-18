@@ -142,10 +142,10 @@
   <div class="column">
   <p class="slider-label-text">Temperature: </p>
   <p id="temperature_slider" class="slider-label-number"></p>
-    <input id="temp_slider_id" type="range" oninput="temp_slider(this.value)" min="0.001" max="1" step="0.001">
+    <input id="temp_slider_id" type="range" onchange="temp_slider(this.value)" oninput="update_number_temp(this.value)" min="0.001" max="1" step="0.01">
     <p class="slider-label-text">Energy Gap: </p>
     <p id="energy_slider" class="slider-label-number" width="100%"></p>
-    <input type="range" oninput="energy_slider(this.value)" min="0" max="10" step="0.01">
+    <input type="range" onchange="energy_slider(this.value)" oninput="update_number_e(this.value)" min="0" max="10" step="0.01">
     <p class="figure-text">2-level system with temperature. This is a simple model that shows the influence of temperature on the probability to be in a certain state. If the system is at zero temperature only the low energy state can be occupied. If the temperature is increased the higher energy level can also be occupied. If we are at very high temperature, both states get equally likely. </p>
   </div>
   <div class="doublecolumn">
@@ -311,7 +311,7 @@
     <input id="learn_button_id" type="button" value="Reinitialize" onclick="reinitialize_phase()">
   </div>
   <div class="triplecolumn">
-    <figure style = "width:100%; height:300px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
+    <figure style = "width:100%; height:400px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
   <div id = "energy_landscape_figure_id" style="width:100%, height:100%, position:absolute; left:0px; top:0px"></div>
   </figure>
   <div class="triplecolumn">
@@ -336,17 +336,17 @@
   <div class="column">
   <p id="weight_slider_text" class="slider-label-text">Weight</p>
   <p id="weight_slider_value" class="slider-label-number"></p>
-    <input id="weight_slider_id" value=0 type="range" onchange="slider_fct_RBM(this.value,1)" min="-2" max="2" step="0.01">
+    <input id="weight_slider_id" value=0 type="range" onchange="slider_fct_RBM(this.value,'')" min="-2" max="2" step="0.01">
   <p id="bias_slider_text" class="slider-label-text">Bias</p>
   <p id="bias_slider_value" class="slider-label-number" width="50%"></p>
-    <input id="bias_slider_id" value=0 type="range" oninput="slider_bias_just_text(this.value)" onchange="slider_bias_fct_RBM(this.value,1)" min="-2" max="2" step="0.01">
+    <input id="bias_slider_id" value=0 type="range" oninput="slider_bias_just_text(this.value,'')" onchange="slider_bias_fct_RBM(this.value,'')" min="-2" max="2" step="0.01">
   <div>
-  <input type="checkbox" onclick="change_layout_hidden()" id="hidden_check" name="hidden_check"
+  <input type="checkbox" onclick="change_layout_hidden('')" id="hidden_check" name="hidden_check"
          checked>
   <label for="hidden_check">Allow hidden units</label>
   </div>
   <div>
-  <input type="checkbox" onclick="change_layout_restricted()" id="restricted_check" name="restricted_check">
+  <input type="checkbox" onclick="change_layout_restricted('')" id="restricted_check" name="restricted_check">
   <label for="restricted_check">Make it restricted</label>
   </div>
   </div>
@@ -358,7 +358,37 @@
   </div>
   </div>
   <div class="caption-triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
+
+ <div class="row">
+  <div class="column">
+  <p id="weight_slider_text_XOR" class="slider-label-text">Weight</p>
+  <p id="weight_slider_value_XOR" class="slider-label-number"></p>
+    <input id="weight_slider_id_XOR" value=0 type="range" onchange="slider_fct_RBM(this.value,'_XOR')" min="-2" max="2" step="0.01">
+  <p id="bias_slider_text_XOR" class="slider-label-text">Bias</p>
+  <p id="bias_slider_value_XOR" class="slider-label-number" width="50%"></p>
+    <input id="bias_slider_id_XOR" value=0 type="range" oninput="slider_bias_just_text(this.value,'_XOR')" onchange="slider_bias_fct_RBM(this.value,'_XOR')" min="-2" max="2" step="0.01">
+  <div>
+  <input type="checkbox" onclick="change_layout_hidden('_XOR')" id="hidden_check_XOR" name="hidden_check_XOR"
+         checked>
+  <label for="hidden_check">Allow hidden units</label>
+  </div>
+  <div>
+  <input type="checkbox" onclick="change_layout_restricted('_XOR')" id="restricted_check_XOR" name="restricted_check_XOR">
+  <label for="restricted_check">Make it restricted</label>
+  </div>
+  </div>
+  <div class="doublecolumn">
+    <figure style = "width:100%; height:320px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete_XOR">
+  <div id = "RBM_complete_id_XOR" style="position:absolute; left:0px; top:0px"></div>
+  </figure>
+  <script type = "text/javascript" src = "RBM_complete_XOR.js" ></script>
+  </div>
+  </div>
+  <div class="caption-triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
   For this you have to adjust the weights and biases by clicking on the conections and the biases and adjust them with the slider.
+  The color of the nodes indicates in which direction the spins are. This can help you to find the weights for a certain configurations and make its energy high or low. Remember that the wanted configurations should be low energy. And all the others should be higher energy. A way to find the solution for this task is to set the spins of the model to a B&S configuration and make its energy as small as possible. Then change to another B&S configuration and repeat. You will figure out eventually how you "learn" the weights. If you want to have a working solution, click the solution button.</p></div>
+	  
+For this you have to adjust the weights and biases by clicking on the conections and the biases and adjust them with the slider.
   The color of the nodes indicates in which direction the spins are. This can help you to find the weights for a certain configurations and make its energy high or low. Remember that the wanted configurations should be low energy. And all the others should be higher energy. A way to find the solution for this task is to set the spins of the model to a B&S configuration and make its energy as small as possible. Then change to another B&S configuration and repeat. You will figure out eventually how you "learn" the weights. If you want to have a working solution, click the solution button.</p></div>
 
   <p>More complex target distribution cannot be approximated without hidden nodes. To only use a Ising system to model data, where every spin represents a data point, will not be sufficient. A much more expressive model is the Boltzmann machine, where we start to distinguish between visible and hidden spin variables. On first glance there is no difference between the two models except the name of the nodes. But the crucial point is that only the visible units are used to represent data. The hidden units are only there to increase the space of possible configurations and their state will be ignored in the end. This way we can increase the expressivity of the model.</p>
@@ -412,29 +442,6 @@ If a particular expectation value (or coordinate) <d-math>\langle x_k\rangle</d-
   <h2 id="conclusion">Conclusion</h2>
 
   <p><b>PW: we should finish the conclusions with a paragraph on how these insights will help develop new energy-based models, e.g., new QBMs, continuous-valued stuff, what-not.</b></p>
-
-  <script>
-    const figure = document.querySelector("d-figure#last-figure");
-    const initTag = document.createElement("span");
-    initTag.textContent = "initialized!"
-    figure.appendChild(initTag);
-    figure.addEventListener("ready", function() {
-      const initTag = figure.querySelector("span");
-      initTag.textContent = "ready"
-      console.log('ready')
-    });
-    figure.addEventListener("onscreen", function() {
-      const initTag = figure.querySelector("span");
-      initTag.textContent = "onscreen"
-      console.log('onscreen')
-    });
-    figure.addEventListener("offscreen", function() {
-      const initTag = figure.querySelector("span");
-      initTag.textContent = "offscreen!"
-      console.log('offscreen')
-    });
-  </script>
-
 
 </d-article>
 
