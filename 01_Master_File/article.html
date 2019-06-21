@@ -34,7 +34,7 @@
   <distill-header></distill-header>
 <d-front-matter>
   <script id='distill-front-matter' type="text/json">{
-    "title": "The Physics behind Energy-Based Models",
+    "title": "The Physics of Energy-Based Models",
     "description": "We need to understand the simple models",
     "published": "XXX xx, 2019",
     "authors": [
@@ -87,55 +87,47 @@
 <!--  INTRODUCTION -->
   <a class="marker" href="#section-1" id="section-1"><span>Introduction</span></a>
 
-  <p>
-  In the 1980s, graphical models were extensively studied <b>PW: It was Judea Pearl who came up with graphical models in the 1980s -- this is more of the Bayesian/Markovian network stuff, but it might be worth referencing. He might have had a book by the late 1980s on this</b>.
-  A subset of these models are called energy-based models, which have properties familiar from the theory of neural networks, but they are also grounded in statistical mechanics <b>PW: a reference or two wouldn't hurt</b>, which is a branch of modern physics.
-  In this article, we will walk you through the dynamics of the most important energy-based models – Hopfield networks and Boltzmann machines – reflecting on the meaning of the underlying concepts in computer science and physics.
-  Additionally, we will provide a new way of interpreting training from the perspective of thermal equilibration and review the differences between learning and memorizing in this perspective.
-  </p>
+  <p> Inspiration takes many forms. A painter beholds a majestic sunrise and translates its colours onto a canvas. A writer embarks on an adventure, transforming life experiences into compelling stories. But a scientist attempting to design artificial intelligence systems, where do they look for inspiration? A possible starting point is to contemplate intelligence as it manifests itself in nature: living organisms that are capable of understanding, remembering, and creativity. This can prove to be a gargantuan effort, after all, intelligent beings are extraordinarily complex. Can we instead draw inspiration from simpler, more fundamental systems? </p>
 
-  <p>
-  Energy-based models emerged in the machine learning literature in the 1980s.
-	Essentially, machine learning researchers &ldquo;ported&rdquo; certain ideas which were originally developed for statistical physics. In particular, the idea that the probability for a system to be in a particular configuration   <d-math>x</d-math> can be specified using a single scalar function – the <em>energy</em> <d-math>E(x)</d-math> – of that configuration.</p>
+  <p> In this article, we take a journey to understand how artificial intelligent systems can originate from the collective behaviour of interacting particles. In the process, we revisit fundamental concepts underlying the theory and practice of energy-based models, including the design, implementation, and training of Hopfield networks and Boltzmann machines. Along the way, we highlight the connection between methods in machine learning and fundamental physical principles, offering a new perspective on these concepts. </p>
 
-  <p>These models were further developed, extended, and improved, over several decades. Currently, the hottest topic in machine learning is deep neural networks trained by backpropagation: energy-based models have fallen somewhat out of favour amongst practitioners. Despite this, some energy-based models, Boltzmann machines especially, have recently been “back-ported” to physics, where they have successfully been used to model the wavefunctions of quantum systems <d-cite key="carleo2017solving"></d-cite>. They also seem to get back into the focus of fundamental research in machine learning. <d-footnote>According to this <a href="https://twitter.com/datasciencenig/status/1020355546581553152" target="_blank">tweet</a>, Yoshua Bengio as an example wants to return to studying Boltzmann machines for a better understanding of generative models.</d-footnote> Furthermore Boltzmann machines are still being used in other areas, such as recommendation systems <d-cite key='salakhutdinov_restricted_2007'></d-cite><b>PW: We could also cite https://openai.com/blog/energy-based-models/</b> The rekindled interest is understandable: many types of energy-based models are generative, guarantee to sample a valid probability distribution, and they can often be stacked to create deep, hierarchical representations <b>PW: Cite the deep belief network paper</b>.</p>
-
-  <p>In the first part of this article we introduce the framework of energy-based models, alternating between a computer science view and a physics perspective, and introduce the most common architectures.
-  Most of the models are probabilistic, so we also take a closer look at sampling the distributions they model.
-  In the second part of the article, we will describe the training procedure in detail, introducing a new interpretation of the procedure coming from physics principles.</p>
 
 <!-- Second Section  2  -->
   <a class="marker" href="#section-2" id="section-2"><span>Energy-based models</span></a>
   <h2 id="testing-the-bm-as-a-trained-model">Energy-based models</h2>
 
-  Energy-based models rely on the principle of maximum entropy. From the principle of maximum entropy one obtains the Boltzmann distribution that describes a system at thermal equilibrium at finite temperature.
-  The nature of this system will be defined by the choice of the constraints under which we want to maximise the entropy and the sufficiency of their statistics.
-  We will have a brief discussion about energy-based models and the connection of energy and probability which will lead us to the first concrete machine learning model, the Hopfield network. We will draw the connection of the sampling procedure of these models and how physical system equilibrate. The introduction of hidden and visible units will finally lead us to the Boltzmann machine. We will emphasise why the use of hidden units is beneficial for machine learning purposes, but also what it physically means. And finally we will emphasise the importance of the introduction of a bipartition of the graph of the Boltzmann machine, which is commonly known as a restricted Boltzmann machine.
+  <p>
+  Energy-based models emerged in the machine learning literature in the 1980s [].
+  They were further developed, extended, and improved, over several decades. Some energy-based models, Boltzmann machines especially, have recently been “back-ported” to physics, where they have successfully been used to model the wavefunctions of quantum systems <d-cite key="carleo2017solving"></d-cite>. They also seem to get back into the focus of fundamental research in machine learning. <d-footnote>According to this <a href="https://twitter.com/datasciencenig/status/1020355546581553152" target="_blank">tweet</a>, Yoshua Bengio as an example wants to return to studying Boltzmann machines for a better understanding of generative models.</d-footnote> Furthermore Boltzmann machines are still being employed in other areas, such as recommendation systems <d-cite key='salakhutdinov_restricted_2007'></d-cite><b>PW: We could also cite https://openai.com/blog/energy-based-models/</b> The rekindled interest is understandable: many types of energy-based models are generative, guarantee to sample a valid probability distribution, and they can often be stacked to create deep, hierarchical representations <b>PW: Cite the deep belief network paper</b>.</p>
 
-<!-- Second Section  2.1  -->
-  <a class="marker" href="#section-2.1" id="section-2.1"><span>Maximum Entropy</span></a>
-  <h3 id="the-principle-of-maximum-entropy">The principle of maximum entropy</h3>
-  <p>The <em>principle of maximum entropy</em>, tells us that, amongst all distributions which are consistent with known observations (e.g., the expectation values of certain random variables), the distribution with maximal entropy should be preferred. Known observations in machine learning are for example the statistics of single input pixels or the correlations between pixels of the data.</p>
+  <p>
+  To comprehend the origin of energy-based models, imagine being an ambitious experimental scientist attempting to build a physical system that is capable of exhibiting signs of intelligence. This is indeed an ambitious goal. For instance, being able to fully control particles is very difficult; typically they jitter and move randomly as they interact with the environment. Therefore, as an initial strategic choice, we aim to use these fluctuations to our advantage and design probabilistic systems. Mathematically, they are characterized by a probability distribution that determines the likely configurations of the system. The challenge is to design systems that are sufficiently complex to give rise to rich behaviour, but also simple enough that they can be efficiently trained and characterized. Henceforth, we consider that this system is built from a large connection of particles with few degrees of freedom.</p>
 
-  <p>Intuitively, it makes sense to choose the distribution with maximum entropy. If we do not have any information – and therefore no constraint – about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model, while remaining consistent with the degrees of freedom that are constrained. Choosing the maximum entropy model reduces the amount of potentially biased or unsubstantiated prior information built into a model.
-  </p>
+<p>
+For large systems, it is intractable to keep track of all rapidly fluctuating internal degrees of freedom; we typically can only expect to have access to coarse-grained information, like the total energy of the system. However, we can apply the laws of physics to determine the system's energy for any given configuration. This is encapsulated in terms of an <em> energy function </em> <d-math> E(x) </d-math> that assigns energy values to the possible configurations 
+<d-math> x=(x_1, x_2, \ldots, x_n) </d-math> of an <d-math>n</d-math>-particle system. Given the constraint that the average energy <d-math> \langle E(x) \rangle </d-math> of the system is fixed, what probability distribution should we assign to its specific configurations? Intuitively, it makes sense to choose the distribution with maximum entropy: if we do not have any information – and therefore no constraint – about a particular degree of freedom of a system, we should remain maximally flexible in our choice of model while remaining consistent with the quantitites that are constrained. Choosing the maximum entropy model rthus educes the amount of potentially biased or unsubstantiated prior information built into a model. This strategy is known as <em> Jaynes' maximum entropy principle </em>: in assigning a model on the basis of partial available information, assign the distribution with the largest possible entropy. The resulting distribution <d-math> P(x) </d-math> is the solution to the optimization problem
 
-  <p>Suppose we have a system which can exist in many different possible configurations <d-math>\{\vec{x}_j\}_{j=1}^J</d-math>; the elements of these vectors are random variables. We assume a discrete set of configurations, but similar arguments can be made for a continuous set. We have some partial information about the system, specifically, the expectation values of functions <d-math>r_k</d-math> of the random variables <d-math>\{r_k(\vec{x})\}_{k=1}^K</d-math>. These can be constraints forced upon the system by us or actually observed in the data. That is, we have the constraints on the expectation values<d-math block>  \langle r_k \rangle_{x} = a_k, </d-math> with <d-math>\langle r_k \rangle_{x} = \sum_i p(\vec{x}_i) r_k(\vec{x}_i). </d-math>
-  These expectation values are not sufficient to completely characterize the system (i.e. if we have more configurations than constraints, <d-math>J>K </d-math>), and we have no information about random variables outside of the span of the <d-math>r_k </d-math>. The principle of maximum entropy tells us that, if we want to model this system, we should maximize the entropy <d-math>H(x) = -\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j) </d-math>, subject to the given constraints, plus we need to take care that the probabilities are normalized <d-math>\sum_{j=1}^J p(\vec{x}_j) = 1 </d-math>. Thus, we want to solve a constrained optimization problem. Instead, we apply using Lagrange multipliers <d-math>\lambda_i</d-math> for the constraints to make the maximization unconstrained, arriving at the following optimization problem:
-  <d-math block> \text{max}_{\lambda_i}[-\sum_{j=1}^J p(\vec{x}_j) \log p(\vec{x}_j) + \sum_{k=1}^K \lambda_k (\langle r_k \rangle_{\vec{x}_j} - a_k) + \lambda_0(\sum_{j=1}^J p(\vec{x}_j) - 1)], </d-math>
-  which has the solution<d-footnote>To derive the connection, we recommend Leonard Susskind's <a href="https://youtu.be/SmmGDn8OnTA?t=1959">lecture</a> from around minute 32, where he gives a simple derivation of the Boltzmann distribution of a system at a fixed energy <d-math>E</d-math> </d-footnote>
-  <d-math block>p(\vec{x}_j) = \frac{1}{Z} \exp \left( \sum_k^K \lambda_k  r_k (\vec{x}_j)\right).
+ <d-math block>
+  \begin{aligned}
+  &\max_{P(x)}\,\,  \sum_x -P(x)\log P(x) \\[0.4em]
+   \text{s.t. }& \sum_x P(x) E(x) = \langle E \rangle,
+  \end{aligned}
   </d-math>
-  This probability distribution is known under the name Boltzmann distribution.</p>
 
-<!-- Second Section  2.2  -->
-  <a class="marker" href="#section-2.2" id="section-2.2"><span>Boltzmann distribution and equilibrium</span></a>
-  <h3 id="boltzmann-distribution-and-equilibrium">Boltzmann distribution and equilibrium</h3>
+whose solution is
+ <d-math block>
+  P(x) = \frac{1}{Z} \exp\left[ - (1/T)) E(x) \right],
+ </d-math>
+where  <d-math>T </d-math> is a free parameter and <d-math> Z=\sum_x \exp[-(1/T) E(x)] </d-math> is a normalization constant known as the partition function. This probability distribution is a familiar one in statistical physics: it is the <em> Boltzmann distribution </em>, which describes the actual likelihood to find a system at a given configuration <d-math>x</d-math> when it is in thermal equilibrium with a bath at temperature <d-math> T </d-math>. The Boltzmann distribution establishes a concrete relationship between energy and probability: low-energy configurations are the most likely to be observed. </p>
 
-  <p>The Boltzmann distribution is known from physics and it describes the statistics of physical configurations of a system that is in an equilibrium at some temperature.
-  In this case the probability of a configuration <d-math>\vec{x}</d-math> is given as <d-math>p(\vec{x}) = 1/Z \exp (- 1/T \cdot E(\vec{x}) )</d-math>.
-  Where <d-math>E(\vec{x})</d-math> is a function that connects the configuration <d-math>\vec{x}</d-math> with the real line, which is also called the energy of the system. Before, we did not explicitely write the temperature because we either set it to <d-math>T=1</d-math> or it is already absorbed in the Lagrange parameters <d-math>\lambda_k</d-math> of the model. But it is important that we are looking at systems with non-zero temperature because for zero temperature a physical system will equilibrate to a local minimum.
-  Allowing a non-zero temperature automatically leads to states that are in a thermal distribution which means the system can be in configurations that are at low energy and not only minimum energy. Low-energy configurations are more likely than high-energy configurations, and if two configurations have the same energy, they are equally likely. The Boltzmann distribution connects energy to probability via the above formula. In the extreme case of very high temperature all the configurations even get equally likely.</p>
+<p>
+Typically, the energy function of a physical system can be expressed as a sum over several contributions arising both from the internal energy of each particle and the interactions between them. In such cases the energy function can be written as <d-math> E(x) = \sum_i w_i f_i(x) </d-math> for appropriate parameters <d-math>w_i </d-math> and functions <d-math>f_i(x)</d-math>. The resulting Boltzmann distribution for a given temperature <d-math> T </d-math> is then uniquely determined by the parameters <d-math>w_i </d-math> or, equivalently, by the expectation values <d-math>\langle f_i(x)\rangle </d-math>, which are the <em> sufficient statistics </em> of the distribution<d-footnote> Insert footnote explaining sufficient statistics for the exponential family </d-footnote>. In other words, knowledge of the expectation values <d-math>\langle f_i(x)\rangle </d-math> fixes the parameters <d-math>w_i </d-math> of the energy function and therefore the resulting properties of the Boltzmann distribution.
+</p> 
+
+<p>
+We are now in good shape: collections of interacting particles at thermal equilibrium lead to complex probabilistic models that can be characterized by a relatively small number of parameters. This paves a path to engineering specific energy functions and training its parameters to build systems that perform interesting tasks. Before proceeding, it is important to recognize the unique role of the temperature parameter: it determines the relative probability of also observing higher-energy configurations, not just the lowest energy ones. In particular, in the limit of zero temperature, only those configurations corresponding to global minima of the energy funciton can be observed, while in the limit of infinite temperature all configurations are equally likely. This is illustrated in <strong><a href='temperature'>(Fig. 1)</a></strong>. Physically, higher temperatures correspond to more energetic interactions between the system and environment, which in turn lead to sporadic "jumps" towards configurations of higher energy. The higher the temperature, the more common and widespread such jumps will be.
+</p>
+
 
 <!-- Figure Section 2.2  -->
   <div class="row">
@@ -151,6 +143,7 @@
   <div class="doublecolumn">
     <p class="slider-label-text">Unnormalized Probability </p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
+    <figure id="temperature">
   <div id = "test_figure_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   <script type = "text/javascript" src = "2-level-sys_new.js" ></script>
@@ -158,31 +151,30 @@
   </div>
   <div class="triplecolumn"> <p class="figure-text">This figure shows the effect of temperature on the occupation probability of a higher energy state. If the energy difference between the sates is big and the temperature is low, the probability of the system to be in the higher energy state goes to zero. On the other side if the temperature increases or the energy gap closes the system gets more likely to be in the higher energy state.<p></div>
 
-  <p> Temperature in the end will make the difference between a simple memory and actual learning where the model is able to generalize the learned data and ouput new configurations that are close to the training data. The intuition here is the following: Memorizing means that each configuration of the training set will be in a local minimum of the energy landscape. Therefore any configuration that is not at a local minimum will equilibrate to the next minimum and we will retrieve the exact training examples.
-  If the temperature is non-zero, configurations that are not exactly at a local minimum of the energy landscape can occur with some probability. The higher the temperature the more likely these higher-energy states get. The configurations around one local energy minimum can occur and if the temperature is not to high the possible configurations are all similar.</p>
 
-<!-- Second Section  2.3  -->
-  <a class="marker" href="#section-2.3" id="section-2.3"><span>From the sufficient statistics to the energy function</span></a>
-  <h3 id="from-the-sufficient-statistics-to-the-energy-function">From the sufficient statistics to the energy function</h3>
-  <p>So far this result is general and can be applied to any constraint. The choice of <d-math>\langle r_k \rangle_x</d-math>, or, equivalently, the choice of the energy function <d-math>E(\vec{x})</d-math>, will define the physics of the model. The most commonly used physical model in machine learning is a so-called <em>Ising model</em>, which is defined through a energy function <d-math>E(\vec {\sigma}) = \sum_{i,j} w_{i,j} \sigma_i \sigma_j + \sum_i h_i \sigma_i</d-math>.
-  Here we used a physics convention: the discrete configurations <d-math>\vec{x}</d-math> are representation by "spins" <d-math>\vec {\sigma}</d-math>, which are just binary random variables taking values <d-math>+1</d-math> or <d-math>-1</d-math>.
-  We can always easily convert between spins and binary random variables taking values <d-math>0</d-math> or <d-math>1</d-math>, or any other discrete variables.
-  To recover a Boltzmann distribution with this energy function, we rename the Lagrange multipliers <d-math>\lambda_k </d-math> to <d-math>w_{i,j} </d-math> which are the couplings and <d-math>h_i </d-math> which are the local magnetic fields.
-  The sufficient statistic of the Boltzmann distribution of such an Ising model are the single-spin expectation values <d-math>\langle \sigma_i \rangle</d-math> and the two-spin correlations <d-math>\langle \sigma_i \sigma_j \rangle</d-math>.
-
-  <d-footnote>Generally for the exponential family, a statistic <d-math>T(\vec{x})</d-math> is sufficient, if we can write the probability <d-math>p(\vec{x})</d-math> as
-  <d-math block>p(\vec{x}) = \exp \left( \alpha(\theta)^T T(\vec{x}) + A(\theta) \right),</d-math>
-  where <d-math>\alpha(\theta)</d-math> is a vector valued function and <d-math>A(\theta)</d-math> is a scalar which for a Boltzmann distribution is simply a normalization factor that we call the partition function <d-math>A(\theta) = \log(1/Z)</d-math> <d-cite key="li_learning_2013"></d-cite>. Therefore in general we are not restricted to model the distribution of our data with the energy function of a classical Ising model. The choice of the constraints will determine the physical model.
-  </d-footnote>
-
-  This means that these two constraints suffice to fully determine the Lagrange parameters of the classical Ising energy function from the data.
-  Therefore we set the constraints to <d-math>\langle r_k \rangle = \langle \sigma_i \sigma_j\rangle</d-math> and <d-math>\langle r_k \rangle = \langle \sigma_i \rangle</d-math>.
-
-  We want to emphasise at this point that for real world machine learning applications higher-order correlations between input nodes are important and the choice of single-spin and two-spin expectation values in general is not sufficient to capture them. So far this model is simply an Ising spin system, where every spin represents a node (e.g. pixel) of our input data. To overcome this issue of low order correlations we will later use a part of the spins in the system as mediators between input nodes, which we we call hidden units.</p>
   <p><b> This is only a test cite</b>We can<d-cite key="mercier2011humans"></d-cite> also cite <d-cite key="gregor2015draw,mercier2011humans"></d-cite>
+
+
 <!-- Second Section  2.4  -->
   <a class="marker" href="#section-2.4" id="section-2.4"><span>Architectures</span></a>
   <h3 id="architecture">Architectures</h3>
+<p>
+The decision remains of selecting specific physical systems and energy functions. A reasonable choice is to start with arguably the simplest interesting model: a collection of particles with only two degrees of freedom and an energy function that depends on both the particle's individual configuration as well as interactions between pairs of particles. Note that to build interesting models, we can anticipate the need for interactions since otherwise each particle behaves independently. In this specific case we describe the configurations of <d-math>n</d-math> particles in terms of the vector <d-math> \sigma=(\sigma_1, \sigma_2, \ldots, \sigma_n) </d-math>, where <d-math>\sigma_i\in\{-1, 1\}</d-math> is the state of the <d-math>i</d-math>-th particle. The resulting energy function is given by
+<d-math block>
+E(\sigma) = \sum_i b_i \sigma_i + \sum_{ij} w_{ij} \sigma_i\sigma_j,
+</d-math> 
+</p>
+which is known as the <em> Ising model </em>, first introduced as a mathematical description of interacting spins in the presence of a magnetic field. The parameters <d-math> b_i </d-math> determine the individual energies of the particles, <d-math> \pm b_i </d-math>. Similarly, the parameters <d-math> w_{ij} </d-math> introduce energy contributions due to the relative states of the particles; for <d-math> w_{ij}>0 </d-math> equal configurations have higher energy while for <d-math> w_{ij}<0 </d-math> are opposite configurations are more energetic. This  
+
+
+
+
+
+
+
+
+
+
   <p>So far we have not restricted ourselves to a certain kind of model. But for practical purposes some models have been proven to be more useful than others and the most common models are based on the energy function of a Ising spin system. The first model we introduce is the Hopfield network, which is simply an Ising model of <d-math>N</d-math> spins at zero temperature, where the dimension of the data vector is equal to the number of available spins. This kind of model does not really learn configurations, it just memorizes them.</p>
 
   <p>The Boltzmann machine is different from the Hopfield network in two aspect. First, it is not at zero temperature anymore, therefore we allow thermal distributions of configurations and not only local minima of the energy. Second, the <d-math>N</d-math> spins of the model are separate into <d-math>v</d-math> visible units (in blue) and <d-math>h</d-math> hidden units (in yellow). The dimension of the input data is equal to the visible units <d-math>v</d-math>. The choice of the Boltzmann machine as an ansatz for the probability distribution in machine learning is very well motivated by its success in experiments (Cite some RBM papers), but for a physicist intuitively the question comes to mind: why shouldn't we use any other energy function that we know from physics? It might be more expressive. When we approach energy-based models from the principle of maximum entropy we can see that the constraints and therefore the data itself determines the model. Therefore, from a theoretical point of view, we are not restricted to Ising-like energy functions. It is even known that single-spin expectation values and two-spin correlators are in general not sufficient to learn complex data, such as images. This issue is overcome by adding hidden units that are not expressing data instances. They are used to mediate between visible units and they are averaged out in the end.</p>
