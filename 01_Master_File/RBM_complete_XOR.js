@@ -76,9 +76,9 @@ dictionary["weight_slider_index"+IDENTIFIERXOR] = 0
 dictionary["bias_slider_index"+IDENTIFIERXOR] = 0
 background_rectangles_hidden_visible(IDENTIFIERXOR)
 generate_histogram(IDENTIFIERXOR)
-generate_RBM_nodes(IDENTIFIERXOR)   
-generate_RBM_biases(IDENTIFIERXOR)   
-generate_RBM_connections(IDENTIFIERXOR)   
+generate_RBM_graph(IDENTIFIERXOR)   
+//generate_RBM_biases(IDENTIFIERXOR)   
+//generate_RBM_connections(IDENTIFIERXOR)   
 add_text_elements(IDENTIFIERXOR)
 
 dictionary["configuration_to_learn"+IDENTIFIERXOR] = [[1,1,1,],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1], [-1,-1,1], [-1,-1,-1]]
