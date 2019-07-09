@@ -15,12 +15,6 @@ var img_width = 20 // This is the size of the image in the svg
     img_height = 20
     img_margin = 10
 
-var compressed_size = 10,
-    canvas_width = 10,
-    canvas_height = 20,
-    neuron_margin_x = 28,
-    neuron_radius = 8;
-
 var distance_hidden = 230 // how far are hidden and visible appart
 
 // Random initial positions

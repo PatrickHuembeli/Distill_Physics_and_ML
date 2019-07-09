@@ -43,9 +43,19 @@ function update_number_e(val){
 	document.getElementById("energy_slider").innerHTML=val
 }
 
+function probability_2_level(weight, x1, x2, temperature){
+	return 	Math.exp(weight*x1*x2/temperature)/(4*Math.cosh(weight/temperature))
+}
+
+console.log(probability_2_level(10,-1,-1,1))
+console.log(probability_2_level(10,-1,1,1))
+console.log(probability_2_level(10,1,-1,1))
+console.log(probability_2_level(10,1,1,1))
+
 var margin = {right: 0, left: 0}, // position of slider in color field
     width = 700
     height = 600
+    distance_systems = 100
 
 var svg2 = d3.select(identity_test)
     .append("svg")
@@ -117,6 +127,42 @@ text1 = svg2.append("text")
             .attr("y", function(d){return y_line1+35})
             .text("p₁: ");            
                                                  
+line3 = svg2.append("line")
+    .attr("x1", x_2level - 50+distance_systems)
+    .attr("x2", x_2level + 50+distance_systems)
+    .attr("y1", y_line1)
+    .attr("y2", y_line1)
+    .style("stroke", "black");
+
+line4 = svg2.append("line")
+    .attr("x1", x_2level - 50+distance_systems)
+    .attr("x2", x_2level + 50+distance_systems)
+    .attr("y1", y_line2)
+    .attr("y2", y_line2)
+    .style("stroke", "black");
+
+
+circle3 = svg2.append("circle")
+             .attr("cx", x_2level+distance_systems)
+             .attr("cy", y_line2)
+             .attr("r", 20);
+             
+circle4 = svg2.append("circle")
+             .attr("cx", x_2level+distance_systems)
+             .attr("cy", y_line1)
+             .attr("r", 20);                         
+             
+text3= svg2.append("text")
+            .attr("class", "general_text")
+            .attr("x", x_text_prob+distance_systems)
+            .attr("y", y_line2+35)
+            .text("p₀: "); 
+            
+text4 = svg2.append("text")
+            .attr("class", "general_text")
+            .attr("x", x_text_prob+distance_systems)
+            .attr("y", function(d){return y_line1+35})
+            .text("p₁: ");            
 // -----------------------------------------------------------------------------
 // PLOT functions
 

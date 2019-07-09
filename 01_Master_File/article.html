@@ -150,16 +150,18 @@ As ambitious scientists, we are now in good shape: collections of interacting pa
     <input id="temp_slider_id" type="range" onchange="temp_slider(this.value)" oninput="update_number_temp(this.value)" min="0.001" max="1" step="0.01">
     <p class="slider-label-text">Energy Gap: </p>
     <p id="energy_slider" class="slider-label-number" width="100%"></p>
-    <input type="range" onchange="energy_slider(this.value)" oninput="update_number_e(this.value)" min="0" max="10" step="0.01">
-    <p class="figure-text">2-level system with temperature. This is a simple model that shows the influence of temperature on the probability to be in a certain state. If the system is at zero temperature only the low energy state can be occupied. If the temperature is increased the higher energy level can also be occupied. If we are at very high temperature, both states get equally likely. </p>
+    <input type="range" onchange="energy_slider(this.value)" oninput="update_number_e(this.value)" min="0" max="1" step="0.01">
+    <p class="slider-label-text">Coupling strength: </p>
+    <p id="coupling_strength" class="slider-label-number" width="100%"></p>
+    <input type="range" onchange="coupling_slider(this.value)" oninput="update_number_coupling(this.value)" min="-1" max="1" step="0.5">
+    <p class="figure-text">Figure caption </p>
   </div>
   <div class="doublecolumn">
-    <p class="slider-label-text">Unnormalized Probability </p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
     <figure id="temperature">
   <div id = "test_figure_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
-  <script type = "text/javascript" src = "2-level-sys_new.js" ></script>
+  <script type = "text/javascript" src = "2-level-system_coupled.js" ></script>
   </div>
   </div>
   <div class="triplecolumn"> <p class="figure-text">This figure shows the effect of temperature on the occupation probability of a higher energy state. If the energy difference between the sates is big and the temperature is low, the probability of the system to be in the higher energy state goes to zero. On the other side if the temperature increases or the energy gap closes the system gets more likely to be in the higher energy state.<p></div>

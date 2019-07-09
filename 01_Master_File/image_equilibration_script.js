@@ -21,8 +21,8 @@ var main_img_width = 128
 var compressed_size = 10,
     canvas_width = 10,
     canvas_height = 20,
-    neuron_margin_x = 10,
-    neuron_radius = 8;
+    neuron_margin_x = 20,
+    neuron_radius = 10;
 
 var distance_hidden = 230 // how far are hidden and visible appart
 

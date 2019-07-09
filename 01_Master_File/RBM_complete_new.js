@@ -16,6 +16,8 @@ dictionary = {}
 dictionary["h_units"+IDENTIFIER] = 2
 dictionary["v_units"+IDENTIFIER] = 4
 dictionary["total_spins"+IDENTIFIER] = 6
+dictionary["hidden_vecs"+IDENTIFIER] = permutations_of_vector(dictionary["h_units"+IDENTIFIER])
+dictionary["bm_permutations"+IDENTIFIER] = permutations_of_vector(dictionary["total_spins"+IDENTIFIER])
 var width = 700;
 var height = 250;
 var radius = 15.0
@@ -36,7 +38,7 @@ var tooltip = d3.select("body") //This is in body not svg
   .attr('class', 'tooltip');
 
 // Scaling for the positioning functions. Changes size of graph
-var scaling = 100
+var scaling = 80
 
 var histo_width = 30
 var histo_height = 200
@@ -65,18 +67,21 @@ update_architecture(IDENTIFIER)
 
 dictionary["weight_slider_index"+IDENTIFIER] = 0
 dictionary["bias_slider_index"+IDENTIFIER] = 0
+dictionary["histogram_data_init"+IDENTIFIER] = [0.05,0.05,0.05,0.05,0.05,0.05] 
 background_rectangles_hidden_visible(IDENTIFIER)
 generate_histogram(IDENTIFIER)
-generate_RBM_graph(IDENTIFIER)   
+generate_RBM_nodes(IDENTIFIER)   
+generate_RBM_biases(IDENTIFIER)   
+generate_RBM_connections(IDENTIFIER)   
 add_text_elements(IDENTIFIER)
 
 dictionary["configuration_to_learn"+IDENTIFIER] = [[-1,-1,1,1],[1,-1,-1,1],[1,1,-1,-1],[-1,1,1,-1],[-1,-1,-1,-1],[1,1,1,1]]
-add_visible_configs(histo_pos_gen(0), histo_y_pos, 4, 10, [0,0,1,1])
-add_visible_configs(histo_pos_gen(1), histo_y_pos, 4, 10, [1,0,1,0])
-add_visible_configs(histo_pos_gen(2), histo_y_pos, 4, 10, [1,1,0,0])
-add_visible_configs(histo_pos_gen(3), histo_y_pos, 4, 10, [0,1,0,1])
-add_visible_configs(histo_pos_gen(4), histo_y_pos, 4, 10, [1,1,1,1])
-add_visible_configs(histo_pos_gen(5), histo_y_pos, 4, 10, [0,0,0,0])
+add_visible_configs(histo_pos_gen(0), histo_y_pos, 4, 10, [0,0,1,1],IDENTIFIER)
+add_visible_configs(histo_pos_gen(1), histo_y_pos, 4, 10, [1,0,1,0],IDENTIFIER)
+add_visible_configs(histo_pos_gen(2), histo_y_pos, 4, 10, [1,1,0,0],IDENTIFIER)
+add_visible_configs(histo_pos_gen(3), histo_y_pos, 4, 10, [0,1,0,1],IDENTIFIER)
+add_visible_configs(histo_pos_gen(4), histo_y_pos, 4, 10, [1,1,1,1],IDENTIFIER)
+add_visible_configs(histo_pos_gen(5), histo_y_pos, 4, 10, [0,0,0,0],IDENTIFIER)
 
 function background_rectangles_hidden_visible(identifier){
 	vis_background_rect_width = 250
@@ -136,13 +141,11 @@ function update_architecture(identifier){
 			.attr("id", "RBM_complete_main_svg"+identifier)
 
 	background_rectangles_hidden_visible()
-	visible_vecs = permutations_of_vector(v_units)
-	hidden_vecs = permutations_of_vector(h_units)
-	bm_permutations = permutations_of_vector(total_spins)
+	//visible_vecs = permutations_of_vector(v_units)
 }
 
 function generate_histogram(identifier){
-var histogram_data = [0.05,0.05,0.05,0.05,0.05,0.05] 
+var histogram_data = dictionary["histogram_data_init"+identifier] 
 
 var x_histogram = d3.scaleLinear()
           .range([0, 100]);
@@ -150,7 +153,7 @@ var y_histogram = d3.scaleLinear()
 		.domain([0,0.5])
           .range([100, 0]);
 
-histogram_svg = d3.select("#RBM_sampler_histo"+identifier).append("g")
+var histogram_svg = d3.select("#RBM_sampler_histo"+identifier).append("g")
 
 // append the bar rectangles to the svg element
 histogram_svg.selectAll("rect")
@@ -311,7 +314,7 @@ function line_pos_gen_y2(d,identifier){
 // Genearte the RBM Graph
 // =============================================================================
 
-function generate_RBM_graph(identifier){
+function generate_RBM_nodes(identifier){
 // Define tooltips for hovering information
 
     // -------------------------------------------------------------------------
@@ -350,10 +353,11 @@ function generate_RBM_graph(identifier){
       .on("mouseout", function() {
         return tooltip.style("visibility", "hidden");
       })
-
+}
     // -------------------------------------------------------------------------
     // Draw bias rectangles for the RBM 
     // -------------------------------------------------------------------------
+function generate_RBM_biases(identifier){   
     d3.select("#RBM_complete_main_svg"+identifier).selectAll()
         .data(dictionary["spins_data"+identifier])
         .enter()	
@@ -391,11 +395,12 @@ function generate_RBM_graph(identifier){
       .on("mouseout", function() {
         return tooltip.style("visibility", "hidden");
       })
-
+}
     // -------------------------------------------------------------------------
     // Draw lines for the RBM 
     // -------------------------------------------------------------------------
-    d3.select("#RBM_sampler"+identifier).selectAll()
+function generate_RBM_connections(identifier){ 
+   d3.select("#RBM_sampler"+identifier).selectAll()
         .data(dictionary["connection_graph"+identifier])
         .enter()
         .append("line")
@@ -515,6 +520,7 @@ function all_configs_given_v(single_visible, hidden_permutations){
 // calculate probability of given visible configuration
 // =============================================================================
 function prob_of_v(single_visible, hidden_permutations, identifier){
+    var bm_permutations = dictionary["bm_permutations"+identifier]
     Z = part_fct(bm_permutations, identifier)
     boltzmann_factor = 0
     all_conf = all_configs_given_v(single_visible, hidden_permutations)
@@ -545,15 +551,15 @@ return prob
 // =============================================================================
 // returns the individual probabilities of visible units to be 1
 // =============================================================================
-function p_total_v(visible_vecs, hidden_vecs, identifier){
-    var v_units = dictionary["v_units"+identifier]
-    all_probs = []
-    for (i=0; i<v_units; i++){
-        all_probs.push(p_individual_v(i, visible_vecs, hidden_vecs))
-    }
-    return all_probs
-    }
-
+//function p_total_v(visible_vecs, hidden_vecs, identifier){
+//    var v_units = dictionary["v_units"+identifier]
+//    all_probs = []
+//    for (i=0; i<v_units; i++){
+//        all_probs.push(p_individual_v(i, visible_vecs, hidden_vecs))
+//    }
+//    return all_probs
+//    }
+//
 // -------------------------------------------------------------------------
 // Weight and Bias TEXT
 // -------------------------------------------------------------------------
@@ -584,6 +590,7 @@ function slider_bias_fct_RBM(h, identifier) {
 	var spins_new = dictionary["spins_new"+identifier]
 	var bias_slider_index = dictionary["bias_slider_index"+identifier]
 	var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
+	var hidden_vecs = dictionary["hidden_vecs"+identifier]
        dictionary["biases"+identifier][bias_slider_index] = h
 	value = document.getElementById("bias_slider_value"+identifier)
 	value.innerHTML =  h
@@ -609,6 +616,8 @@ function slider_fct_RBM(h,identifier) {
 	  var spins_new = dictionary["spins_new"+identifier]
 	  var weight_slider_index = dictionary["weight_slider_index"+identifier]
 	  var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
+	  var hidden_vecs = dictionary["hidden_vecs"+identifier]
+	  console.log(configuration_to_learn)
           idx1 = connection_graph[weight_slider_index][0]	
           idx2 = connection_graph[weight_slider_index][1]	    
           weight_matrix[idx1][idx2] = h 
@@ -617,6 +626,7 @@ function slider_fct_RBM(h,identifier) {
           d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
 	  histogram_data = []  
 	  for (j=0; j<configuration_to_learn.length; j++){
+		  console.log(j, hidden_vecs)
 	  	histogram_data.push(prob_of_v(configuration_to_learn[j], hidden_vecs, identifier))}
           update_histogram(histogram_data, identifier)         
         } 
@@ -631,6 +641,7 @@ function histo_pos_gen(d) {
 
 function update_histogram(histogram_data, identifier){
     for (i=0; i<histogram_data.length; i++) {
+	    console.log(histogram_data)
         d3.select("#histo"+identifier+i).attr("height", function(){return histogram_data[i]*histo_height})
                             .attr("y", function(){return histo_y_pos-100+(1-histogram_data[i])*histo_height}) 
     }
@@ -640,9 +651,9 @@ function update_histogram(histogram_data, identifier){
 // Add configurations that have to be trained
 // ============================================================================
 
-function add_visible_configs(x_pos, y_pos, radius, margin, config){
+function add_visible_configs(x_pos, y_pos, radius, margin, config,identifier){
 	small_shift_for_top_row_x = 6
-	histogram_svg.append("rect")
+	d3.select("#RBM_sampler_histo"+identifier).append("rect")
 		.attr("x",5+x_pos-small_shift_for_top_row_x-2*radius)
 		.attr("y",y_pos-2*radius)
 		.attr("rx", 5)
@@ -650,7 +661,7 @@ function add_visible_configs(x_pos, y_pos, radius, margin, config){
 		.attr("height", 35)
 		.attr("fill", "grey")
 		.attr("opacity", 0.2)
-	histogram_svg.selectAll()
+	d3.select("#RBM_sampler_histo"+identifier).selectAll()
 		.data(config)
 		.enter().append("circle")
 		.attr("cx", function(d,i){
@@ -696,6 +707,8 @@ function change_layout(identifier){
 	var weight_slider_index = 0
 	dictionary["weight_slider_index"+identifier] = weight_slider_index	
 	var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
+	var hidden_vecs = dictionary["hidden_vecs"+identifier]
+
 	all_connections = make_connection_new(identifier)
 	connection_graph = all_connections[0]
 	dictionary["connection_graph"+identifier] = connection_graph
