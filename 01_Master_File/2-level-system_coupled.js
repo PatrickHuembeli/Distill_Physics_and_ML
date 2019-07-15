@@ -7,6 +7,7 @@ document.getElementById("energy_slider").innerHTML = 0.5
 document.getElementById("temperature_slider").innerHTML = 1.0
 
 
+
 function temp_slider(val) {
 //   slider_text.style.backgroundColor = "yellow";
   //slider_element = document.getElementById("temp_slider_id")
