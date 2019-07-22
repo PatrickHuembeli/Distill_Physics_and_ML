@@ -8,7 +8,7 @@ var v_units = 4
 var total_spins = h_units + v_units
 
 var width = 700;
-var height = 300;
+var height = 200;
 var radius = 15.0
 var space = 70.0
 
@@ -17,7 +17,7 @@ var center_y = (height / 2);
 
 var margin_x = 0.0
 // Scaling for the positioning functions. Changes size of graph
-var scaling = 80
+var scaling_architecture = 80
 
 SVG_id = "#architecture_Hopfield_id"
 Figure_id = "Hopfield_figure"
@@ -141,20 +141,20 @@ return [connection_graph, weight_matrix]};
 // -----------------------------------------------------------------------------
 function pos_gen_x(d,i){
 	angle = 2*Math.PI/total_spins*i
-	x = Math.cos(angle)*scaling + center_x
+	x = Math.cos(angle)*scaling_architecture + center_x
 	return x
 };
 
 
 function pos_gen_x_rect(d,i){
 	angle = 2*Math.PI/total_spins*i
-	x = Math.cos(angle)*scaling + center_x
+	x = Math.cos(angle)*scaling_architecture + center_x
 	return x+20
 };
 
 function pos_gen_y(d,i){
 	angle = 2*Math.PI/total_spins*i
-	y = Math.sin(angle)*scaling + center_y
+	y = Math.sin(angle)*scaling_architecture + center_y
 	return y
 };
 
@@ -162,27 +162,27 @@ function pos_gen_y(d,i){
 function line_pos_gen_x1(d){
 	angle_1 = 2*Math.PI/total_spins*d[0]
 	angle_2 = 2*Math.PI/total_spins*d[1]
-	x_1 = Math.cos(angle_1)*(scaling-radius) + center_x
+	x_1 = Math.cos(angle_1)*(scaling_architecture-radius) + center_x
 	return Math.round(x_1)
 };
 
 function line_pos_gen_x2(d){
 	angle_1 = 2*Math.PI/total_spins*d[0]
 	angle_2 = 2*Math.PI/total_spins*d[1]
-	x_2 = Math.cos(angle_2)*(scaling-radius) + center_x
+	x_2 = Math.cos(angle_2)*(scaling_architecture-radius) + center_x
 	return Math.round(x_2)};
 
 function line_pos_gen_y1(d){
 	angle_1 = 2*Math.PI/total_spins*d[0]
 	angle_2 = 2*Math.PI/total_spins*d[1]
-	y_1 = Math.sin(angle_1)*(scaling-radius) + center_y
+	y_1 = Math.sin(angle_1)*(scaling_architecture-radius) + center_y
 	return Math.round(y_1)
 };
 
 function line_pos_gen_y2(d){
 	angle_1 = 2*Math.PI/total_spins*d[0]
 	angle_2 = 2*Math.PI/total_spins*d[1]
-	y_2 = Math.sin(angle_2)*(scaling-radius) + center_y
+	y_2 = Math.sin(angle_2)*(scaling_architecture-radius) + center_y
 	return Math.round(y_2)
 };
 

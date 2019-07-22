@@ -43,10 +43,10 @@ var svg_2 = d3.select(energy_minima_temp_id).append("svg")
 
 image_for_node_2 = svg_2.append('image')
     .attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+1+'.jpg')
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", 50)
-    .attr("height", 50)
+    .attr("x", 65)
+    .attr("y", 20)
+    .attr("width", 70)
+    .attr("height", 70)
 
 line_energy_2 = svg_2.append("path")
     .datum(plot_data) // 10. Binds data to the line 
@@ -96,7 +96,6 @@ circle_energy_2 = svg_2.selectAll(".dot")
     .attr("cy", function(d) { return y_scale(d.y) })
     .attr("r", 4)
     .attr("id", function(d,i){return "configuration"+i})
-      .on("click", function(d,i){console.log(i)
-                                 image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg')   })
+      .on("mouseover", function(d,i){image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg')   })
 
 
