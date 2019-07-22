@@ -141,30 +141,32 @@ Knowledge of the expectation values <d-math>\langle f_i(x)\rangle </d-math> fixe
 As ambitious scientists, we are now in good shape: collections of interacting particles at thermal equilibrium lead to probabilistic models that can be characterized by a relatively small number of parameters. This paves the path to designing energy functions and training their parameters to build systems that perform intelligent tasks. Before proceeding, it is important to recognize the unique role of the temperature parameter: it determines the relative probability of observing higher-energy configurations, not just the lowest energy ones. In particular, in the limit of zero temperature, only those configurations corresponding to global minima of the energy function can be observed, while in the limit of infinite temperature, all configurations are equally likely. The role of temperature in the Boltzmann distribution is illustrated in Fig. 1. Physically, temperature quantifies the average energy of the interactions between the system and environment, which in turn lead to sporadic "jumps" towards configurations of higher energy. The higher the temperature, the more common and widespread such jumps will be.
 </p>
 
-
 <!-- Figure Section 2.2  -->
-  <div class="row">
-  <div class="column">
-  <p class="slider-label-text">Temperature: </p>
-  <p id="temperature_slider" class="slider-label-number"></p>
-    <input id="temp_slider_id" type="range" onchange="temp_slider(this.value)" oninput="update_number_temp(this.value)" min="0.001" max="1" step="0.01">
-    <p class="slider-label-text">Energy Gap: </p>
-    <p id="energy_slider" class="slider-label-number" width="100%"></p>
-    <input type="range" onchange="energy_slider(this.value)" oninput="update_number_e(this.value)" min="0" max="1" step="0.01">
-    <p class="slider-label-text">Coupling strength: </p>
-    <p id="coupling_strength" class="slider-label-number" width="100%"></p>
-    <input type="range" onchange="coupling_slider(this.value)" oninput="update_number_coupling(this.value)" min="-1" max="1" step="0.5">
-    <p class="figure-text">Figure caption </p>
-  </div>
-  <div class="doublecolumn">
-    <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
-    <figure id="temperature">
-  <div id = "test_figure_id" style="position:absolute; left:0px; top:0px"></div>
-  </figure>
-  <script type = "text/javascript" src = "2-level-system_coupled.js" ></script>
-  </div>
-  </div>
-  <div class="triplecolumn"> <p class="figure-text">This figure shows the effect of temperature on the occupation probability of a higher energy state. If the energy difference between the sates is big and the temperature is low, the probability of the system to be in the higher energy state goes to zero. On the other side if the temperature increases or the energy gap closes the system gets more likely to be in the higher energy state.<p></div>
+<div class="row">
+    <div class="column">
+	  <p class="slider-label-text">Temperature: </p>
+	  <p id="temperature_slider" class="slider-label-number"></p>
+	    <input id="temp_slider_id" type="range" onchange="temp_slider(this.value)" oninput="update_number_temp(this.value)" min="0.001" max="1" step="0.01">
+	    
+	  <!--  <p class="slider-label-text">Energy Gap: </p>
+	    <p id="energy_slider" class="slider-label-number" width="100%"></p>
+	    <input type="range" onchange="energy_slider(this.value)" oninput="update_number_e(this.value)" min="0" max="1" step="0.01"> -->
+	    
+	    <p class="slider-label-text">Coupling strength: </p>
+	    <p id="coupling_strength" class="slider-label-number" width="100%"></p>
+	    <input id="coupling_slider_id" type="range" onchange="coupling_slider(this.value)" oninput="update_number_coupling(this.value)" min="-1" max="1" step="0.5">
+    </div>
+  
+    <div>
+       <d-figure style = "width:270px; height:100px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
+       <div id = "test_figure_id" style="position:absolute; left:0px; top:0px"></div>
+       </d-figure>
+       <script type = "text/javascript" src = "2-level-system_coupled.js" ></script>
+       </div>
+     </div>
+
+  <div class="triplecolumn"> <p class="figure-text">In the simple case of two coupled systems the sign of the coupling determines which configurations are more likely, respectively lower energy. The circles describe two systems and they are colored equally if they are in the same state and they are colored differently if they are not in the same state. Physically these colors could for example be interpretd as spins. 
+Low temperatures make higher energy states less likely and only the low energy configurations will appear. With increasing temperature high energy configurations get more likely. The histogram shows the probabilities of the configurations to appear at a certain coupling and temperature.<p></div>
 
 
 
@@ -198,21 +200,30 @@ Hopfield networks are not entirely general. For example, their corresponding ene
 Finally, as we discuss in upcoming sections, simulating and training Boltzmann machines can be challenging. To make things easier, we study models where some connections are set to zero. In the most extreme case, all intralayer connections are removed, leaving present only connections between visible and hidden nodes. The resulting models are known as <em> Restricted Boltzmann machines </em> (RBMs). Conventionally, the state of an RBM is written in terms of visible and hidden nodes, <d-math>\sigma=(v, h)</d-math> with its energy function given by <d-math>E(v, h)=\sum_i b_iv_i+\sum_j c_jh_j + \sum_{ij}w_{ij}v_ih_j</d-math>. Compared to the fully-connected Boltzmann machine, the RBM is less expressive, as there are fewer parameters. Nevertheless, the advantages gained in simulating and training these models greatly surpass the loss in expressivity, especially since, following the principles of statistical learning theory <d-cite key="neyshabur2017exploring"></d-cite>, less complex models tend to generalize better if their training error is comparable to a more complex model. The three fundamental energy-based models we study in this article, Hopfield networks, Boltzmann machines, and RBMs, are illustrated in Fig. 2.
 </p>
 
+<div class="row">
+	<div class="column">
+		<p class="figure-text">Hopfield network: The number of nodes is equal to the size of the input data. There are no hidden nodes (dashed) contributing to the energy.</p>
+	</div>
+	<div class="column">
+    <p class="figure-text">Boltzmann machine: The Boltzmann machine graph is fully connected. The visible nodes (blue) are clamped to the input data. The hidden nodes (yellow) are free parameters.</p>
+	</div>
+	<div class="column">
+    <p class="figure-text">Restricted Boltzmann machine: Also with hidden and visible nodes, but we don't allow connections within the same layer. This will simplify the training.
+	</div>
+</div>
+
   <div class="row">
   <div class="column">
-    <p class="figure-text">Hopfield network: The number of nodes is equal to the size of the input data. There are no hidden nodes (dashed) contributing to the energy.</p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_Hopfield">
   <div id = "architecture_Hopfield_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   </div>
   <div class="column">
-    <p class="figure-text">Boltzmann machine: The Boltzmann machine graph is fully connected. The visible nodes (blue) are clamped to the input data. The hidden nodes (yellow) are free parameters.</p>
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_BM">
   <div id = "architecture_BM_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
   </div>
   <div class="column">
-    <p class="figure-text">Restricted Boltzmann machine: Also with hidden and visible nodes, but we don't allow connections within the same layer. This will simplify the training.
     <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "architecture_RBM">
   <div id = "architecture_RBM_id" style="position:absolute; left:0px; top:0px"></div>
   </figure>
