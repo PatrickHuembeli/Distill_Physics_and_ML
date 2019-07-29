@@ -15,7 +15,7 @@ document.getElementById("temperature_slider").style.borderRadius = "7px";
 document.getElementById("coupling_strength").innerHTML = init_coupling
 //document.getElementById("energy_slider").innerHTML = 0.5
 document.getElementById("temperature_slider").innerHTML = Math.round(x_temp(init_temp))
-document.getElementById("temperature_slider").style.backgroundColor = d3.rgb(init_temp*255, 0.0, (1-init_temp)*255 ,0.4)
+// document.getElementById("temperature_slider").style.backgroundColor = d3.rgb(init_temp*255, 0.0, (1-init_temp)*255 ,0.4)
 
 document.getElementById("temp_slider_id").value= init_temp
 document.getElementById("coupling_slider_id").value = init_coupling
@@ -29,6 +29,7 @@ function temp_slider(val) {
   energy = 1.0
   coupling = document.getElementById("coupling_strength").innerHTML
 	temp = x_temp(val)
+	console.log("temperature", temp, "coupling", coupling)
 	new_data = update_2L_probabilities(coupling,temp,energy)
 	update_2L_histogram(new_data,twoL_histo_height, twoL_histo_y_pos)
 	update_opacities(new_data)
@@ -38,7 +39,7 @@ function temp_slider(val) {
 function update_number_temp(val){
 	slider_text = document.getElementById("temperature_slider")  	
 	slider_text.innerHTML = x_temp(val).toPrecision(2)
-	slider_text.style.backgroundColor = d3.rgb(val*255, 0.0, (1-val)*255 ,0.4)
+	// slider_text.style.backgroundColor = d3.rgb(val*255, 0.0, (1-val)*255 ,0.4)
 }
 
 function energy_slider(val){
@@ -69,8 +70,10 @@ function update_opacities(new_data){
 
 function coupling_slider(val) {
  	var temperature = document.getElementById("temperature_slider").innerHTML
+	console.log("temperature", temperature, "coupling", val)
 	//var energy_gap = document.getElementById("energy_slider").innerHTML
-	var new_data = update_2L_probabilities(val, temperature, energy_gap)
+	energy = 1.0
+	var new_data = update_2L_probabilities(val, temperature, energy)
 	update_2L_histogram(new_data,twoL_histo_height, twoL_histo_y_pos)
 	update_opacities(new_data)
 }
@@ -115,27 +118,37 @@ function update_2L_histogram(new_data, histo_height, twoL_histo_y_pos){
 var margin = {right: 0, left: 0}, // position of slider in color field
     width = 700
     height_2level = 30
-    height_2level_histo = 120
+    height_2level_histo = 110
     distance_systems = 100
 
-d3.select(identity_test)
+svg_histo = d3.select(identity_test) //container for histogram
     .append("svg")
     .attr("id", "two_level_histogram")
     .attr('class','figures')
-    .attr("width", "100%") // use whole space given in article
+    .attr("width", "100%") 
     .attr("height", height_2level_histo); 
 
-var svg2 = d3.select(identity_test)
+var svg2 = d3.select(identity_test) //container for circles
     .append("svg")
     .attr('class','figures')
-    .attr("width", "100%")
+    .attr("width", 300)
     .attr("height", height_2level);
 
+svg2.append("text")
+     .text("Parity")
+     .attr("class", "general_text")
+     .attr("x", 245)
+    .attr("y", 20)
+    .style("fill", "#004669")
+svg_histo.append("text")
+     .text("Probability")
+     .attr("class", "general_text")
+    .attr("transform", "translate(20,100),rotate(-90)")
+    .style("fill", "#004669")
 
 var centre = width/2
     max_scale = 10 //max scale for x_e
     max_log_scale = 10000
-    energy_gap = 10.0
     y_line1 = 50 // y position of 2-level lines
     y_line2 = 250 
     xplot = 50 // position of plot
@@ -180,24 +193,32 @@ function draw_2level_system(x0,y0,up,width,gap,radius,identity){
 }
 
 function draw_parity_systems(x0,y0,up,width,radius,identity){
-        circle1_color = "red"
-	if (up[0]==true){circle1_color = "blue"}
-        circle2_color = "red"
-	if (up[1]==true){circle2_color = "blue"}
+        color1 = "rgb(255,0,0,0.5)"
+	color2 = "rgb(0,0,255,0.5)"
+	stroke_color = "rgb(0,0,0,1.0)"
+	circle1_color = color1
+	center_shift = 5
+	if (up[0]==true){circle1_color = color2}
+        circle2_color = color1
+	if (up[1]==true){circle2_color = color2}
 	svg2.append("circle")
 	    .attr("id", identity+"circle1")
-	    .attr("cx", x0)
+	    .attr("cx", x0-center_shift)
 	    .attr("cy", y0)
 	    .attr("r", radius)
 	    .style("fill", circle1_color)
-	    .style("opacity", 0.5)
+	    //.style("opacity", 0.5)
+	    .style("stroke", circle1_color)
+	    .style("stroke-opacity", 1.0)
         svg2.append("circle")
 	    .attr("id", identity+"circle2")
-	    .attr("cx", x0+width)
+	    .attr("cx", x0-center_shift+width)
 	    .attr("cy", y0)
 	    .attr("r", radius)
 	    .style("fill", circle2_color)
-	    .style("opacity", 0.5)
+	    //.style("opacity", 0.5)
+	    .style("stroke", circle2_color)
+	    .style("stroke-opacity", 1.0)
 }
 
 function draw_arrow(x0, y0, arrow_width, arrow_height , distance,thick){
@@ -250,7 +271,7 @@ radius_systems = 10
 
 updown = [[false,false],[true,false],[false,true],[true,true]]
 for (n=0;n<updown.length;n++){
-draw_parity_systems(twoL_histo_pos_gen(n)+14,y0_systems,updown[n],10,radius_systems,"paritystate"+n)
+draw_parity_systems(twoL_histo_pos_gen(n)+14,y0_systems,updown[n],23,radius_systems,"paritystate"+n)
 //x_system1 = twoL_histo_pos_gen(n)
 //x_system2 = x_system1 + system_distance
 //draw_2level_system(x_system1,y0_systems,updown[n][0],line_width_systems,gap_systems,radius_systems,"h"+n+"system1")
@@ -266,11 +287,11 @@ function twoL_histo_pos_gen(d) {
 function generate_histogram_2_level(){
 	var twoL_histogram_data = [0.25,0.25,0.25,0.25]
 	
-	var x_histogram = d3.scaleLinear()
-	          .range([0, 100]);
-	var y_histogram = d3.scaleLinear()
-			.domain([0,0.5])
-	          .range([100, 0]);
+	//var x_histogram = d3.scaleLinear()
+	//          .range([0, 200]);
+	//var y_histogram = d3.scaleLinear()
+	//		.domain([0,0.5])
+	//          .range([100, 0]);
 	var y_axis_ticks = d3.scaleLinear().domain([0,0.5]).range([200,100])
 	var histogram_svg = d3.select("#two_level_histogram").append("g")
 	
@@ -279,7 +300,7 @@ function generate_histogram_2_level(){
 		.data(twoL_histogram_data)
 		.enter().append("rect")
 		.style("fill", "#4682b4")
-		.style("opacity", 0.5)
+		.style("opacity", 0.8)
 		.attr("id", function(d,i){return "twolevel_histo"+i})
 		.attr("x", 0) // margin left
 		.attr("y", function(d){return twoL_histo_y_pos-twoL_histo_height+(1-d)*twoL_histo_height}) // margin left
@@ -291,9 +312,9 @@ function generate_histogram_2_level(){
 	  x_pos_histo_axis = twoL_histo_pos_gen(0)-20;
 	  y_pos_histo_axis = twoL_histo_y_pos-twoL_histo_height;
 	  
-	  histogram_svg.append("g")
-	        .call(d3.axisLeft(y_axis_ticks).ticks(5))
-	        .attr("transform", function(){return  "translate("+x_pos_histo_axis+"," + y_pos_histo_axis + ")";})
+	  //histogram_svg.append("g")
+	  //      .call(d3.axisLeft(y_axis_ticks).ticks(5))
+	  //      .attr("transform", function(){return  "translate("+x_pos_histo_axis+"," + y_pos_histo_axis + ")";})
 }
 
 //new_data = update_2L_probabilities(1,1,1)

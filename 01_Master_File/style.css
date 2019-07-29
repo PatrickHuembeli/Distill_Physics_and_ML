@@ -22,7 +22,7 @@ path.plotline {
 }
 
 text.general_text {
-  font: 14px sans-serif;
+  font: 12px sans-serif;
 }
 
 /* Style for RBM Graph */
@@ -41,13 +41,22 @@ circle.hidden_circle {
     opacity: 0.5;
     stroke: blue;
     stroke-width: 2;
+    stroke-opacity: 1.0;
+}
+circle.visible_circle {
+    opacity: 1.0;
+    stroke: black;
+    stroke-width: 1.0;
 }
 
-circle.visible_circle {
+circle.unused_circle {
     opacity: 0.5;
-    stroke: black;
-    stroke-width: 5;
+    stroke-width: 1.0; 
+    fill: rgb(0,0,0,0.1);
+    stroke: rgb(0,0,0,0.5);
+    stroke-dasharray: 5,5;
 }
+
 
 div.tooltip {
     position: absolute;
@@ -134,6 +143,20 @@ padding: 10px;
 /*border: 2px solid red;
 border-radius: 5px;
 border-spacing: 15px; */
+}
+div.column_2level {
+float: left;
+width: 180px; 
+padding: 10px;
+border: 1px solid grey;
+border-radius: 5px;
+}
+div.column_2level_image {
+float: left;
+width: 450px;
+padding: 10px;
+/*border: 1px solid grey;
+border-radius: 5px;*/
 }
 
 div.doublecolumn {

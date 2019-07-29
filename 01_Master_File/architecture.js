@@ -2,6 +2,27 @@ var Hopfield_id = "#architecture_Hopfield_id" // This defines in which div we wr
 var RBM_id = "#architecture_RBM_id"
 var BM_id = "#architecture_BM_id" 
 
+var hidden_nodes_colors = ["blue", "orange"]
+var visible_nodes_colors = ["white", "black"]
+
+function toggle_colors_architecture(selection, d){
+        selection_id = selection.attr('id')
+         if(d>3){
+	 	if(selection_id=="hiddenHopfield_figure"+d){
+		}
+		 else {switch_color(selection, hidden_nodes_colors)}
+	 }
+	else {switch_color(selection, visible_nodes_colors)}
+         }
+
+function switch_color(selection, nodes_color){
+         current_color = selection.style("fill")
+         if(current_color == nodes_color[0]){current_color = nodes_color[1]}
+         else {current_color = nodes_color[0]}
+         selection.transition()
+         selection.style("fill", current_color)
+}
+
 // Default Variables
 var h_units = 4
 var v_units = 4
@@ -204,17 +225,19 @@ var tooltip = d3.select("body") //This is in body not svg
         .data(spins_data)
         .enter()
         .append("circle")
-        .style("fill", nodes_colors[0])
-        .attr('class', 'hidden_circle') // class is needed for style sheet
+        .style("fill", visible_nodes_colors[0])
+        .attr('class', 'visible_circle') // class is needed for style sheet
         .attr("cx", pos_gen_x)
         .attr("cy", pos_gen_y) 
         .attr("r", radius)
         .attr('id', function(d,i){return "hidden"+Figure_id+i})
+	.on("click", function(d){toggle_colors_architecture(d3.select(this), d)})
 
 if (hidden_active==true){
 for (j=v_units; j<v_units+h_units; j++){
 	d3.select("#hidden"+Figure_id+j)
-	.style("fill", nodes_colors[1])}
+	.attr("class", "hidden_circle")
+	.style("fill", hidden_nodes_colors[0])}
 }
 
 if (hidden_active==false){

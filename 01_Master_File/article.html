@@ -80,11 +80,17 @@
 <d-title>
 <!--   <figure style="grid-column: page; margin: 1rem 0;"><img src="momentum.png" style="width:100%; border: 1px solid rgba(0, 0, 0, 0.2);"/></figure> -->
 
-    <figure style = "grid-column: page; margin: 1rem 0;" id = "RBM_Graph">
-  <div id = "RBM_graph_id" style="left:0px; top:0px"></div>
+
+
+
+
+
+
+    <figure style = "grid-column: page; margin: 1rem 0;" id = "Teaser_Id">
+  <div id = "Equilibration_Img_Teaser" style="left:0px; top:0px"></div>
   </figure>
 
-  <script type = "text/javascript" src = "figures/RBM2_script.js" ></script>
+  <script type = "text/javascript" src = "Equilibration_Teaser.js" ></script>
   <p>In this post we will give an introduction into energy based models and especially into Boltzmann machines from the perspective of physics. These models show interesting behaviours with which we attempt to describe basic ideas of learning but also show the limitations of energy based models. We will continuously draw the connections to machine learning and finally also show how energy based models can overcome certain problems that appear in generative models in deep learning such as GANs.</p>
 </d-title>
 <d-byline></d-byline>
@@ -143,29 +149,24 @@ As ambitious scientists, we are now in good shape: collections of interacting pa
 
 <!-- Figure Section 2.2  -->
 <div class="row">
-    <div class="column">
-	  <p class="slider-label-text">Temperature: </p>
-	  <p id="temperature_slider" class="slider-label-number"></p>
-	    <input id="temp_slider_id" type="range" onchange="temp_slider(this.value)" oninput="update_number_temp(this.value)" min="0.001" max="1" step="0.01">
-	    
-	  <!--  <p class="slider-label-text">Energy Gap: </p>
-	    <p id="energy_slider" class="slider-label-number" width="100%"></p>
-	    <input type="range" onchange="energy_slider(this.value)" oninput="update_number_e(this.value)" min="0" max="1" step="0.01"> -->
-	    
-	    <p class="slider-label-text">Coupling strength: </p>
-	    <p id="coupling_strength" class="slider-label-number" width="100%"></p>
+    <div class="column_2level">
+	    <p class="slider-label-text" style="width:110px">Temperature <d-math> T </d-math>:</p>
+	  <p id="temperature_slider" class="slider-label-number" style="width:35px"></p>
+	    <input id="temp_slider_id" type="range" onchange="temp_slider(this.value)" oninput="update_number_temp(this.value)" min="0.29" max="1" step="0.01">
+	    <p class="slider-label-text" style="width:110px">Coupling <d-math> J </d-math>: </p>
+	    <p id="coupling_strength" class="slider-label-number" style="width:35px"></p>
 	    <input id="coupling_slider_id" type="range" onchange="coupling_slider(this.value)" oninput="update_number_coupling(this.value)" min="-1" max="1" step="0.5">
     </div>
   
-    <div>
-       <d-figure style = "width:270px; height:100px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
+    <div class="column_2level_image">
+       <d-figure style = "width:270px; height:100px; display:block; margin-left:20px; margin-right:auto; position:relative" id = "RBM_complete">
        <div id = "test_figure_id" style="position:absolute; left:0px; top:0px"></div>
        </d-figure>
        <script type = "text/javascript" src = "2-level-system_coupled.js" ></script>
        </div>
      </div>
 
-  <div class="triplecolumn"> <p class="figure-text">In the simple case of two coupled systems the sign of the coupling determines which configurations are more likely, respectively lower energy. The circles describe two systems and they are colored equally if they are in the same state and they are colored differently if they are not in the same state. Physically these colors could for example be interpretd as spins. 
+     <div class="triplecolumn"> <p class="figure-text">In the simple case of two coupled systems the sign of the coupling determines which configurations are more likely, respectively lower energy. The circles describe two systems <d-math>x_1,~x_2 </d-math> and they are colored equally if they are in the same state and they are colored differently if they are not in the same state. Physically these colors could for example be interpretd as spins. The energy function reads <d-math>E(x_1, x_2) = J x_1 x_2 </d-math> 
 Low temperatures make higher energy states less likely and only the low energy configurations will appear. With increasing temperature high energy configurations get more likely. The histogram shows the probabilities of the configurations to appear at a certain coupling and temperature.<p></div>
 
 
@@ -240,7 +241,7 @@ Finally, as we discuss in upcoming sections, simulating and training Boltzmann m
 From an experimental perspective, given a collection of particles governed by a specific energy function, sampling from its Boltzmann distribution at a given temperature is straightforward: just place the system in contact with an environment at the desired temperature and register the system's state at different times. The challenge we face is to simulate this process using computer algorithms. <b>JM: Is there already something to be said here about spin-glasses and/or phase transitions?</b> </p> 
 
 <p>
-Consider first the zero-temperature case. The key physical principle underlying the Boltzmann distribution is the connection between energy and probability: the likelihood of observing a specific configuration decreases exponentially with its energy. A strategy to simulate sampling from a Boltzmann distribution is to identify low-energy configurations and, depending on temperature, ocassionally select also states with higher energy. One simple strategy is to locally change the state of each particle such that it decreases the total energy of the system. For an Ising energy function, when keeping the state of all other particles fixed, the change in energy <d-math>\Delta E</d-math> introduced by changing the <d-math>i</d-math>-th particle's state from <d-math>\sigma_i</d-math> to <d-math>-\sigma_i</d-math> is given by <d-math>\Delta E = 2\sigma_i(b_i+\sum_j w_{ij} \sigma_j)</d-math>. With this in mind, to search for equilibrium states of the system, we iteratively apply the update rule
+Consider first the zero-temperature case. The key physical principle underlying the Boltzmann distribution is the connection between energy and probability: the likelihood of observing a specific configuration decreases exponentially with its energy. A strategy to simulate sampling from a Boltzmann distribution is to identify low-energy configurations and, depending on temperature, ocassionally select also states with higher energy. One simple strategy is to locally change the state of each particle such that it decreases the total energy of the system. For an Ising energy function, when keeping the state of all other particles fixed, the change in energy <d-math>\Delta E</d-math> introduced by changing the <d-math>i</d-math>-th particle's state from <d-math>\sigma_i</d-math> to <d-math>-\sigma_i</d-math> is given by <d-math>\Delta E_i = 2\sigma_i(b_i+\sum_j w_{ij} \sigma_j)</d-math>. With this in mind, to search for equilibrium states of the system, we iteratively apply the update rule
 
 <d-math block>\sigma_{i}\rightarrow \left\{{\begin{array}{ll}-\sigma_i~{\text{if }} b_i+\sum_j w_{ij} \sigma_j >0,\\\sigma_i~{\text{otherwise,}}\end{array}}\right.</d-math>
 
@@ -262,7 +263,7 @@ Starting from a random initialization, by repeatedly applying this update rule f
 
 
 <p>
- One possible improvement to this approach is to consider models where the local update rule is even better at finding low-energy configurations. Since the change in energy <d-math>\Delta E_i = -2\sigma_i(b_i+\sum_j w_{ij}\sigma_j)</d-math> for particle <d-math>i</d-math> depends on the states of all other particles, each time a state is updated, it spreads out to all other particles, changing their update rules. For an RBM, however, this is not exactly the case. The energy change in a visible node, <d-math>\Delta E_i = -2v_i(b_i+\sum_j w_{ij}h_j)</d-math> does not depend on any of the other visible nodes, so when one of them is flipped, all other visible nodes are unaffected. This makes the local rule update more effective because we can essentially treat the entire collection of visible nodes as a single entity. A similar statement holds for updating hidden nodes when the visible ones are fixed. In fact, the lack of intralayer interactions in an RBM implies that the conditional probabilities <d-math>P(v|h)</d-math> and <d-math>P(h|v)</d-math> factorize: </p>
+One possible improvement to this approach is to consider models where the local update rule is even better at finding low-energy configurations. Since the change in energy <d-math>\Delta E_i = 2\sigma_i(b_i+\sum_j w_{ij}\sigma_j)</d-math> for particle <d-math>i</d-math> depends on the states of all other particles, each time a state <d-math>\sigma_i </d-math> is updated to <d-math>-\sigma_i </d-math>, it spreads out to all other particles, changing their update rules. For an RBM, however, this is not exactly the case. The energy change in a visible node <d-math> v_i </d-math>,  <d-math>\Delta E_i = 2v_i(b_i+\sum_j w_{ij}h_j)</d-math> does not depend on any of the other visible nodes, so when one of them is flipped, all other visible nodes are unaffected. This makes the local rule update more effective because we can essentially treat the entire collection of visible nodes as a single entity. A similar statement holds for updating hidden nodes when the visible ones are fixed. In fact, the lack of intralayer interactions in an RBM implies that the conditional probabilities <d-math>P(v|h)</d-math> and <d-math>P(h|v)</d-math> factorize: </p>
  <p>
  <d-math block>
   \begin{aligned}
@@ -282,7 +283,7 @@ Moreover, because of the independence between nodes in the same layer, the indiv
 </d-math>
 </p>
 <p>
-Where <d-math>\Delta E_i = -2\sum_j w_{i,j} h_j - b_i</d-math> is the energy difference to change the spin <d-math>v_i = -1</d-math> to <d-math>v_i = 1</d-math> and analogous <d-math>\Delta E_j = -2\sum_i w_{i,j} v_i - c_j</d-math> to change <d-math>h_j = -1</d-math> to <d-math>h_j = 1</d-math>.
+Analogous to the energy difference of flipping a visible node, for a hidden node <d-math>h_j </d-math> the energy difference becomes <d-math>\Delta E_j = 2 h_j( \sum_i w_{i,j} v_i + c_j)</d-math>.
 Note that <d-math>P(v_i=-1|h)</d-math> and <d-math>P(h_j=-1|v)</d-math> follow from these equations. This permits a new sampling strategy. Fixing the hidden nodes, we sample from the conditional distribution <d-math>P(v|h) = \prod_i P(v_i|h)</d-math> by independently sampling the state of each particle from its distribution <d-math>P(v_i|h)</d-math>. Afterwards, the visible nodes are fixed and the same method is applied to the hidden units. By repeating this process several times, the resulting states will be approximately sampled from the system's Boltzmann distribution. This algorithm is known as <em>Gibbs sampling</em>, and it is the method typically used in practice to sample RBMs <d-cite key="carreira2005contrastive"></d-cite>. 
 </p>
 
