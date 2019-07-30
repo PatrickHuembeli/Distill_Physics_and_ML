@@ -8,6 +8,11 @@ var positionInfo = element.getBoundingClientRect();
 var height_new = positionInfo.height;
 var width_new = positionInfo.width;
 
+temp_slider_energy_minim_init_value = 10
+
+document.getElementById("temperature_slider_energy_minima").innerHTML = temp_slider_energy_minim_init_value;
+document.getElementById("coupling_strength").value = temp_slider_energy_minim_init_value
+
 // The number of datapoints for the graph
 var n = 32;
 // The number of actual points for images
@@ -16,7 +21,7 @@ var n_points = 6;
 // 5. X scale will use the index of our data
 var x_scale = d3.scaleLinear()
     .domain([0, n-1]) // input
-    .range([0, width_new-margin.right]); // output
+    .range([5, width_new-margin.right]); // output
 
 // 6. Y scale will use the randomly generate number 
 var y_scale = d3.scaleLinear()
@@ -31,8 +36,11 @@ var plot_line = d3.line()
     .curve(d3.curveMonotoneX) // apply smoothing to the line
 
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-var plot_data = d3.range(n).map(function(d) { return {"y":0.4*Math.cos(d/n*Math.PI*4)+0.45 } })
+var plot_data = d3.range(n).map(function(d) { 
+	return {"y":0.35*Math.cos(d/n*Math.PI*4)-0.2*d/n+0.54 , "c":0} })
 
+plot_data[0].c = 0
+console.log(plot_data[0])
 
 // 1. Add the SVG to the page and employ #2
 var svg_2 = d3.select(energy_minima_temp_id).append("svg")
@@ -61,12 +69,14 @@ function make_temp_gradient(x_bottom, y_bottom, total_height, stepsize){
 	for (i=1; i<Math.floor(total_height/stepsize); i++){
 	  y = y_bottom - i*stepsize
 	  x = x_bottom	
-	  append_rect(max_opacity-0.01*i, x, y, stepsize, 100)
+	  append_rect(max_opacity-0.0075*i, x, y, stepsize, 400)
 	}
 }
 
-make_temp_gradient(50, height_new-10, 100, 5)
-make_temp_gradient(250, height_new-10, 100, 5)
+make_temp_gradient(0, height_new, 150, 5)
+//make_temp_gradient(250, height_new-10, 100, 5)
+
+
 
 function append_rect(opacity, x, y, height, width){
 	svg_2.append("rect")
@@ -95,7 +105,130 @@ circle_energy_2 = svg_2.selectAll(".dot")
     .attr("cx", function(d, i) { return x_scale(i) })
     .attr("cy", function(d) { return y_scale(d.y) })
     .attr("r", 4)
+    .attr("fill", "#ffab00")
     .attr("id", function(d,i){return "configuration"+i})
       .on("mouseover", function(d,i){image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg')   })
+      .on("click", function(d,i){start_convergence(i, 32, true)})
+
+function convergence_hopfield(position, min1, min2, max){
+	// The minimas and maximas are hardcoded
+	min1 = 8
+	max = 16
+	min2 = 24
+	if(position<max){position += Math.sign(min1-position)} 	    //go to min1
+	else {  if(position==max){ position+= Math.sign(Math.random()-0.5)} // exception for position = max
+		else{position += Math.sign(min2-position)} // go to min2
+	}
+	return position
+}
+
+function convergence_inverse_hopfield(position, n, min1, min2, max){
+	// The minimas and maximas are hardcoded
+	min1 = 8
+	max = 16
+	min2 = 24
+	if (position>0&&position<n-1){
+	if(position<max){if(position==min1){ position+= Math.sign(Math.random()-0.5) }
+			 else {position += Math.sign(-min1+position)}} 	    //go to min1
+	else {  	 if(position==max||position==min2){ position+= Math.sign(Math.random()-0.5)} // exception for position = max
+			 else{position += Math.sign(-min2+position)} // go to min2
+	}}
+	return position
+}
+
+function convergence_boltzmann(position, T, n,min1, min2, max){
+	if (Math.exp(-1/T)<Math.random()*2){
+	position = convergence_hopfield(position)}
+	else {position = convergence_inverse_hopfield(position, n)}
+	return position
+}
+
+var time_steps = 2000
 
 
+function draw_red_dot(iterator, pos_list){
+	end = pos_list.length
+	if(iterator==end){return}
+	else {	
+	a = pos_list[iterator]
+	selected_circle = d3.select("#configuration"+a)
+	selected_circle.transition().delay(iterator*time_steps).duration(time_steps)
+			.attr("fill", "red")
+			.attr("r", 5.0)	
+			.transition().duration(time_steps)
+			.attr("fill", "#ffab00")
+			.attr("r", 4.0);
+	iterator += 1
+	d3.select("#configuration"+a)
+				.on("end", draw_red_dot(iterator, pos_list))
+				.on("end", function(){console.log("blablablablabalbalhab")})
+	}
+}
+
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+async function sequence(iterator, pos_list) {
+  await sleep(time_steps/2)
+  for (i=1;i<pos_list.length;i++){
+  a = pos_list[i]
+  await sleep(time_steps); // Wait 50ms…
+  console.log("hello");
+  image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+a+'.jpg'); 
+  }
+}
+
+
+function draw_images(iterator, pos_list){
+	end = pos_list.length
+	if(iterator==end){return}
+	else {
+	console.log(iterator)	
+	a = pos_list[iterator]
+	iterator += 1
+	image_for_node_2.transition().delay(iterator*time_steps).duration(time_steps).attr("opacity", 0.0);
+	image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+a+'.jpg'); 
+	image_for_node_2.transition().duration(time_steps).attr("opacity", 1.0);
+	//imgage_for_node_2.transition().duration(5000).ease(d3.easeLinear).attr("opacity", 1)	
+	image_for_node_2.on("end", draw_images(iterator, pos_list));	
+	}
+}
+
+function start_convergence(a, number_of_images, boltzmann){
+	T = document.getElementById("temperature_slider_energy_minima").innerHTML 
+	console.log(T)
+	d3.selectAll("circle").transition()
+			.attr("fill", "#ffab00")
+			.attr("r", 4.0);
+	pos_list = [a]
+	pos = a
+	for(i=1;i<20;i++){
+		if(boltzmann == true){
+   		pos = convergence_boltzmann(pos, T, number_of_images)
+		}
+		else {
+		pos = convergence_hopfield(pos)
+		}
+		pos_list.push(pos)}
+	console.log(pos_list.length)
+	sequence(0, pos_list)
+	draw_red_dot(0, pos_list)
+	//draw_images(0, pos_list)
+}
+
+function temp_slider_energy_min(val){
+	document.getElementById("temperature_slider_energy_minima").innerHTML = x_temp_energy(val).toPrecision(2);
+}
+
+var x_temp_energy = d3.scalePow()
+     .exponent(2)
+     .domain([0.01, 100])
+     .range([0.1, 10.05])
+     .clamp(true);
+
+pos = 15
+for(i=1;i<20;i++){
+   pos = convergence_boltzmann(pos, 0.5, 32)
+	console.log(pos)
+} 

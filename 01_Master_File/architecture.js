@@ -2,7 +2,7 @@ var Hopfield_id = "#architecture_Hopfield_id" // This defines in which div we wr
 var RBM_id = "#architecture_RBM_id"
 var BM_id = "#architecture_BM_id" 
 
-var hidden_nodes_colors = ["blue", "orange"]
+var hidden_nodes_colors = ["blue", "red"]
 var visible_nodes_colors = ["white", "black"]
 
 function toggle_colors_architecture(selection, d){
@@ -17,9 +17,14 @@ function toggle_colors_architecture(selection, d){
 
 function switch_color(selection, nodes_color){
          current_color = selection.style("fill")
+	 stroke_color = selection.style("stroke")
          if(current_color == nodes_color[0]){current_color = nodes_color[1]}
          else {current_color = nodes_color[0]}
+	 if (nodes_color[0] ==hidden_nodes_colors[0]){ 
+         if(stroke_color == nodes_color[0]){stroke_color = nodes_color[1]}
+         else {stroke_color = nodes_color[0]}}
          selection.transition()
+	 selection.style("stroke", stroke_color)
          selection.style("fill", current_color)
 }
 
@@ -237,12 +242,14 @@ if (hidden_active==true){
 for (j=v_units; j<v_units+h_units; j++){
 	d3.select("#hidden"+Figure_id+j)
 	.attr("class", "hidden_circle")
-	.style("fill", hidden_nodes_colors[0])}
+	.style("fill", hidden_nodes_colors[0])
+        .style("stroke", hidden_nodes_colors[0])}
 }
 
 if (hidden_active==false){
 for (j=v_units; j<v_units+h_units; j++){
 	d3.select("#hidden"+Figure_id+j)
+	.attr("class", "unused_circle")
 	.style("fill", "rgb(0,0,0,0.1)")
 	.style("stroke", "rgb(0,0,0,0.5)")
 	.style("stroke-dasharray","5,5")}

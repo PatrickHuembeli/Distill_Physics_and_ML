@@ -249,9 +249,11 @@ Starting from a random initialization, by repeatedly applying this update rule f
 
 
     <div class="row">
-    <div class="column">
-    <p class="figure-text"><b>Influence of Temperature on Configurations: </b>After training local energy minima correspond to configurations of the training set. At zero temperature configurations with higher energy will equilibrate to the minimum energy configuration. For non zero temperature higher energy configurations can be occupied with a certain probability here shown as a shaded blue area around the minima.</p>
-    </div>
+	 <div class="column_2level">
+             <p class="slider-label-text" style="width:110px">Temperature <d-math> T </d-math>:</p>
+           <p id="temperature_slider_energy_minima" class="slider-label-number" style="width:35px"></p>
+             <input id="temp_slider_energy_minima_id" type="range" onchange="temp_slider_energy_min(this.value)" min="0.01" max="100" step="0.1">
+     </div>
     <div class="doublecolumn">
       <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "Figure_energy_minima_and_temp">
     <div id = "energy_minima_and_temp_id" style="position:absolute; left:0px; top:0px"></div>
@@ -259,7 +261,8 @@ Starting from a random initialization, by repeatedly applying this update rule f
     <script type = "text/javascript" src = "energy_minima_and_temp.js" ></script>
     </div>
   </div>
-  <div class="triplecolumn"><p class="figure-text"> This figure illustrates two local energy minima that contain a different MNIST number as their minimum energy. If we are at zero temperature any higher energy configuration would equilibrate to the closest local minimum and the only configurations that can be retrieved are the ones at the minimum energy. If we allow a certain temperature (blue shaded area) we can also retrieve configurations with a slightly higher energy. This eventually makes the system to generalize training data.</p></div>
+  <div class="triplecolumn"><p class="figure-text"> This figure illustrates two local energy minima that contain a different MNIST number as their minimum energy. If we are at zero temperature any higher energy configuration would equilibrate to the closest local minimum and the only configurations that can be retrieved are the ones at the minimum energy. If we allow a certain temperature (blue shaded area) we can also retrieve configurations with a slightly higher energy. This eventually makes the system to generalize training data.</p>  </div>
+    <p class="figure-text"><b>Influence of Temperature on Configurations: </b>After training local energy minima correspond to configurations of the training set. At zero temperature configurations with higher energy will equilibrate to the minimum energy configuration. For non zero temperature higher energy configurations can be occupied with a certain probability here shown as a shaded blue area around the minima.</p>
 
 
 <p>

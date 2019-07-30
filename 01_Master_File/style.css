@@ -12,7 +12,7 @@ path.plotline {
 
 /* Style the dots by assigning a fill and stroke */
 .dot {
-    fill: #ffab00;
+ /*   fill: #ffab00;*/
     stroke: #fff;
 }
   
@@ -38,8 +38,8 @@ line.RBM_line {
 }
 
 circle.hidden_circle {
-    opacity: 0.5;
-    stroke: blue;
+    fill-opacity: 0.5;
+    /*stroke: blue;*/
     stroke-width: 2;
     stroke-opacity: 1.0;
 }
