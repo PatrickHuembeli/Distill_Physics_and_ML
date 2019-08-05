@@ -72,10 +72,10 @@ line_energy = svg.append("path")
 	.style("fill", "none" ); // 11. Calls the line generator 
 
 // 12. Appends a circle for each datapoint 
-circle_energy = svg.selectAll(".dot")
+circle_energy = svg.selectAll(".dot_energy_img")
     .data(dataset)
   .enter().append("circle") // Uses the enter().append() method
-    .attr("class", "dot") // Assign a class for styling
+    .attr("class", "dot_energy_img") // Assign a class for styling
     .attr("cx", function(d, i) { return xScale(i) })
     .attr("cy", function(d) { return yScale(d.y) })
     .attr("r", 5)
@@ -96,7 +96,7 @@ neighbour1 = [5,6,7,8,9,10,11]
 neighbour2 = [21,22,23,24,25,26,27]
 learning_steps = 0
 unlearning_steps = 0
-learn_adjust = 0.1
+learn_adjust = 0.05
 unlearn_adjust = 0.05
 
 function learn_phase(){
@@ -112,7 +112,10 @@ function learn_phase(){
 		dataset[neighbour2[j]].y = dataset_update2}}	
 	update_line()
 	learning_steps +=1
+	learning_fct_image_energies((learning_steps-unlearning_steps)*10)
 }
+
+init_learn_energy = 0
 
 function unlearn_phase(){
 	minimas = find_local_minima()
@@ -122,6 +125,7 @@ function unlearn_phase(){
 		}
 	) 
 	unlearning_steps +=1
+	learning_fct_image_energies((learning_steps-unlearning_steps)*10)
 	update_line()
 }
 
@@ -129,6 +133,7 @@ function reinitialize_phase(){
 	learning_steps = 0
 	unlearning_steps = 0
 	dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(0.3,0.6)() } })
+	learning_fct_image_energies(0)
 	update_line()
 }
 

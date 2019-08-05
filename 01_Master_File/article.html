@@ -252,7 +252,7 @@ Starting from a random initialization, by repeatedly applying this update rule f
 	 <div class="column_2level">
              <p class="slider-label-text" style="width:110px">Temperature <d-math> T </d-math>:</p>
            <p id="temperature_slider_energy_minima" class="slider-label-number" style="width:35px"></p>
-             <input id="temp_slider_energy_minima_id" type="range" onchange="temp_slider_energy_min(this.value)" min="0.01" max="100" step="0.1">
+             <input id="temp_slider_energy_minima_id" type="range" oninupt="interrupt_convergence(this.value)" onchange="temp_slider_energy_min(this.value)" min="0.01" max="100" step="0.1">
      </div>
     <div class="doublecolumn">
       <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "Figure_energy_minima_and_temp">
@@ -317,21 +317,6 @@ The second force,  <d-math>\langle f(x) \rangle_{\text{model}}</d-math>, represe
 </p>
 
 
-  <div class="row">
-  <div class="column">
-  <p class="slider-label-text">Training progress</p>
-  <p id="temperature_slider" class="slider-label-number"></p>
-    <input id="temp_slider_id" type="range" oninput="slider_fct_image_energies(this.value)" min="0" max="100" step="1.0">
-  </div>
-    <div class="doublecolumn">
-    <p class="figure-text">add some text here</p>
-    <figure style = "width:700px; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "image_energies">
-  <div id = "image_energies_id" style="position:absolute; left:0px; top:0px"></div>
-  </figure>
-  </div>
-  </div>
-  <script type = "text/javascript" src = "image_energies_script_new.js" ></script>
-  <div class="triplecolumn"><p class="figure-text"><b>The purpose of training </b>is to find the model parameters that make the wanted configurations low energy. The model parameters are initiallized randomly and therefore the configuration's energies are also random. During the training we want to minimize the energies of the images we want to learn where at the same time we maximize the energies of configurations we don't want. This figure illustrates the evolution of energies over the training progress.</p></div>
 
 <!-- Second Section  4.1  -->
   <a class="marker" href="#section-4.1" id="section-4.1"><span>Training Hopfield networks</span></a>
@@ -358,15 +343,23 @@ leading to an increase in energy of all minima, including spurious ones.
 By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase in energy can lead to the disappearance of spurious minima, which are thus "unlearned". </p>
 
   <div class="row">
-  <div class="triplecolumn">
+    <div class="column">
+    <p class="figure-text">add some text here</p>
+    <figure style = "width:100%; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "image_energies">
+  <div id = "image_energies_id" style="position:absolute; left:0px; top:0px"></div>
+  </figure>
+  </div>
+  <script type = "text/javascript" src = "image_energies_script_new.js" ></script>
+  <div class="doublecolumn">
     <input id="learn_button_id" type="button" value="Learning step" onclick="learn_phase()">
     <input id="learn_button_id" type="button" value="Unlearning step" onclick="unlearn_phase()">
     <input id="learn_button_id" type="button" value="Reinitialize" onclick="reinitialize_phase()">
   </div>
-  <div class="triplecolumn">
+  <div class="doublecolumn">
     <figure style = "width:100%; height:400px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
   <div id = "energy_landscape_figure_id" style="width:100%, height:100%, position:absolute; left:0px; top:0px"></div>
   </figure>
+  </div>
   <div class="triplecolumn">
 	  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized spin system has a energy landscape with many different local minima, which in physics is often referred to as the spinglass phase <d-cite key="amit1985spin"> </d-cite>. Learning a certain configuration (red dots) in energy based models means we need to decrease its energy. But only by learning a configuration we do not get rid of spurious minima that contain unwanted configuration (yellow). They have to be unlearned.</p>
   </div> 

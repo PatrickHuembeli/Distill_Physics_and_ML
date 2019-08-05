@@ -16,6 +16,10 @@ path.plotline {
     stroke: #fff;
 }
   
+.dot_energy_img {
+    fill: #ffab00;
+    stroke: #fff;
+}
   .focus circle {
   fill: none;
   stroke: steelblue;

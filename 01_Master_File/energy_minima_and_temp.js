@@ -40,7 +40,6 @@ var plot_data = d3.range(n).map(function(d) {
 	return {"y":0.35*Math.cos(d/n*Math.PI*4)-0.2*d/n+0.54 , "c":0} })
 
 plot_data[0].c = 0
-console.log(plot_data[0])
 
 // 1. Add the SVG to the page and employ #2
 var svg_2 = d3.select(energy_minima_temp_id).append("svg")
@@ -49,12 +48,22 @@ var svg_2 = d3.select(energy_minima_temp_id).append("svg")
   //.append("g")
    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-image_for_node_2 = svg_2.append('image')
-    .attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+1+'.jpg')
-    .attr("x", 65)
-    .attr("y", 20)
-    .attr("width", 70)
-    .attr("height", 70)
+image_for_node_2 = svg_2.selectAll(".images")
+	.data(plot_data).enter()
+	.append('image')
+	.attr("class", "energy_min_images")
+	.attr("id", function(d,i){return "energy_min_img"+i})
+    	.attr('xlink:href', function(d,i){
+		return '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg'})
+    	.attr("x", function(d,i){
+		return 65})
+    	.attr("y", 20)
+    	.attr("width", 70)
+    	.attr("height", 70)
+	.attr("opacity", 0)
+
+d3.select("#energy_min_img0").attr("opacity", 1.0)
+
 
 line_energy_2 = svg_2.append("path")
     .datum(plot_data) // 10. Binds data to the line 
@@ -107,7 +116,10 @@ circle_energy_2 = svg_2.selectAll(".dot")
     .attr("r", 4)
     .attr("fill", "#ffab00")
     .attr("id", function(d,i){return "configuration"+i})
-      .on("mouseover", function(d,i){image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg')   })
+      .on("mouseover", function(d,i){
+	      d3.selectAll(".energy_min_images").transition().duration(500).attr("opacity", 0)
+	      d3.select("#energy_min_img"+i).transition().duration(500).attr("opacity", 1.0)
+      })
       .on("click", function(d,i){start_convergence(i, 32, true)})
 
 function convergence_hopfield(position, min1, min2, max){
@@ -152,6 +164,11 @@ function draw_red_dot(iterator, pos_list){
 	else {	
 	a = pos_list[iterator]
 	selected_circle = d3.select("#configuration"+a)
+	selected_image = d3.select("#energy_min_img"+a)	
+	d3.selectAll(".energy_min_images").transition().delay(iterator*time_steps).duration(time_steps)
+			.attr("opacity", 0)
+	selected_image.transition().delay(iterator*time_steps).duration(time_steps)
+			.attr("opacity", 1.0)
 	selected_circle.transition().delay(iterator*time_steps).duration(time_steps)
 			.attr("fill", "red")
 			.attr("r", 5.0)	
@@ -161,64 +178,60 @@ function draw_red_dot(iterator, pos_list){
 	iterator += 1
 	d3.select("#configuration"+a)
 				.on("end", draw_red_dot(iterator, pos_list))
-				.on("end", function(){console.log("blablablablabalbalhab")})
 	}
 }
 
-const sleep = (milliseconds) => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
-
-async function sequence(iterator, pos_list) {
-  await sleep(time_steps/2)
-  for (i=1;i<pos_list.length;i++){
-  a = pos_list[i]
-  await sleep(time_steps); // Wait 50ms…
-  console.log("hello");
-  image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+a+'.jpg'); 
-  }
-}
-
-
-function draw_images(iterator, pos_list){
-	end = pos_list.length
-	if(iterator==end){return}
-	else {
-	console.log(iterator)	
-	a = pos_list[iterator]
-	iterator += 1
-	image_for_node_2.transition().delay(iterator*time_steps).duration(time_steps).attr("opacity", 0.0);
-	image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+a+'.jpg'); 
-	image_for_node_2.transition().duration(time_steps).attr("opacity", 1.0);
-	//imgage_for_node_2.transition().duration(5000).ease(d3.easeLinear).attr("opacity", 1)	
-	image_for_node_2.on("end", draw_images(iterator, pos_list));	
-	}
-}
+//const sleep = (milliseconds) => {
+//  return new Promise(resolve => setTimeout(resolve, milliseconds))
+//}
+//
+//async function sequence(iterator, pos_list) {
+//  await sleep(time_steps/2)
+//  for (i=1;i<pos_list.length;i++){
+//  a = pos_list[i]
+//  await sleep(time_steps); // Wait 50ms…
+//  image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+a+'.jpg'); 
+//  }
+//}
+//
+//
+//function draw_images(iterator, pos_list){
+//	end = pos_list.length
+//	if(iterator==end){return}
+//	else {
+//	console.log(iterator)	
+//	a = pos_list[iterator]
+//	iterator += 1
+//	image_for_node_2.transition().delay(iterator*time_steps).duration(time_steps).attr("opacity", 0.0);
+//	image_for_node_2.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+a+'.jpg'); 
+//	image_for_node_2.transition().duration(time_steps).attr("opacity", 1.0);
+//	//imgage_for_node_2.transition().duration(5000).ease(d3.easeLinear).attr("opacity", 1)	
+//	image_for_node_2.on("end", draw_images(iterator, pos_list));	
+//	}
+//}
 
 function start_convergence(a, number_of_images, boltzmann){
 	T = document.getElementById("temperature_slider_energy_minima").innerHTML 
-	console.log(T)
-	d3.selectAll("circle").transition()
+	d3.selectAll(".dot").interrupt()
 			.attr("fill", "#ffab00")
 			.attr("r", 4.0);
+	d3.select(".energy_min_images").interrupt()
 	pos_list = [a]
 	pos = a
 	for(i=1;i<20;i++){
-		if(boltzmann == true){
    		pos = convergence_boltzmann(pos, T, number_of_images)
-		}
-		else {
-		pos = convergence_hopfield(pos)
-		}
 		pos_list.push(pos)}
-	console.log(pos_list.length)
-	sequence(0, pos_list)
+	//sequence(0, pos_list)
 	draw_red_dot(0, pos_list)
 	//draw_images(0, pos_list)
 }
 
 function temp_slider_energy_min(val){
 	document.getElementById("temperature_slider_energy_minima").innerHTML = x_temp_energy(val).toPrecision(2);
+	d3.selectAll(".energy_min_images").interrupt()
+	d3.selectAll(".dot").interrupt()
+			.attr("fill", "#ffab00")
+			.attr("r", 4.0);
 }
 
 var x_temp_energy = d3.scalePow()
@@ -230,5 +243,11 @@ var x_temp_energy = d3.scalePow()
 pos = 15
 for(i=1;i<20;i++){
    pos = convergence_boltzmann(pos, 0.5, 32)
-	console.log(pos)
+	console.log(pos)}
+
+function interrupt_convergence(val){
+	console.log("test")
+	d3.selectAll(".dot").interrupt()
+			.attr("fill", "#ffab00")
+			.attr("r", 4.0);
 } 
