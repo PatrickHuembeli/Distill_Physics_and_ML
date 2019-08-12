@@ -53,6 +53,12 @@
         "affiliations": [{"name": "Xanadu", "url": "https://www.xanadu.ai/"}]
       },
       {
+        "author":"Masoud Mohseni",
+        "affiliations": [
+          {"name": "Google AI Quantum", "url": "https://ai.google/research/teams/applied-science/quantum-ai/"}
+        ]
+      }
+      {
         "author":"Peter Wittek",
         "authorURL":"https://peterwittek.com/",
         "affiliations": [
@@ -62,12 +68,6 @@
           {"name": "Perimeter Institute for Theoretical Physics", "url": "https://perimeterinstitute.ca/"}
         ]
       },
-      {
-        "author":"Masoud Mohseni",
-        "affiliations": [
-          {"name": "Google AI Quantum", "url": "https://ai.google/research/teams/applied-science/quantum-ai/"}
-        ]
-      }
     ],
     "katex": {
       "delimiters": [
@@ -80,18 +80,12 @@
 <d-title>
 <!--   <figure style="grid-column: page; margin: 1rem 0;"><img src="momentum.png" style="width:100%; border: 1px solid rgba(0, 0, 0, 0.2);"/></figure> -->
 
-
-
-
-
-
-
-    <figure style = "grid-column: page; margin: 1rem 0;" id = "Teaser_Id">
+<figure style = "grid-column: page; margin: 1rem 0;" id = "Teaser_Id">
   <div id = "Equilibration_Img_Teaser" style="left:0px; top:0px"></div>
   </figure>
 
   <script type = "text/javascript" src = "Equilibration_Teaser.js" ></script>
-  <p>In this post we will give an introduction into energy based models and especially into Boltzmann machines from the perspective of physics. These models show interesting behaviours with which we attempt to describe basic ideas of learning but also show the limitations of energy based models. We will continuously draw the connections to machine learning and finally also show how energy based models can overcome certain problems that appear in generative models in deep learning such as GANs.</p>
+  <p>How powerful tools from statistical mechanics influence machine learning algorithms</p>
 </d-title>
 <d-byline></d-byline>
 <!-- Actual Article starts here -->
@@ -490,11 +484,31 @@ This rule is known as the <em>contrastive divergence</em> formula for training R
 
   <div class="triplecolumn"></div>
 
+<a class="marker" href="#section-5" id="section-5"><span>The Future of Energy-Based Models</span></a>
+<h2 id="training">The Future of Energy-Based Models</h2>
+
+    <p>
+      Energy-based models are experiencing a resurgence of interest: they are stable to train, require fewer parameters, show better sample quality and generalization ability, and are amenable to compositionality <d-cite key="du2019implicit"></d-cite>. These are the exact characteristics that other generative models like variational autoencoders or generative adversarial networks struggle with. Progress has been made to improve the scaling of the training <d-cite key="du2019implicit"></d-cite><d-cite key="nijkamp2019on"></d-cite>. With these developments, we can be reassured that this family of models have a future in machine learning, so let us take a look at the recent progress in physics and see how those advances can inform research in this direction.
+    </p>
+
+    <p>
+      Statistical mechanics has a rich interplay with related areas such as condensed matter and quantum many-body physics. Tensor networks emerged as a highly scalable numerical method to study such systems <d-cite key="orus2014practical"></d-cite>. The core idea behind tensor network is to compress the space that represent the physical system for efficient numerical simulation. This method has seen a number of successful demonstrations of using tensor networks in machine learning <d-cite key="stoudenmire2016supervised"></d-cite><d-cite key="roberts2019tensornetwork"></d-cite> <d-cite key="efthymiou2019tensornetwork"></d-cite>. Tensor network also come in hierarchical variants, which allows the creation of deep architectures, and the first forays have been taken to explore the power of this learned hierarchical representation in machine learning <d-cite key="stoudenmire2018learning"></d-cite> <d-cite key="liu2019machine"></d-cite>, and this is a promising area of research.
+    </p>
+    
+    <p>
+      There is another curious property of tensor networks: some variants can be implemented on a quantum computer. As these devices are becoming available and they slowly mature <d-cite key="preskill2018quantum"></d-cite>, it is meaningful to ask whether they can be used in machine learning.
+      This area of inquiry is known as quantum machine learning <d-cite key="biamonte2017quantum"></d-cite>.
+      The first wave of quantum machine learning algorithms primarily consisted of abstract algorithms that were targetting perfect and highly scalable quantum computers <d-cite key="Wittek2014Quantum"></d-cite>.
+      The second wave accepts the limitations of current quantum hardware and these algorithms resemble energy-based models very closely.
+      An example is the implementation of a tensor network on a quantum computer for machine learning <d-cite key="huggins2019towards"></d-cite>.
+      Several papers study variants of Boltzmann machines <d-cite key="amin2018quantum"></d-cite> <d-cite key="khoshaman2018quantum"></d-cite>. We expect that such physical implementations of energy-based models will help scale them up.
+    </p>
+  
 <!-- Second Section  4  -->
-  <a class="marker" href="#section-5" id="section-5"><span>Conclusion</span></a>
+  <a class="marker" href="#section-6" id="section-6"><span>Conclusion</span></a>
   <h2 id="conclusion">Conclusion</h2>
 
-  <p><b>PW: we should finish the conclusions with a paragraph on how these insights will help develop new energy-based models, e.g., new QBMs, continuous-valued stuff, what-not.</b></p>
+  <p></p>
 
 </d-article>
 
@@ -528,7 +542,303 @@ This rule is known as the <em>contrastive divergence</em> formula for training R
         publisher={Cambridge Univ Press},
         doi={10.1017/S0140525X10000968}
       }
-    </script>
+      @article{du2019implicit,
+      author      = {Yilun Du and Igor Mordatch},
+      title       = {Implicit Generation and Generalization in Energy-Based Models},
+      archiveprefix = {arXiv},
+      eprint      = {1903.08689},
+      year        = {2019}
+      }
+@article{nijkamp2019on,
+  author      = {Erik Nijkamp and Mitch Hill and Tian Han and Song-Chun Zhu and Ying Nian Wu},
+  title       = {On the Anatomy of MCMC-based Maximum Likelihood Learning of Energy-Based
+  Models},
+  archiveprefix = {arXiv},
+  eprint      = {1903.12370},
+  year        = {2019},
+  abstract    = {This study investigates the effects of Markov Chain Monte Carlo (MCMC)
+sampling in unsupervised Maximum Likelihood (ML) learning. Our attention is
+restricted to the family of unnormalized probability densities for which the
+negative log density (or energy function) is a ConvNet. In general, we find
+that many of the techniques used to stabilize training in previous studies can
+have the opposite effect. Stable ML learning with a ConvNet potential can be
+achieved with only a few hyper-parameters and no regularization. Using this
+minimal framework, we identify a variety of ML learning outcomes that depend on
+the implementation of MCMC sampling.
+  On one hand, we show that it is easy to train an energy-based model which can
+sample realistic images with short-run Langevin. ML can be effective and stable
+even when MCMC samples have much higher energy than true steady-state samples
+throughout training. Based on this insight, we introduce an ML method with
+purely noise-initialized MCMC, high-quality short-run synthesis, and the same
+budget as ML with informative MCMC initialization such as CD or PCD. Unlike
+previous models, our model can obtain realistic high-diversity samples from a
+noise signal after training with no auxiliary networks.
+  On the other hand, ConvNet potentials learned with highly non-convergent MCMC
+do not have a valid steady-state and cannot be considered approximate
+unnormalized densities of the training data because long-run MCMC samples
+differ greatly from observed images. We show that it is much harder to train a
+ConvNet potential to learn a steady-state over realistic images. To our
+knowledge, long-run MCMC samples of all previous models lose the realism of
+short-run samples. With correct tuning of Langevin noise, we train the first
+ConvNet potentials for which long-run and steady-state MCMC samples are
+realistic images.},
+  timestamp={2019.08.09}
+}
+@article{orus2014practical,
+	author = {Or{\'u}s, Rom{\'a}n},
+	doi = {10.1016/j.aop.2014.06.013},
+	journal = {Annals of Physics},
+	pages = {117--158},
+	publisher = {Elsevier {BV}},
+	timestamp = {2019.08.09},
+	title = {A practical introduction to tensor networks: Matrix product states and projected entangled pair states},
+	volume = {349},
+	year = {2014}
+}
+@article{stoudenmire2016supervised,
+	Author = {Stoudenmire, E. Miles and Schwab, David J.},
+	eprint = {1605.05775},
+	journal = {Advances in Neural Information Processing Systems},
+	pages = {4799–4807},
+	timestamp = {2016.10.02},
+	title = {Supervised Learning with Tensor Networks},
+	volume = {29},
+	year = {2016}
+}
+@article{stoudenmire2018learning,
+	abstract = {Inspired by coarse-graining approaches used in physics, we show how similar
+algorithms can be adapted for data. The resulting algorithms are based on
+layered tree tensor networks and scale linearly with both the dimension of the
+input and the training set size. Computing most of the layers with an
+unsupervised algorithm, then optimizing just the top layer for supervised
+classification of the MNIST and fashion-MNIST data sets gives very good
+results. We also discuss mixing a prior guess for supervised weights together
+with an unsupervised representation of the data, yielding a smaller number of
+features nevertheless able to give good performance.},
+	archiveprefix = {arXiv},
+	author = {Stoudenmire, E. Miles},
+	eprint = {1801.00315},
+	journal = {Quantum Science and Technology},
+        doi = {10.1088/2058-9565/aaba1a},
+	timestamp = {2018.05.21},
+	title = {Learning Relevant Features of Data with Multi-scale Tensor Networks},
+	volume = {3},
+	year = {2018},
+	pages = {034003}
+}
+@article{huggins2019towards,
+  doi = {10.1088/2058-9565/aaea94},
+  url = {https://doi.org/10.1088%2F2058-9565%2Faaea94},
+  year = {2019},
+  publisher = {{IOP} Publishing},
+  volume = {4},
+  number = {2},
+  pages = {024001},
+  author = {William Huggins and Piyush Patil and Bradley Mitchell and K Birgitta Whaley and E Miles Stoudenmire},
+  title = {Towards quantum machine learning with tensor networks},
+  journal = {Quantum Science and Technology},
+  archiveprefix = {arXiv},
+  eprint      = {1803.11537},
+  abstract    = {Machine learning is a promising application of quantum computing, but
+challenges remain as near-term devices will have a limited number of physical
+qubits and high error rates. Motivated by the usefulness of tensor networks for
+machine learning in the classical context, we propose quantum computing
+approaches to both discriminative and generative learning, with circuits based
+on tree and matrix product state tensor networks that could have benefits for
+near-term devices. The result is a unified framework where classical and
+quantum computing can benefit from the same theoretical and algorithmic
+developments, and the same model can be trained classically then transferred to
+the quantum setting for additional optimization. Tensor network circuits can
+also provide qubit-efficient schemes where, depending on the architecture, the
+number of physical qubits required scales only logarithmically with, or
+independently of the input or output data sizes. We demonstrate our proposals
+with numerical experiments, training a discriminative model to perform
+handwriting recognition using a optimization procedure that could be carried
+out on quantum hardware, and testing the noise resilience of the trained model.},
+	timestamp = {2018.05.21},
+}
+@article{roberts2019tensornetwork,
+  author      = {Chase Roberts and Ashley Milsted and Martin Ganahl and Adam Zalcman and Bruce Fontaine and Yijian Zou and Jack Hidary and Guifre Vidal and Stefan Leichenauer},
+  title       = {TensorNetwork: A Library for Physics and Machine Learning},
+  archiveprefix = {arXiv},
+  eprint      = {1905.01330},
+  year        = {2019},
+  abstract    = {TensorNetwork is an open source library for implementing tensor network
+algorithms. Tensor networks are sparse data structures originally designed for
+simulating quantum many-body physics, but are currently also applied in a
+number of other research areas, including machine learning. We demonstrate the
+use of the API with applications both physics and machine learning, with
+details appearing in companion papers.},
+  timestamp={2019.08.09}
+}
+@article{efthymiou2019tensornetwork,
+  author      = {Stavros Efthymiou and Jack Hidary and Stefan Leichenauer},
+  title       = {TensorNetwork for Machine Learning},
+  archiveprefix = {arXiv},
+  eprint      = {1906.06329},
+  year        = {2019},
+  abstract    = {We demonstrate the use of tensor networks for image classification with the
+TensorNetwork open source library. We explain in detail the encoding of image
+data into a matrix product state form, and describe how to contract the network
+in a way that is parallelizable and well-suited to automatic gradients for
+optimization. Applying the technique to the MNIST and Fashion-MNIST datasets we
+find out-of-the-box performance of 98% and 88% accuracy, respectively, using
+the same tensor network architecture. The TensorNetwork library allows us to
+seamlessly move from CPU to GPU hardware, and we see a factor of more than 10
+improvement in computational speed using a GPU.},
+  timestamp={2019.08.09}
+}
+@article{liu2019machine,
+  doi = {10.1088/1367-2630/ab31ef},
+  url = {https://doi.org/10.1088%2F1367-2630%2Fab31ef},
+  year = {2019},
+  publisher = {{IOP} Publishing},
+  volume = {21},
+  number = {7},
+  pages = {073059},
+  author = {Ding Liu and Shi-Ju Ran and Peter Wittek and Cheng Peng and Raul Bl{\'{a}}zquez Garc{\'{\i}}a and Gang Su and Maciej Lewenstein},
+  title = {Machine learning by unitary tensor network of hierarchical tree structure},
+  journal = {New Journal of Physics},
+  archiveprefix = {arXiv},
+  eprint      = {1710.04833},
+  abstract    = {The resemblance between the methods used in quantum-many body physics and in
+machine learning has drawn considerable attention. In particular, tensor
+networks (TNs) and deep learning architectures bear striking similarities to
+the extent that TNs can be used for machine learning. Previous results used
+one-dimensional TNs in image recognition, showing limited scalability and
+flexibilities. In this work, we train two-dimensional hierarchical TNs to solve
+image recognition problems, using a training algorithm derived from the
+multi-scale entanglement renormalization ansatz. This approach introduces
+mathematical connections among quantum many-body physics, quantum information
+theory, and machine learning. While keeping the TN unitary in the training
+phase, TN states are defined, which encode classes of images into quantum
+many-body states. We study the quantum features of the TN states, including
+quantum entanglement and fidelity. We find these quantities could be properties
+that characterize the image classes, as well as the machine learning tasks.},
+  timestamp={2019.08.09}
+}
+@article{biamonte2017quantum,
+	abstract = {Recent progress implies that a crossover between machine learning and quantum
+information processing benefits both fields. Traditional machine learning has
+dramatically improved the benchmarking and control of experimental quantum
+computing systems, including adaptive quantum phase estimation and designing
+quantum computing gates. On the other hand, quantum mechanics offers
+tantalizing prospects to enhance machine learning, ranging from reduced
+computational complexity to improved generalization performance. The most
+notable examples include quantum enhanced algorithms for principal component
+analysis, quantum support vector machines, and quantum Boltzmann machines.
+Progress has been rapid, fostered by demonstrations of midsized quantum
+optimizers which are predicted to soon outperform their classical counterparts.
+Further, we are witnessing the emergence of a physical theory pinpointing the
+fundamental and natural limitations of learning. Here we survey the cutting
+edge of this merger and list several open problems.},
+	archiveprefix = {arXiv},
+	author = {Biamonte, Jacob and Wittek, Peter and Pancotti, Nicola and Rebentrost, Patrick and Wiebe, Nathan and Lloyd, Seth},
+	doi = {10.1038/nature23474},
+	eprint = {1611.09347},
+	journal = {Nature},
+	number = {7671},
+	pages = {195--202},
+	publisher = {Springer Nature},
+	timestamp = {2016.11.29},
+	title = {Quantum Machine Learning},
+	volume = {549},
+	year = {2017},
+	year2 = {2016}
+}
+@article{amin2018quantum,
+	abstract = {Inspired by the success of Boltzmann Machines based on classical Boltzmann
+distribution, we propose a new machine learning approach based on quantum
+Boltzmann distribution of a transverse-field Ising Hamiltonian. Due to the
+non-commutative nature of quantum mechanics, the training process of the
+Quantum Boltzmann Machine (QBM) can become nontrivial. We circumvent the
+problem by introducing bounds on the quantum probabilities. This allows us to
+train the QBM efficiently by sampling. We show examples of QBM training with
+and without the bound, using exact diagonalization, and compare the results
+with classical Boltzmann training. We also discuss the possibility of using
+quantum annealing processors like D-Wave for QBM training and application.},
+	archiveprefix = {arXiv},
+	author = {Amin, Mohammad H. and Andriyash, Evgeny and Rolfe, Jason and Kulchytskyy, Bohdan and Melko, Roger},
+	doi = {10.1103/physrevx.8.021050},
+	eprint = {1601.02036},
+	journal = {Physical Review X},
+	keywords = {qml; quantum machine learning},
+	month = jan,
+	number = {2},
+	pages = {021050},
+	publisher = {American Physical Society ({APS})},
+	timestamp = {2016.02.25},
+	title = {Quantum {Boltzmann} Machine},
+	volume = {8},
+	year = {2018},
+	year2 = {2016}
+}
+@article{preskill2018quantum,
+	abstract = {Noisy Intermediate-Scale Quantum (NISQ) technology will be available in the
+near future. Quantum computers with 50-100 qubits may be able to perform tasks
+which surpass the capabilities of today's classical digital computers, but
+noise in quantum gates will limit the size of quantum circuits that can be
+executed reliably. NISQ devices will be useful tools for exploring many-body
+quantum physics, and may have other useful applications, but the 100-qubit
+quantum computer will not change the world right away --- we should regard it
+as a significant step toward the more powerful quantum technologies of the
+future. Quantum technologists should continue to strive for more accurate
+quantum gates and, eventually, fully fault-tolerant quantum computing.},
+	archiveprefix = {arXiv},
+	author = {Preskill, John},
+	doi = {10.22331/q-2018-08-06-79},
+	eprint = {1801.00862},
+	journal = {Quantum},
+	pages = {79},
+	timestamp = {2018.02.15},
+	title = {Quantum Computing in the {NISQ} era and beyond},
+	volume = {2},
+	year = {2018}
+}
+@book{Wittek2014Quantum,
+	address = {New York, NY, USA},
+	author = {Wittek, Peter},
+	month = aug,
+	publisher = {Elsevier},
+	timestamp = {2015.03.31},
+	title = {Quantum Machine Learning: What Quantum Computing Means to Data Mining},
+	year = {2014}
+}
+@article{khoshaman2018quantum,
+  doi = {10.1088/2058-9565/aada1f},
+  url = {https://doi.org/10.1088%2F2058-9565%2Faada1f},
+  year = {2018},
+  publisher = {{IOP} Publishing},
+  volume = {4},
+  number = {1},
+  pages = {014001},
+  author = {Amir Khoshaman and Walter Vinci and Brandon Denis and Evgeny Andriyash and Hossein Sadeghi and Mohammad H Amin},
+  title = {Quantum variational autoencoder},
+  journal = {Quantum Science and Technology},
+  archiveprefix = {arXiv},
+  eprint      = {1802.05779},
+  abstract    = {Variational autoencoders (VAEs) are powerful generative models with the
+salient ability to perform inference. Here, we introduce a quantum variational
+autoencoder (QVAE): a VAE whose latent generative process is implemented as a
+quantum Boltzmann machine (QBM). We show that our model can be trained
+end-to-end by maximizing a well-defined loss-function: a 'quantum' lower-bound
+to a variational approximation of the log-likelihood. We use quantum Monte
+Carlo (QMC) simulations to train and evaluate the performance of QVAEs. To
+achieve the best performance, we first create a VAE platform with discrete
+latent space generated by a restricted Boltzmann machine (RBM). Our model
+achieves state-of-the-art performance on the MNIST dataset when compared
+against similar approaches that only involve discrete variables in the
+generative process. We consider QVAEs with a smaller number of latent units to
+be able to perform QMC simulations, which are computationally expensive. We
+show that QVAEs can be trained effectively in regimes where quantum effects are
+relevant despite training via the quantum bound. Our findings open the way to
+the use of quantum computers to train QVAEs to achieve competitive performance
+for generative models. Placing a QBM in the latent space of a VAE leverages the
+full potential of current and next-generation quantum computers as sampling
+devices.},
+	timestamp = {2018.02.20},
+}
+   </script>
   </d-bibliography> -->
 
   <distill-appendix> </distill-appendix>
