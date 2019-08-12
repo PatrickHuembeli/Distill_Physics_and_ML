@@ -368,7 +368,7 @@ By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase
   </div>
 
 
-
+<!--
   <div class="row">
   <div class="column">
   <p id="weight_slider_text" class="slider-label-text">Weight</p>
@@ -394,7 +394,8 @@ By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase
   <script type = "text/javascript" src = "RBM_complete_new.js" ></script>
   </div>
   </div>
-  <div class="caption-triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
+  <div class="caption-triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely
+
 
  <div class="row">
   <div class="column">
@@ -424,7 +425,31 @@ By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase
   <div class="caption-triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
   For this you have to adjust the weights and biases by clicking on the conections and the biases and adjust them with the slider.
   The color of the nodes indicates in which direction the spins are. This can help you to find the weights for a certain configurations and make its energy high or low. Remember that the wanted configurations should be low energy. And all the others should be higher energy. A way to find the solution for this task is to set the spins of the model to a B&S configuration and make its energy as small as possible. Then change to another B&S configuration and repeat. You will figure out eventually how you "learn" the weights. If you want to have a working solution, click the solution button.</p></div>
-	  
+  -->
+
+
+  <script type = "text/javascript" src = "RBM_complete_new.js" ></script>
+
+ <div class="row">
+  <div class="column">
+  <p id="weight_slider_text_XOR" class="slider-label-text">Weight</p>
+  <p id="weight_slider_value_XOR" class="slider-label-number"></p>
+    <input id="weight_slider_id_XOR" value=0 type="range" onchange="slider_fct_RBM(this.value,'_XOR')" min="-2" max="2" step="0.01">
+  <p id="bias_slider_text_XOR" class="slider-label-text">Bias</p>
+  <p id="bias_slider_value_XOR" class="slider-label-number" width="50%"></p>
+    <input id="bias_slider_id_XOR" value=0 type="range" oninput="slider_bias_just_text(this.value,'_XOR')" onchange="slider_bias_fct_RBM(this.value,'_XOR')" min="-2" max="2" step="0.01">
+  <div>
+  </div>
+  <div>
+  </div>
+  </div>
+  <div class="doublecolumn">
+    <figure style = "width:100%; height:320px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "CD_Figure1">
+  <div id = "CD_figure1_id" style="position:absolute; left:0px; top:0px"></div>
+  </figure>
+  <script type = "text/javascript" src = "CD_figure1.js" ></script>
+  </div>
+  </div>
 
   <a class="marker" href="#section-4.3" id="section-4.3"><span>Training Boltzmann machines</span></a>
   <h3 id="r-bm-and-sampling">Training Boltzmann machines</h3>
