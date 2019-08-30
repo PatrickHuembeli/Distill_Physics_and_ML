@@ -11,7 +11,7 @@ var width_new = positionInfo.width;
 temp_slider_energy_minim_init_value = 10
 
 document.getElementById("temperature_slider_energy_minima").innerHTML = temp_slider_energy_minim_init_value;
-document.getElementById("coupling_strength").value = temp_slider_energy_minim_init_value
+//document.getElementById("coupling_strength").value = temp_slider_energy_minim_init_value
 
 // The number of datapoints for the graph
 var n = 32;
