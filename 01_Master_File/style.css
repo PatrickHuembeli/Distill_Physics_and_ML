@@ -234,3 +234,14 @@ p.figure-text {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
+.forward {
+  fill: blue;
+  }
+
+.top {
+  fill : #88f;
+}
+
+.side {
+  fill: #00a;
+}

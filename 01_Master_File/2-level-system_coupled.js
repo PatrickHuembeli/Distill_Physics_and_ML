@@ -157,6 +157,8 @@ function twoD_slider(xpos, ypos) {
 	temp = temp_scale(ypos)
 	new_data = update_2L_probabilities(coupling,temp,energy)
 	update_2L_histogram(new_data,twoL_histo_height, twoL_histo_y_pos)
+	remove_cubes()
+	draw_3d_histo(new_data)
 	update_opacities(new_data)
 	d3.select("#param_line_y").attr("y1", ypos).attr("y2", ypos)    
 	d3.select("#param_line_x").attr("x1", xpos).attr("x2", xpos)
@@ -168,6 +170,67 @@ function twoD_slider(xpos, ypos) {
 
 // End 2D param selection
 
+// cubes instead of 2d histo
+    var origin = [480, 300], scale = 20, j = 10, cubesData = [], alpha = 0, beta = 0, startAngle = Math.PI/6;
+    var cubes_test = d3.select(identity_test).append("svg").attr("width", 300).attr("height", 200)
+
+var rect3d = cubes_test.append('g')
+    .attr("transform", "translate (50,50)")
+;
+
+var rw = 30, rd = 30, ang=45;
+
+function draw_cube(ident, spacing, max_height, percentage){
+yy = max_height*(1-percentage/100)
+rh = max_height*percentage/100		
+
+rect3d.append("rect")
+	.attr("class", "forward")
+  .attr("id", "rect_forward"+ident)
+  .attr("x", ident*spacing)
+  .attr("y", yy)
+  .attr("width", rw)
+  .attr("height", rh)
+  ;
+  
+  rect3d.append("rect")
+	.attr("class", "top")
+   .attr("id", "rect_top"+ident)
+  .attr("x", ident*spacing)
+  .attr("y", yy)
+  .attr("width", rw)
+  .attr("height", rd/2)
+  .attr ("transform", "translate ("+(-rd/2-yy)+","+(-rd/2)+") skewX("+ang+")")
+
+  rect3d.append("rect")
+	.attr("class", "side")
+   .attr("id", "rect_side"+ident)
+   .attr("x", ident*spacing)
+  .attr("y", yy)
+  .attr("width", rd/2)
+  .attr("height", rh)
+	  .attr ("transform", "translate ("+(-rd/2)+","+(-rd/2-ident*(spacing))+") skewY("+ang+")")
+}
+max_height = 100
+percentage = 100
+draw_cube(3, 50, max_height, percentage)
+draw_cube(2, 50, max_height, percentage)
+draw_cube(1, 50, max_height, percentage)
+draw_cube(0, 50, max_height, percentage)
+
+function remove_cubes(){
+for (i=0;i<4;i++){	
+document.getElementById("rect_side"+i).remove()
+document.getElementById("rect_top"+i).remove()
+document.getElementById("rect_forward"+i).remove()
+}}
+
+function draw_3d_histo(stats){i
+for (i=0;i<4;i++){
+perce = Math.round(stats[3-i]*100)
+draw_cube(3-i, 50, max_height, perce)}
+}
+// ------------------------------------------------------
 common_svg = d3.select(identity_test)
 	.append("svg")
 	.attr("width", 300)
