@@ -172,7 +172,7 @@ function twoD_slider(xpos, ypos) {
 
 // cubes instead of 2d histo
     var origin = [480, 300], scale = 20, j = 10, cubesData = [], alpha = 0, beta = 0, startAngle = Math.PI/6;
-    var cubes_test = d3.select(identity_test).append("svg").attr("width", 300).attr("height", 200)
+    var cubes_test = d3.select(identity_test).append("svg").attr("width", 250).attr("height", 200)
 
 var rect3d = cubes_test.append('g')
     .attr("transform", "translate (50,50)")
