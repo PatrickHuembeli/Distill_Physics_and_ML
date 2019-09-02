@@ -35,7 +35,6 @@ var points_data = [8,24]
 
 //for (i=0; i<Math.floor(n/n_points); i++) {points_data.push(i*Math.floor(n/n_points)+1)}
 
-console.log(points_data)
 // 1. Add the SVG to the page and employ #2
 var svg = d3.select(energy_figure_id).append("svg")
     .attr("width", width_new)

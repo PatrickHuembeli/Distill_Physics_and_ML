@@ -31,30 +31,6 @@ var total_equilibration_steps = 1
 var which_equilibration_step_hidden = 1 // how many equil steps have been done.
 var which_equilibration_step_visible = 1 // how many equil steps have been done.
 var max_equilibration_steps = 16
-// This is all for the NN canvas 
-// ---------------------------------------------
-// add foreign object to svg
-// https://gist.github.com/mbostock/1424037
-//var foreignObject = svg_imgequil.append("foreignObject")
-//    .attr("x", 500)
-//    .attr("y", 500)
-//    .attr("width", canvas_width)
-//    .attr("height", canvas_height);
-//
-//// add embedded body to foreign object
-//var foBody = foreignObject.append("xhtml:body")
-//    .style("margin", "0px")
-//    .style("padding", "0px")
-//    .style("background-color", "none")
-//    .style("width", '10' + "px")
-//    .style("height", '10' + "px")
-//    .style("border", "1px solid lightgray");
-//
-//var canvas = foBody.append("canvas")
-//    .attr("x", 0)
-//    .attr("y", 0)
-//    .attr("width", canvas_width)
-//    .attr("height", canvas_height)
 // ----------------------------------------------------
 
 img_nr = [0,1,2,3,4,6]
@@ -99,8 +75,8 @@ document.getElementById("compressed_img_id").style.display = "none";
 path_for_pixel =  folder_path+'zero/resized_damaged_zeros_visible_'+main_image_var+'.jpg'
 
 
-const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0);
-const bigger_than_n = (arr, n) => arr.filter((e, i) => e > 10);
+const every_nth_main = (arr, nth) => arr.filter((e, i) => i % nth === 0);
+const bigger_than_n_main = (arr, n) => arr.filter((e, i) => e > 10);
 
 function binarizeArray(array, bigger_than_value){
 	new_array = []
@@ -111,24 +87,6 @@ function binarizeArray(array, bigger_than_value){
 		else{new_array.push(0)}
 	}
 	return new_array}	
-
-//function getwholeImage(url) {
-//  var img = new Image();
-//  img.src = url;
-//  var canvas = document.createElement('canvas');
-//  canvas.width = 10
-//  canvas.height = 10
-//  var context = canvas.getContext('2d');
-//  context.drawImage(img, 0, 0);
-//  imgData = context.getImageData(0, 0, canvas.width, canvas.height)
-//  data_image_full = context.getImageData(0, 0, canvas.width, canvas.height).data
-//  data_image_one_channel = every_nth(data_image_full, 4)
-//  return binarizeArray(data_image_one_channel, 10)}
-//
-//
-//console.log(getwholeImage(path_for_pixel, 0,0))
-//data_reduced_img = getwholeImage(path_for_pixel)
-// ADD MANY IMAGES   
 
 images = svg_imgequil.selectAll()
     .data(number_of_images)
@@ -182,7 +140,8 @@ var Energy_Plot_Container = svg_imgequil.append("svg")
 // Define global variables
 //var img, context, imgData, raw_data1, raw_data
 var colors = ['white', 'black'];
-var hidden_colors = ['blue', 'red']; 
+var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
+var hidden_colors_stroke = ["blue", "red"]
 var initialize_flag = false
 //context = canvas.node().getContext("2d");
 
@@ -197,7 +156,7 @@ function getwholeImage_new(url, threshold) {
   context.drawImage(img, 0, 0);
   imgData = context.getImageData(0, 0, canvas.width, canvas.height)
   data_image_full = context.getImageData(0, 0, canvas.width, canvas.height).data
-  data_image_one_channel = every_nth(data_image_full, 4)
+  data_image_one_channel = every_nth_main(data_image_full, 4)
   raw_data = binarizeArray(data_image_one_channel, threshold) // This value gives threshold for black and white	
   var points = [];
   for (var s=0; s<compressed_size*compressed_size; s++){
@@ -254,7 +213,7 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
             .data(points)
 	    .transition()
 	    .duration(2000)
-            .style("fill", function(d) { return colors[d[2]] });
+            .style("fill", function(d) { return colors[d[2]] })
         
    if (total_equilibration_steps%2 == 1 ){
 	   console.log("even")
@@ -279,6 +238,7 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
         .transition()
         .duration(2000)
         .style("fill", function(d) { return hidden_colors[d[2]]}) 
+        .style("stroke", function(d){return hidden_colors_stroke[d[2]]});
 
        circle_energy_equilbration.attr("cx", x_scale_eq_plot(total_equilibration_steps) )
     		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps].y))
@@ -331,9 +291,10 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
         .append("circle")        
         .attr("class", "hidden_nodes")
         .style("fill", function(d) { return hidden_colors[d[2]]}) 
+	.style("stroke", function(d){return hidden_colors_stroke[d[2]]})
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0]- 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)  
-        .attr("opacity", 0.5) 
+        //.attr("opacity", 0.5) 
         
         }
 }

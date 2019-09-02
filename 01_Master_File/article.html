@@ -79,15 +79,20 @@
 </d-front-matter>
 <!-- Put Title, short abstract and image -->
 <d-title>
-<!--   <figure style="grid-column: page; margin: 1rem 0;"><img src="momentum.png" style="width:100%; border: 1px solid rgba(0, 0, 0, 0.2);"/></figure> -->
-
-<figure style = "grid-column: page; margin: 1rem 0;" id = "Teaser_Id">
-  <div id = "Equilibration_Img_Teaser" style="left:0px; top:0px"></div>
-  </figure>
-
-  <script type = "text/javascript" src = "Equilibration_Teaser.js" ></script>
-  <p>How powerful tools from statistical mechanics influence machine learning algorithms</p>
 </d-title>
+
+<d-article>
+  <p>	<div class="l-body-outset">	
+		<figure style = "grid-column: page; margin: 1rem 0;" id = "Teaser_Id">
+  		<div id = "Equilibration_Img_Teaser" style="left:0px; top:0px"></div>
+  		</figure>
+
+		<div> <input id="teaser_equilibrate_button_id" type="button" value="Equilibration step" onclick="teaser_equilibration_step_rbm()"> </div>
+   		<script type = "text/javascript" src = "Equilibration_Teaser.js" ></script>
+	</div>
+  </p>	
+  	<p>How powerful tools from statistical mechanics influence machine learning algorithms</p>
+</d-article>
 <d-byline></d-byline>
 <!-- Actual Article starts here -->
 <d-article>
