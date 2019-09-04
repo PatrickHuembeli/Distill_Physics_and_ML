@@ -3,8 +3,8 @@ const RBM_complete = "#RBM_complete_id" // This defines in which div we write in
 var IDENTIFIER = ''
 
 // How to read out checkbox values
-var select_hidden = document.getElementById("hidden_check"+IDENTIFIER)
-var select_restricted = document.getElementById("restricted_check"+IDENTIFIER)
+//var select_hidden = document.getElementById("hidden_check"+IDENTIFIER)
+//var select_restricted = document.getElementById("restricted_check"+IDENTIFIER)
 
 dictionary = {}
 //select_hidden.checked = false
@@ -63,17 +63,17 @@ d3.select(RBM_complete)
 // Initialize Variables dependent on architecture
 // ----------------------------------------------------------------------------
 
-update_architecture(IDENTIFIER) 
+//update_architecture(IDENTIFIER) 
 
 dictionary["weight_slider_index"+IDENTIFIER] = 0
 dictionary["bias_slider_index"+IDENTIFIER] = 0
 dictionary["histogram_data_init"+IDENTIFIER] = [0.05,0.05,0.05,0.05,0.05,0.05] 
 background_rectangles_hidden_visible(IDENTIFIER)
 generate_histogram(IDENTIFIER)
-generate_RBM_nodes(IDENTIFIER)   
-generate_RBM_biases(IDENTIFIER)   
-generate_RBM_connections(IDENTIFIER)   
-add_text_elements(IDENTIFIER)
+//generate_RBM_nodes(IDENTIFIER)   
+//generate_RBM_biases(IDENTIFIER)   
+//generate_RBM_connections(IDENTIFIER)   
+//add_text_elements(IDENTIFIER)
 
 dictionary["configuration_to_learn"+IDENTIFIER] = [[-1,-1,1,1],[1,-1,-1,1],[1,1,-1,-1],[-1,1,1,-1],[-1,-1,-1,-1],[1,1,1,1]]
 add_visible_configs(histo_pos_gen(0), histo_y_pos, 4, 10, [0,0,1,1],IDENTIFIER)
@@ -193,8 +193,8 @@ function make_connection_new(identifier){
 	var total_nodes = total_spins
 	stringer = "hidden_check"+identifier
 	console.log("hidden_check"+identifier, stringer)
-	hidden_active = document.getElementById("hidden_check"+identifier).checked 
-	restricted_active = document.getElementById("restricted_check"+identifier).checked 
+	//hidden_active = document.getElementById("hidden_check"+identifier).checked 
+	//restricted_active = document.getElementById("restricted_check"+identifier).checked 
 	if (hidden_active== false){
 		total_nodes = total_spins - h_units
 	}
@@ -674,12 +674,12 @@ function add_visible_configs(x_pos, y_pos, radius, margin, config,identifier){
 }
 
 function change_layout_hidden(identifier){
-	hidden_active = document.getElementById("hidden_check"+identifier).checked
-	restricted_active = document.getElementById("restricted_check"+identifier).checked 
+	//hidden_active = document.getElementById("hidden_check"+identifier).checked
+	//restricted_active = document.getElementById("restricted_check"+identifier).checked 
 	
 	if (hidden_active == false){
 		if (restricted_active){ console.log("forbidden")
-		document.getElementById("hidden_check"+identifier).checked  = true
+		//document.getElementById("hidden_check"+identifier).checked  = true
 		window.alert("You cannot make a spin system restricted without hidden units.");
 		return	
 		}	
@@ -688,12 +688,12 @@ function change_layout_hidden(identifier){
 	}
 
 function change_layout_restricted(identifier){ 
-	hidden_active = document.getElementById("hidden_check"+identifier).checked 
-	restricted_active = document.getElementById("restricted_check"+identifier).checked 
+	//hidden_active = document.getElementById("hidden_check"+identifier).checked 
+	//restricted_active = document.getElementById("restricted_check"+identifier).checked 
 	
 	if (hidden_active == false){
 		if (restricted_active){ console.log("geht nicht !!!")
-		document.getElementById("restricted_check"+identifier).checked = false
+		//document.getElementById("restricted_check"+identifier).checked = false
 		window.alert("You cannot make a spin system restricted without hidden units.");
 		return	
 		}	
