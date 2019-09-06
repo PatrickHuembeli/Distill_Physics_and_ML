@@ -45,6 +45,7 @@ function update_2L_histogram(new_data, histo_height, twoL_histo_y_pos){
     }
 }
 
+
 var margin = {right: 0, left: 0}, // position of slider in color field
     width = 700
     distance_systems = 100
@@ -157,8 +158,8 @@ function twoD_slider(xpos, ypos) {
 	temp = temp_scale(ypos)
 	new_data = update_2L_probabilities(coupling,temp,energy)
 	update_2L_histogram(new_data,twoL_histo_height, twoL_histo_y_pos)
-	remove_cubes()
-	draw_3d_histo(new_data)
+	//remove_cubes()
+	//draw_3d_histo(new_data)
 	update_opacities(new_data)
 	d3.select("#param_line_y").attr("y1", ypos).attr("y2", ypos)    
 	d3.select("#param_line_x").attr("x1", xpos).attr("x2", xpos)
@@ -166,6 +167,7 @@ function twoD_slider(xpos, ypos) {
 		.text(function(){return "T="+ temp_scale(ypos).toPrecision(2)})
 	d3.select("#para_text_coupl").attr("x", xpos-param_margin_x)
 		.text(function(){return "W="+ couple_scale(xpos).toPrecision(2)})
+	update_histograms(new_data)
 }
 
 // End 2D param selection
@@ -180,9 +182,9 @@ var rect3d = cubes_test.append('g')
 
 var rw = 30, rd = 30, ang=45;
 
-function draw_cube(ident, spacing, max_height, percentage){
-yy = max_height*(1-percentage/100)
-rh = max_height*percentage/100		
+function draw_cube(ident, spacing, max_height, percentage, y_offset){
+yy = max_height*(1-percentage/100)+y_offset
+rh = max_height*percentage/100+y_offset		
 
 rect3d.append("rect")
 	.attr("class", "forward")
@@ -211,12 +213,236 @@ rect3d.append("rect")
   .attr("height", rh)
 	  .attr ("transform", "translate ("+(-rd/2)+","+(-rd/2-ident*(spacing))+") skewY("+ang+")")
 }
+
+// 3D Cubes
+// ---------------------------------------
+var Vertex = function(x, y, z) {
+    this.x = parseFloat(x);
+    this.y = parseFloat(y);
+    this.z = parseFloat(z);
+};
+
+var Vertex2D = function(x, y) {
+    this.x = parseFloat(x);
+    this.y = parseFloat(y);
+};
+
+var HistoBar = function(center, side, height, bottom) {
+    // Generate the vertices
+    var d = side;
+    var h = height;	
+    var bot = bottom;
+
+    this.vertices = [
+        new Vertex(center.x - d, center.y - d, bot + h),
+        new Vertex(center.x - d, center.y - d, bot),
+        new Vertex(center.x + d, center.y - d, bot),
+        new Vertex(center.x + d, center.y - d, bot + h),
+        new Vertex(center.x + d, center.y + d, bot + h),
+        new Vertex(center.x + d, center.y + d, bot),
+        new Vertex(center.x - d, center.y + d, bot),
+        new Vertex(center.x - d, center.y + d, bot + h)
+    ];
+
+    // Generate the faces
+    this.faces = [
+        [this.vertices[4], this.vertices[5], this.vertices[6], this.vertices[7]],
+        [this.vertices[7], this.vertices[6], this.vertices[1], this.vertices[0]],
+        [this.vertices[1], this.vertices[6], this.vertices[5], this.vertices[2]],
+        [this.vertices[7], this.vertices[0], this.vertices[3], this.vertices[4]],
+        [this.vertices[0], this.vertices[1], this.vertices[2], this.vertices[3]],
+        [this.vertices[3], this.vertices[2], this.vertices[5], this.vertices[4]],
+    ];
+};
+
+function project(M) {
+    return new Vertex2D(M.x, M.z);
+}
+
+function render(objects, ctx, dx, dy) {
+    // Clear the previous frame
+    ctx.clearRect(0, 0, 2*canvas.width, 2*canvas.height); // clears everything from (0,0) to (width, height)
+
+    // For each object
+    for (var i = 0, n_obj = objects.length; i < n_obj; ++i) {
+        // For each face
+        for (var j = 0, n_faces = objects[i].faces.length; j < n_faces; ++j) {
+            // Current face
+            var face = objects[i].faces[j];
+
+            // Draw the first vertex
+            var P = project(face[0]);
+            ctx.beginPath();
+            ctx.moveTo(P.x + dx, -P.y + dy);
+
+            // Draw the other vertices
+            for (var k = 1, n_vertices = face.length; k < n_vertices; ++k) {
+                P = project(face[k]);
+                ctx.lineTo(P.x + dx, -P.y + dy);
+            }
+
+            // Close the path and draw the face
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
+        }
+    }
+}
+
+function rotate(M, center, theta, phi) {
+        // Rotation matrix coefficients
+        var ct = Math.cos(theta);
+        var st = Math.sin(theta);
+        var cp = Math.cos(phi);
+        var sp = Math.sin(phi);
+
+        // Rotation
+        var x = M.x - center.x;
+        var y = M.y - center.y;
+        var z = M.z - center.z;
+
+        M.x = ct * x - st  * y + st * sp * z + center.x;
+        M.y = st * x + ct * cp * y - ct * sp * z + center.y;
+        M.z = sp * y + cp * z + center.z;
+}
+
+
+    // Fix the canvas width and height
+    var canvas = document.getElementById('cnv');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    console.log(canvas.width, canvas.height)
+
+    // Objects style
+    var ctx = canvas.getContext('2d');
+    ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
+    ctx.fillStyle = 'rgba(0, 150, 255, 1.0)';
+    // Events
+    var mx = 0;
+    var my = 0;
+
+function update_histograms(histo_data){
+    var dx = 100;
+    var dy = 100;
+    var max_height = 100
+    var histo_width = 20
+    var histo_height= 50
+    var h0 = Math.round(histo_data[0]*max_height)
+    var h1 = Math.round(histo_data[1]*max_height)
+    var h2 = Math.round(histo_data[2]*max_height)
+    var h3 = Math.round(histo_data[3]*max_height)
+    var cube_center1 = new Vertex(0, 11*dy/10, 0);
+    var cube1 = new HistoBar(cube_center1, histo_width, h0, -50);
+    var cube_center2 = new Vertex(60, 11*dy/10, 0);
+    var cube2 = new HistoBar(cube_center2, histo_width, h1, -70);
+    var cube_center3 = new Vertex(60, 11*dy/10, 0);
+    var cube3 = new HistoBar(cube_center3, histo_width, h2, -33);
+    var cube_center4 = new Vertex(120, 11*dy/10, 0);
+    var cube4 = new HistoBar(cube_center4, histo_width, h3, -50);
+    var objects = [cube3, cube4, cube1, cube2];
+
+for (var i = 0; i < 8; ++i)
+    rotate(cube1.vertices[i], cube_center1, -Math.PI/4, 0);
+for (var i = 0; i < 8; ++i)
+    rotate(cube1.vertices[i], cube_center1, 0, 0.3);
+for (var i = 0; i < 8; ++i)
+    rotate(cube2.vertices[i], cube_center2, -Math.PI/4, 0);
+for (var i = 0; i < 8; ++i)
+    rotate(cube2.vertices[i], cube_center2, 0, 0.3);
+for (var i = 0; i < 8; ++i)
+    rotate(cube3.vertices[i], cube_center3, -Math.PI/4, 0);
+for (var i = 0; i < 8; ++i)
+    rotate(cube3.vertices[i], cube_center3, 0, 0.3);
+for (var i = 0; i < 8; ++i)
+    rotate(cube4.vertices[i], cube_center4, -Math.PI/4, 0);
+for (var i = 0; i < 8; ++i)
+    rotate(cube4.vertices[i], cube_center4, 0, 0.3);
+    // First render
+    render(objects, ctx, dx, dy);
+}
+
+update_histograms([0.1,0.5,0.3,0.6])
+
+var canvas = document.getElementById('cnv');
+var context = canvas.getContext('2d');
+var centerX = 70
+var centerY = 165
+var radius = 10;
+var radiusX = 14;
+var radiusY = 10;
+var rotation = Math.PI/12;
+var rotation2 = -Math.PI/12
+
+//context.beginPath();
+//context.ellipse(centerX, centerY, radiusX, radiusY, rotation, 0, 2*Math.PI)
+//context.moveTo(centerX+60, centerY+20)
+//context.ellipse(centerX+60, centerY+20, radiusX, radiusY, rotation, 0, 2*Math.PI)
+//context.moveTo(centerX+120, centerY+20)
+//context.ellipse(centerX+120, centerY+20, radiusX, radiusY, rotation2, 0, 2*Math.PI)
+//context.moveTo(centerX+160, centerY)
+//context.ellipse(centerX+160, centerY, radiusX, radiusY, rotation2, 0, 2*Math.PI)
+////context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+//context.fillStyle = 'blue';
+//context.fill();
+//context.lineWidth = 0.8;
+//context.strokeStyle = '#003300';
+//context.stroke();
+    //canvas.addEventListener('mousedown', initMove);
+    //document.addEventListener('mousemove', move);
+    //document.addEventListener('mouseup', stopMove);
+
+    // Rotate a vertice
+
+    // Initialize the movement
+//    function initMove(evt) {
+//        clearTimeout(autorotate_timeout);
+//        mousedown = true;
+//        mx = evt.clientX;
+//        my = evt.clientY;
+//    }
+//
+//    function move(evt) {
+//        if (mousedown) {
+//            var theta = (evt.clientX - mx) * Math.PI / 360;
+//            var phi = (evt.clientY - my) * Math.PI / 180;
+//
+//            for (var i = 0; i < 8; ++i)
+//                rotate(cube.vertices[i], cube_center, theta, phi);
+//
+//            mx = evt.clientX;
+//            my = evt.clientY;
+//
+//            render(objects, ctx, dx, dy);
+//        }
+//    }
+//
+//    function stopMove() {
+//        mousedown = false;
+//        autorotate_timeout = setTimeout(autorotate, 2000);
+//    }
+//
+//    function autorotate() {
+//        for (var i = 0; i < 8; ++i)
+//            rotate(cube.vertices[i], cube_center, -Math.PI / 720, Math.PI / 720);
+//
+//        render(objects, ctx, dx, dy);
+//
+//        autorotate_timeout = setTimeout(autorotate, 30);
+//    }
+    //autorotate_timeout = setTimeout(autorotate, 2000);
+//        for (var i = 0; i < 8; ++i)
+//            rotate(cube.vertices[i], cube_center, -Math.PI / 4, Math.PI / 4);
+//
+//        render(objects, ctx, dx, dy);
+//
+// ------------------------------------------------------
+
 max_height = 100
 percentage = 100
-draw_cube(3, 50, max_height, percentage)
-draw_cube(2, 50, max_height, percentage)
-draw_cube(1, 50, max_height, percentage)
-draw_cube(0, 50, max_height, percentage)
+//draw_cube_new(3, 50, max_height, percentage, 0)
+//draw_cube(2, 50, max_height, percentage, 100)
+//draw_cube(1, 50, max_height, percentage, 0)
+//draw_cube(0, 50, max_height, percentage, 100)
 
 function remove_cubes(){
 for (i=0;i<4;i++){	
@@ -228,7 +454,7 @@ document.getElementById("rect_forward"+i).remove()
 function draw_3d_histo(stats){i
 for (i=0;i<4;i++){
 perce = Math.round(stats[3-i]*100)
-draw_cube(3-i, 50, max_height, perce)}
+draw_cube(3-i, 50, max_height, perce, 0)}
 }
 // ------------------------------------------------------
 common_svg = d3.select(identity_test)
