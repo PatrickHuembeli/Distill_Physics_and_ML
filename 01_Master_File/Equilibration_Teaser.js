@@ -38,9 +38,9 @@ number_of_images = [0,1,2] // So far we onl have zero, one, nine
 // ADD A SINGLE IMAGE
 var teaser_main_image_var = img_nr[0] // define variable globaly   
 var folder_path = '/figures/images_for_equilibration/'
-var folder_nr = ['zero/', 'one/', 'nine/']
-var images_visible = ['damaged_zeros_visible_','damaged_ones_visible_','damaged_nines_visible_']
-var images_hidden = ['resized_damaged_zeros_hidden_','resized_damaged_ones_hidden_','resized_damaged_nines_hidden_']
+var folder_nr = ['zero/', 'four/', 'nine/']
+var images_visible = ['damaged_zeros_visible_','damaged_fours_visible_','damaged_nines_visible_']
+var images_hidden = ['resized_damaged_zeros_hidden_','resized_damaged_fours_hidden_','resized_damaged_nines_hidden_']
 var image_nr = [0,1,2,3,4,5,6,7,8]
 
 teaser_svg_imgequil.append('image')
@@ -175,9 +175,9 @@ teaser_time_steps = 2000
 
 async function teaser_update_drawing() {
     await new Promise(r => setTimeout(r, 200)); // Wait a short time until data is really loaded.
-    
+console.log(d3.select('#teaser_compressed_img_id').attr('xlink:href'))    
 points = getwholeImage_new(d3.select('#teaser_compressed_img_id').attr('xlink:href'), 100)	
-hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').attr('xlink:href'), 20)	
+hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').attr('xlink:href'), 20)
     if (initialize_flag){
         d3.selectAll(".teaser_weightline1")
             //.data(points)

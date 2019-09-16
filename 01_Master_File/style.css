@@ -155,6 +155,11 @@ padding: 10px;
 border: 1px solid grey;
 border-radius: 5px;
 }
+div.column_2level_no_border {
+float: left;
+width: 180px; 
+padding: 10px;
+}
 div.column_2level_image {
 float: left;
 width: 450px;

@@ -39,18 +39,18 @@ number_of_images = [0,1,2] // So far we onl have zero, one, nine
 // ADD A SINGLE IMAGE
 var main_image_var = img_nr[0] // define variable globaly   
 var folder_path = '/figures/images_for_equilibration/'
-var folder_nr = ['zero/', 'one/', 'nine/']
-var images_visible = ['damaged_zeros_visible_','damaged_ones_visible_','damaged_nines_visible_']
-var images_hidden = ['resized_damaged_zeros_hidden_','resized_damaged_ones_hidden_','resized_damaged_nines_hidden_']
+var folder_nr = ['zero/', 'four/', 'nine/']
+var images_visible = ['damaged_zeros_visible_','damaged_fours_visible_','damaged_nines_visible_']
+var images_hidden = ['resized_damaged_zeros_hidden_','resized_damaged_fours_hidden_','resized_damaged_nines_hidden_']
 var image_nr = [0,1,2,3,4,5,6,7,8]
 
-main_image = svg_imgequil.append('image')
-    .attr('id', 'main_img_big_id')
-    .attr('xlink:href', folder_path+folder_nr[0] + images_visible[0] +0+'.jpg')
-    .attr("x", 500)
-    .attr("y", 20)
-    .attr("width", main_img_width)
-    .attr("height", main_img_height)
+//main_image = svg_imgequil.append('image')
+//    .attr('id', 'main_img_big_id')
+//    .attr('xlink:href', folder_path+folder_nr[0] + images_visible[0] +0+'.jpg')
+//    .attr("x", 500)
+//    .attr("y", 20)
+//    .attr("width", main_img_width)
+//    .attr("height", main_img_height)
     
 compressed_image = svg_imgequil.append('image')
     .attr('id', 'compressed_img_id')
@@ -103,9 +103,9 @@ images = svg_imgequil.selectAll()
     .on("mouseout", function() {d3.select(this)
                                     .style("opacity", 0.5)})  
     .on("click", function(d){main_image_var = d,
-		path_vis = folder_path +folder_nr[d]+images_visible[d]+0+'.jpg',
-	        console.log(path_vis),    
-                d3.select('#main_img_big_id').attr('xlink:href', path_vis),
+		//path_vis = folder_path +folder_nr[d]+images_visible[d]+0+'.jpg',
+	        //console.log(path_vis),    
+                //d3.select('#main_img_big_id').attr('xlink:href', path_vis),
                 d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+'resized_'+images_visible[d]+0+'.jpg')
                 d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+images_hidden[d]+0+'.jpg')
 	        which_number_index = d
@@ -168,8 +168,8 @@ function getwholeImage_new(url, threshold) {
   return points }
 
 function equilibration_step_rbm(){
-	console.log('test')
-        d3.select('#main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
+	//console.log('test')
+        //d3.select('#main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
         d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
         d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+Math.ceil(total_equilibration_steps/2)+'.jpg')
 	if (total_equilibration_steps < max_equilibration_steps){

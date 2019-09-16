@@ -8,7 +8,7 @@ var positionInfo = element.getBoundingClientRect();
 var height_new = positionInfo.height;
 var width_new = positionInfo.width;
 
-temp_slider_energy_minim_init_value = 10
+temp_slider_energy_minim_init_value = 1
 
 document.getElementById("temperature_slider_energy_minima").innerHTML = temp_slider_energy_minim_init_value;
 //document.getElementById("coupling_strength").value = temp_slider_energy_minim_init_value

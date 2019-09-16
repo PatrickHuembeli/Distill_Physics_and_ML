@@ -251,12 +251,15 @@ Consider first the zero-temperature case. The key physical principle underlying 
 Starting from a random initialization, by repeatedly applying this update rule for each particle, the system's configuration will converge to a local minimum <d-cite key="Rojas_1996_NNS"></d-cite>. This method is in general not guaranteed to find the true ground states, i.e., global minima of the energy function. <b>JM: this is a good place to mention something about successes and challenges in sampling.</b> For finite temperature, the strategy is similar, except that we allow the possibility to ocassionally jump to higher-energy configurations. In this case, the update rule is as follows: as before, if a change of state decreases the total energy, that change is applied: <d-math>\sigma_i \rightarrow -\sigma_i</d-math>. However, if a change increases the energy, i.e., if <d-math>\Delta E \geq 0</d-math>, instead of leaving the particle's state unchanged, we now flip it with probability <d-math>p = \exp(-1/T \Delta E) </d-math>. Physically, these jumps to higher-energy states mimic the random thermal fluctuations arising from exchanging energy with an environment at finite temperature. This sampling algorithm is a specific instance of the Metropolis-Hastings algorithm [], which is particularly convenient when the distribution is know up to a normalization constant, like the partitiion function, that may be challenging to compute.</p>
 
 
-    <div class="row">
-	 <div class="column_2level">
+    <div class="row">   
+	 <div class="column_2level_no_border">
+		 <div class="column_2level_no_border" style="height:50px"> </div>
+		 <div class="column_2level"> 
              <p class="slider-label-text" style="width:110px">Temperature <d-math> T </d-math>:</p>
            <p id="temperature_slider_energy_minima" class="slider-label-number" style="width:35px"></p>
-             <input id="temp_slider_energy_minima_id" type="range" oninupt="interrupt_convergence(this.value)" onchange="temp_slider_energy_min(this.value)" min="0.01" max="100" step="0.1">
+             <input id="temp_slider_energy_minima_id" type="range" oninupt="interrupt_convergence(this.value)" onchange="temp_slider_energy_min(this.value)" min="0.01" max="100" step="0.1" value="32">
      </div>
+	 </div>
     <div class="doublecolumn">
       <figure style = "width:100%; height:280px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "Figure_energy_minima_and_temp">
     <div id = "energy_minima_and_temp_id" style="position:absolute; left:0px; top:0px"></div>
