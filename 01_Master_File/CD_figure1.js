@@ -1,11 +1,8 @@
-const RBM_complete = "#RBM_complete_id" // This defines in which div we write into
+const CD_fig1 = "#CD_figure1_id" // This defines in which div we write into
 
 var IDENTIFIER = ''
 
 // How to read out checkbox values
-//var select_hidden = document.getElementById("hidden_check"+IDENTIFIER)
-//var select_restricted = document.getElementById("restricted_check"+IDENTIFIER)
-
 dictionary = {}
 //select_hidden.checked = false
 //var hidden_active = select_hidden.checked // Initialize selectors
@@ -13,33 +10,22 @@ dictionary = {}
 
 
 // Default Variables
-dictionary["h_units"+IDENTIFIER] = 1
-dictionary["v_units"+IDENTIFIER] = 2
-dictionary["total_spins"+IDENTIFIER] = 3
+dictionary["h_units"+IDENTIFIER] = 2
+dictionary["v_units"+IDENTIFIER] = 4
+dictionary["total_spins"+IDENTIFIER] = 6
 dictionary["hidden_vecs"+IDENTIFIER] = permutations_of_vector(dictionary["h_units"+IDENTIFIER])
 dictionary["bm_permutations"+IDENTIFIER] = permutations_of_vector(dictionary["total_spins"+IDENTIFIER])
-var width = 500;
-var svg_RBM_height = 150;
-var svg_histo_height = 280;
-var radius = 10.0
-var space = 15.0
-//var histo_x_pos = 50
-var histo_label_x_pos = 10
-var histo_width = 20
-var histo_height = 200
-var histo_y_pos = 10
+var width = 700;
+var height = 250;
+var radius = 15.0
+var space = 50.0
 
 var center_x = 200;
 var center_y = 110;
-var scaling = 50
 
 var margin_x = 10
 
-var colors = ['white', 'black'];
-var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
-var hidden_colors_stroke = ["blue", "red"]
-var nodes_colors = [colors,hidden_colors, colors]
-var stroke_colors = [["black", "black"], hidden_colors_stroke, ["black", "black"]]
+var nodes_colors = ["blue", "orange"]
 var ypos1 = 50
 var ypos2 = 200
 
@@ -49,73 +35,77 @@ var tooltip = d3.select("body") //This is in body not svg
   .attr('class', 'tooltip');
 
 // Scaling for the positioning functions. Changes size of graph
+var scaling = 80
 
+var histo_width = 30
+var histo_height = 200
+var histo_y_pos = 10
 // Add the space where it draws the RBM
-//d3.select(RBM_complete)
-//    .append("svg")
-//    .attr("id", "RBM_sampler"+IDENTIFIER)
-//    .attr('class','figures')
-//    .attr("width", width) // use whole space given in article
-//    .attr("height", height); // This is height of figure without 'selectors'
-//
-//d3.select(RBM_complete)
-//    .append("svg")
-//    .attr("id", "RBM_sampler_histo"+IDENTIFIER)
-//    .attr('class','figures')
-//    .attr("width", width) // use whole space given in article
-//    .attr("height", height); // This is height of figure without 'selectors'
+d3.select(CD_fig1)
+    .append("svg")
+    .attr("id", "RBM_sampler"+IDENTIFIER)
+    .attr('class','figures')
+    .attr("width", width) // use whole space given in article
+    .attr("height", height); // This is height of figure without 'selectors'
+
+d3.select(CD_fig1)
+    .append("svg")
+    .attr("id", "RBM_sampler_histo"+IDENTIFIER)
+    .attr('class','figures')
+    .attr("width", width) // use whole space given in article
+    .attr("height", height); // This is height of figure without 'selectors'
 // VERY IMPORTANT WE WILL HAVE TO CHANGE THIS WIDTH PARAMETER TO 100% TO ADAPT FIGURE SIZE FOR DIFFERENT DEVICES.
 
 //==============================================================================
 // Initialize Variables dependent on architecture
 // ----------------------------------------------------------------------------
 
-//update_architecture(IDENTIFIER) 
+update_architecture(IDENTIFIER) 
 
-//dictionary["weight_slider_index"+IDENTIFIER] = 0
-//dictionary["bias_slider_index"+IDENTIFIER] = 0
-//dictionary["histogram_data_init"+IDENTIFIER] = [0.05,0.05,0.05,0.05,0.05,0.05] 
-//background_rectangles_hidden_visible(IDENTIFIER)
-//generate_histogram(IDENTIFIER)
-//generate_RBM_nodes(IDENTIFIER)   
-//generate_RBM_biases(IDENTIFIER)   
-//generate_RBM_connections(IDENTIFIER)   
-//add_text_elements(IDENTIFIER)
+dictionary["weight_slider_index"+IDENTIFIER] = 0
+dictionary["bias_slider_index"+IDENTIFIER] = 0
+dictionary["histogram_data_init"+IDENTIFIER] = [0.05,0.05,0.05,0.05,0.05,0.05] 
+background_rectangles_hidden_visible(IDENTIFIER)
+generate_histogram(IDENTIFIER)
+generate_RBM_nodes(IDENTIFIER)   
+generate_RBM_biases(IDENTIFIER)   
+generate_RBM_connections(IDENTIFIER)   
+add_text_elements(IDENTIFIER)
 
-//dictionary["configuration_to_learn"+IDENTIFIER] = [[-1,-1,1,1],[1,-1,-1,1],[1,1,-1,-1],[-1,1,1,-1],[-1,-1,-1,-1],[1,1,1,1]]
-//add_visible_configs(histo_pos_gen(0), histo_y_pos, 4, 10, [0,0,1,1],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(1), histo_y_pos, 4, 10, [1,0,1,0],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(2), histo_y_pos, 4, 10, [1,1,0,0],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(3), histo_y_pos, 4, 10, [0,1,0,1],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(4), histo_y_pos, 4, 10, [1,1,1,1],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(5), histo_y_pos, 4, 10, [0,0,0,0],IDENTIFIER)
+dictionary["configuration_to_learn"+IDENTIFIER] = [[-1,-1,1,1],[1,-1,-1,1],[1,1,-1,-1],[-1,1,1,-1],[-1,-1,-1,-1],[1,1,1,1]]
+add_visible_configs(histo_pos_gen(0), histo_y_pos, 4, 10, [0,0,1,1],IDENTIFIER)
+add_visible_configs(histo_pos_gen(1), histo_y_pos, 4, 10, [1,0,1,0],IDENTIFIER)
+add_visible_configs(histo_pos_gen(2), histo_y_pos, 4, 10, [1,1,0,0],IDENTIFIER)
+add_visible_configs(histo_pos_gen(3), histo_y_pos, 4, 10, [0,1,0,1],IDENTIFIER)
+add_visible_configs(histo_pos_gen(4), histo_y_pos, 4, 10, [1,1,1,1],IDENTIFIER)
+add_visible_configs(histo_pos_gen(5), histo_y_pos, 4, 10, [0,0,0,0],IDENTIFIER)
 
-//function background_rectangles_hidden_visible(identifier){
-//	vis_background_rect_width = 250
-//	vis_background_rect_height = 130
-//	hid_background_rect_height = 100
-//	hid_background_rect_width = 150
-//	visible_background_rect_x = center_x-vis_background_rect_width/2 
-//	visible_background_rect_y = center_y-radius*1.5 
-//	d3.select("#RBM_complete_main_svg"+identifier).append("rect")
-//		.attr("x", visible_background_rect_x)
-//		.attr("y", visible_background_rect_y)
-//		.attr("height", vis_background_rect_height)
-//		.attr("width", vis_background_rect_width)
-//		.attr("fill", "blue")
-//		.attr("opacity", 0.1)
-//		.attr("rx", 10)
-//	
-//	d3.select("#RBM_complete_main_svg"+identifier).append("rect")
-//		.attr("x", visible_background_rect_x+(vis_background_rect_width-hid_background_rect_width)/2)
-//		.attr("y", visible_background_rect_y-hid_background_rect_height)
-//		.attr("height", hid_background_rect_height)
-//		.attr("width", hid_background_rect_width)
-//		.attr("fill", "red")
-//		.attr("opacity", 0.1)
-//		.attr("rx", 10)
-//		}
-//
+function background_rectangles_hidden_visible(identifier){
+	vis_background_rect_width = 250
+	vis_background_rect_height = 130
+	hid_background_rect_height = 100
+	hid_background_rect_width = 150
+	visible_background_rect_x = center_x-vis_background_rect_width/2 
+	visible_background_rect_y = center_y-radius*1.5 
+	d3.select("#RBM_complete_main_svg"+identifier).append("rect")
+		.attr("x", visible_background_rect_x)
+		.attr("y", visible_background_rect_y)
+		.attr("height", vis_background_rect_height)
+		.attr("width", vis_background_rect_width)
+		.attr("fill", "blue")
+		.attr("opacity", 0.1)
+		.attr("rx", 10)
+	
+	d3.select("#RBM_complete_main_svg"+identifier).append("rect")
+		.attr("x", visible_background_rect_x+(vis_background_rect_width-hid_background_rect_width)/2)
+		.attr("y", visible_background_rect_y-hid_background_rect_height)
+		.attr("height", hid_background_rect_height)
+		.attr("width", hid_background_rect_width)
+		.attr("fill", "red")
+		.attr("opacity", 0.1)
+		.attr("rx", 10)
+		}
+
 
 function update_architecture(identifier){
 	var h_units = dictionary["h_units"+identifier]
@@ -147,12 +137,12 @@ function update_architecture(identifier){
 	d3.select("#RBM_sampler"+identifier).append("svg")
 			.attr("id", "RBM_complete_main_svg"+identifier)
 
-	//background_rectangles_hidden_visible()
+	background_rectangles_hidden_visible()
 	//visible_vecs = permutations_of_vector(v_units)
 }
 
-function generate_histogram(histo_id, histo_x_pos, identifier){
-var histogram_data = dictionary["histogram_data"+identifier] 
+function generate_histogram(identifier){
+var histogram_data = dictionary["histogram_data_init"+identifier] 
 
 var x_histogram = d3.scaleLinear()
           .range([0, 100]);
@@ -167,15 +157,15 @@ histogram_svg.selectAll("rect")
 	.data(histogram_data)
 	.enter().append("rect")
 	.style("fill", "#4682b4")
-	.style("opacity", 1.0)
-	.attr("id", function(d,i){return histo_id+identifier+i})
-	.attr("x", histo_x_pos) // margin left
-	.attr("y", function(d,i){return histo_pos_gen(i)}) // margin left
-	//.attr("transform", function(d,i) {
-	//	  return "translate(" + histo_pos_gen(i) + ")"; })
-	.attr("width", function(d,i) { return d*histo_height ; })
+	.style("opacity", 0.5)
+	.attr("id", function(d,i){return "histo"+identifier+i})
+	.attr("x", 0) // margin left
+	.attr("y", function(d){return histo_y_pos-100+(1-d)*histo_height}) // margin left
+	.attr("transform", function(d,i) {
+		  return "translate(" + histo_pos_gen(i) + ")"; })
+	.attr("width", function(d,i) { return histo_width ; })
 	//       .attr("width", function(d,i) { console.log(d) ; })
-	.attr("height", function(d) { return histo_width; });
+	.attr("height", function(d) { return d*histo_height; });
   y_pos_histo_axis = histo_pos_gen(0)-20;
   x_pos_histo_axis = histo_y_pos;
   
@@ -241,14 +231,10 @@ return [connection_graph, weight_matrix]};
 // -----------------------------------------------------------------------------
 function toggle_colors(selection, spins_vec,  d){
 	current_color = selection.style("fill")
-	if(current_color == 'rgb(173, 173, 255)'){current_color = 'hsl(0,100%,84%)'
+	if(current_color == "blue"){current_color = nodes_colors[1]
 	                            spins_vec[d]= 1}
-	else if(current_color == 'rgb(255, 173, 173)'){current_color = 'hsl(240,100%,84%)'
-	                            spins_vec[d]= -1}
-	else if(current_color == 'white'){current_color = 'black'
-	                            spins_vec[d]= 1}
-	else if(current_color == 'black'){current_color = 'white'
-	                            spins_vec[d]= -1}
+	else {current_color = nodes_colors[0]
+	        spins_vec[d]= -1}
 	selection.transition()
 	selection.style("fill", current_color)
 		return spins_vec
@@ -268,7 +254,7 @@ function update_select(){
 // -----------------------------------------------------------------------------
 function pos_gen_x(d,i,identifier){
 	var total_spins = dictionary["total_spins"+identifier]
-	angle = Math.PI/6 + 2*Math.PI/total_spins*i
+	angle = 2*Math.PI/total_spins*i
 	x = Math.cos(angle)*scaling + center_x
 	return x
 };
@@ -276,14 +262,14 @@ function pos_gen_x(d,i,identifier){
 
 function pos_gen_x_rect(d,i,identifier){
 	var total_spins = dictionary["total_spins"+identifier]
-	angle = Math.PI/6 + 2*Math.PI/total_spins*i
+	angle = 2*Math.PI/total_spins*i
 	x = Math.cos(angle)*scaling + center_x
 	return x+20
 };
 
 function pos_gen_y(d,i,identifier){
 	var total_spins = dictionary["total_spins"+identifier]
-	angle = Math.PI/6 + 2*Math.PI/total_spins*i
+	angle = 2*Math.PI/total_spins*i
 	y = Math.sin(angle)*scaling + center_y
 	return y
 };
@@ -291,27 +277,31 @@ function pos_gen_y(d,i,identifier){
 // The input data here is the connection_graph [[0,1],[0,2],...[5,6]]
 function line_pos_gen_x1(d,identifier){
 	var total_spins = dictionary["total_spins"+identifier]
-	angle_1 = Math.PI/6 + 2*Math.PI/total_spins*d[0]
+	angle_1 = 2*Math.PI/total_spins*d[0]
+	angle_2 = 2*Math.PI/total_spins*d[1]
 	x_1 = Math.cos(angle_1)*(scaling-radius) + center_x
 	return Math.round(x_1)
 };
 
 function line_pos_gen_x2(d,identifier){
 	var total_spins = dictionary["total_spins"+identifier]
-	angle_2 =  Math.PI/6 + 2*Math.PI/total_spins*d[1]
+	angle_1 = 2*Math.PI/total_spins*d[0]
+	angle_2 = 2*Math.PI/total_spins*d[1]
 	x_2 = Math.cos(angle_2)*(scaling-radius) + center_x
 	return Math.round(x_2)};
 
 function line_pos_gen_y1(d,identifier){
 	var total_spins = dictionary["total_spins"+identifier]
-	angle_1 =  Math.PI/6 + 2*Math.PI/total_spins*d[0]
+	angle_1 = 2*Math.PI/total_spins*d[0]
+	angle_2 = 2*Math.PI/total_spins*d[1]
 	y_1 = Math.sin(angle_1)*(scaling-radius) + center_y
 	return Math.round(y_1)
 };
 
 function line_pos_gen_y2(d,identifier){
 	var total_spins = dictionary["total_spins"+identifier]
-	angle_2 =  Math.PI/6 + 2*Math.PI/total_spins*d[1]
+	angle_1 = 2*Math.PI/total_spins*d[0]
+	angle_2 = 2*Math.PI/total_spins*d[1]
 	y_2 = Math.sin(angle_2)*(scaling-radius) + center_y
 	return Math.round(y_2)
 };
@@ -323,11 +313,7 @@ function line_pos_gen_y2(d,identifier){
 
 function generate_RBM_nodes(identifier){
 // Define tooltips for hovering information
-	
-var colors_init = ['white','white', 'hsl(240, 100%, 84%)']
-var color_init_stroke = ['black','black', 'blue']	
-//var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
-//var hidden_colors_stroke = ["blue", "red"]
+
     // -------------------------------------------------------------------------
     // Draw nodes for the RBM 
     // -------------------------------------------------------------------------
@@ -335,9 +321,8 @@ var color_init_stroke = ['black','black', 'blue']
         .data(dictionary["spins_data"+identifier])
         .enter()
         .append("circle")
-        .style("fill", function(d,i){return colors_init[d]})
-	.attr("stroke", function(d,i){return color_init_stroke[d]})
-        //.attr('class', 'hidden_circle') // class is needed for style sheet
+        .style("fill", nodes_colors[0])
+        .attr('class', 'hidden_circle') // class is needed for style sheet
         .attr("cx", function(d,i){return pos_gen_x(d,i,identifier)})
         .attr("cy", function(d,i){return pos_gen_y(d,i,identifier)}) 
         .attr("r", radius)
@@ -412,7 +397,6 @@ function generate_RBM_biases(identifier){
     // Draw lines for the RBM 
     // -------------------------------------------------------------------------
 function generate_RBM_connections(identifier){ 
-	  histo_id1 = "histogram_data_pos_phase"
    d3.select("#RBM_sampler"+identifier).selectAll()
         .data(dictionary["connection_graph"+identifier])
         .enter()
@@ -534,7 +518,6 @@ function all_configs_given_v(single_visible, hidden_permutations){
 // =============================================================================
 function prob_of_v(single_visible, hidden_permutations, identifier){
     var bm_permutations = dictionary["bm_permutations"+identifier]
-	console.log(bm_permutations)
     Z = part_fct(bm_permutations, identifier)
     boltzmann_factor = 0
     all_conf = all_configs_given_v(single_visible, hidden_permutations)
@@ -542,15 +525,6 @@ function prob_of_v(single_visible, hidden_permutations, identifier){
         energy_v = energy_fct(all_conf[a], identifier) 
         boltzmann_factor += Math.exp(-energy_v)
         };
-    return (boltzmann_factor/Z)    
-}
-
-function prob_of_config(config, identifier){
-    var bm_permutations = dictionary["configuration_to_learn"+identifier]
-    Z = part_fct(bm_permutations, identifier)
-    boltzmann_factor = 0
-        energy_v = energy_fct(config, identifier) 
-        boltzmann_factor += Math.exp(-energy_v)
     return (boltzmann_factor/Z)    
 }
 
@@ -593,14 +567,14 @@ function add_text_elements(identifier){
 	var bias_slider_index = dictionary["bias_slider_index"+identifier]
 	var connection_graph = dictionary["connection_graph"+identifier]
 	var biases = dictionary["biases"+identifier]
-	text = document.getElementById("bias_slider_text"+identifier)
-	text.innerHTML = "Bias: "+bias_slider_index
-	text = document.getElementById("weight_slider_text"+identifier)
-	text.innerHTML = "Weight: (" + connection_graph[weight_slider_index][0]+', '+connection_graph[weight_slider_index][1]+')'
-	value = document.getElementById("bias_slider_value"+identifier)
-	value.innerHTML =biases[bias_slider_index]
-	value = document.getElementById("weight_slider_value"+identifier)
-	value.innerHTML = dictionary["weight_matrix"+identifier][ connection_graph[weight_slider_index][0]][connection_graph[weight_slider_index][1]] 
+	//text = document.getElementById("bias_slider_text"+identifier)
+	//text.innerHTML = "Bias: "+bias_slider_index
+	//text = document.getElementById("weight_slider_text"+identifier)
+	//text.innerHTML = "Weight: (" + connection_graph[weight_slider_index][0]+', '+connection_graph[weight_slider_index][1]+')'
+	//value = document.getElementById("bias_slider_value"+identifier)
+	//value.innerHTML =biases[bias_slider_index]
+	//value = document.getElementById("weight_slider_value"+identifier)
+	//value.innerHTML = dictionary["weight_matrix"+identifier][ connection_graph[weight_slider_index][0]][connection_graph[weight_slider_index][1]] 
 	}
 
 
@@ -620,13 +594,8 @@ function slider_bias_fct_RBM(h, identifier) {
         d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
 	  histogram_data = []  
 	  for (j=0; j<configuration_to_learn.length; j++){
-	  	histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
-	  histo_data_neg = histogram_data
-	  histo_data_pos = histo_pos_phase(histogram_data)
-	  histo_id1 = "histogram_pos_phase"
-	  histo_id2 = "histogram_neg_phase"
-          update_histogram(histo_data_pos, histo_id1, identifier) // pos phase         
-          update_histogram(histo_data_neg, histo_id2, identifier) // neg phase          
+	  	histogram_data.push(prob_of_v(configuration_to_learn[j], hidden_vecs, identifier))}
+          update_histogram(histogram_data, identifier)          
         }
 
 function slider_bias_just_text(h,identifier) {
@@ -645,6 +614,7 @@ function slider_fct_RBM(h,identifier) {
 	  var weight_slider_index = dictionary["weight_slider_index"+identifier]
 	  var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
 	  var hidden_vecs = dictionary["hidden_vecs"+identifier]
+	  console.log(configuration_to_learn)
           idx1 = connection_graph[weight_slider_index][0]	
           idx2 = connection_graph[weight_slider_index][1]	    
           weight_matrix[idx1][idx2] = h 
@@ -653,39 +623,153 @@ function slider_fct_RBM(h,identifier) {
           d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
 	  histogram_data = []  
 	  for (j=0; j<configuration_to_learn.length; j++){
-	  	histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
-	  histo_data_neg = histogram_data
-	  histo_data_pos = histo_pos_phase(histogram_data)
-	  histo_id1 = "histogram_pos_phase"
-	  histo_id2 = "histogram_neg_phase"
-          update_histogram(histo_data_pos, histo_id1, identifier) // pos phase         
-          update_histogram(histo_data_neg, histo_id2, identifier) // neg phase          
+		  console.log(j, hidden_vecs)
+	  	histogram_data.push(prob_of_v(configuration_to_learn[j], hidden_vecs, identifier))}
+          update_histogram(histogram_data, identifier)         
         } 
 
-
-const add = (a, b) => a + b
-
-function histo_pos_phase(histogram_data){
-new_data = histogram_data.slice(0,4)
-normalization_const = new_data.reduce(add)
-renormalize = new_data.map(function(element) {
-	return element/normalization_const;
-});
-for (j=0; j<4; j++){renormalize.push(0)}	
-return renormalize	
-}
 // =============================================================================
 // Histogram functions
 // =============================================================================
 
 function histo_pos_gen(d) {
-    return margin_x + d*(histo_width+space);
+    return margin_x + center_x - space*3 +  d * space -histo_width/2;
 };
 
-function update_histogram(histogram_data, histo_id, identifier){
+function update_histogram(histogram_data, identifier){
     for (i=0; i<histogram_data.length; i++) {
-        d3.select("#"+histo_id+identifier+i).attr("width", function(){return histogram_data[i]*histo_height})
-                            //.attr("y", function(){return histo_y_pos-100+(1-histogram_data[i])*histo_height}) 
+	    console.log(histogram_data)
+        d3.select("#histo"+identifier+i).attr("height", function(){return histogram_data[i]*histo_height})
+                            .attr("y", function(){return histo_y_pos-100+(1-histogram_data[i])*histo_height}) 
     }
+}
+
+// ============================================================================
+// Add configurations that have to be trained
+// ============================================================================
+
+function add_visible_configs(x_pos, y_pos, radius, margin, config,identifier){
+	small_shift_for_top_row_x = 6
+	d3.select("#RBM_sampler_histo"+identifier).append("rect")
+		.attr("x",5+x_pos-small_shift_for_top_row_x-2*radius)
+		.attr("y",y_pos-2*radius)
+		.attr("rx", 5)
+		.attr("width", 45)
+		.attr("height", 35)
+		.attr("fill", "grey")
+		.attr("opacity", 0.2)
+	d3.select("#RBM_sampler_histo"+identifier).selectAll()
+		.data(config)
+		.enter().append("circle")
+		.attr("cx", function(d,i){
+			return 5+x_pos+Math.floor(i/2)*(2*radius+margin) + 2*(-0.5 + Math.floor(i/2))*(1-i%2)*small_shift_for_top_row_x})
+		.attr("cy", function(d,i){return y_pos + i%2*(2*radius+margin) })
+		.attr("r", radius)
+		.attr("fill", function(d){
+			return nodes_colors[d]})
+	
+}
+
+function change_layout_hidden(identifier){
+	hidden_active = document.getElementById("hidden_check"+identifier).checked
+	restricted_active = document.getElementById("restricted_check"+identifier).checked 
+	
+	if (hidden_active == false){
+		if (restricted_active){ console.log("forbidden")
+		document.getElementById("hidden_check"+identifier).checked  = true
+		window.alert("You cannot make a spin system restricted without hidden units.");
+		return	
+		}	
+	}
+	change_layout(identifier)
+	}
+
+function change_layout_restricted(identifier){ 
+	hidden_active = document.getElementById("hidden_check"+identifier).checked 
+	restricted_active = document.getElementById("restricted_check"+identifier).checked 
+	
+	if (hidden_active == false){
+		if (restricted_active){ console.log("geht nicht !!!")
+		document.getElementById("restricted_check"+identifier).checked = false
+		window.alert("You cannot make a spin system restricted without hidden units.");
+		return	
+		}	
+	}
+	change_layout(identifier)
+	}
+
+// Selectors update function
+function change_layout(identifier){
+	document.getElementById("weight_slider_id"+identifier).value = 0.0 
+	var weight_slider_index = 0
+	dictionary["weight_slider_index"+identifier] = weight_slider_index	
+	var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
+	var hidden_vecs = dictionary["hidden_vecs"+identifier]
+
+	all_connections = make_connection_new(identifier)
+	connection_graph = all_connections[0]
+	dictionary["connection_graph"+identifier] = connection_graph
+	dictionary["weight_matrix"+identifier] = all_connections[1]
+	
+	idx1 = connection_graph[weight_slider_index][0]	
+	idx2 = connection_graph[weight_slider_index][1]	    
+	text = document.getElementById("weight_slider_text"+identifier)
+	text.innerHTML =  "Weight: ("+ idx1+", "+idx2+")"	
+	d3.select("#energy_text"+identifier).text("Energy: 0")    
+	//histogram_data = p_total_v(visible_vecs, hidden_vecs)
+	histogram_data = []  
+	for (j=0; j<configuration_to_learn.length; j++){
+		histogram_data.push(prob_of_v(configuration_to_learn[j], hidden_vecs, identifier))}
+	update_histogram(histogram_data)         
+	
+	
+	value = document.getElementById("weight_slider_value"+identifier)
+	value.innerHTML =  0	
+		
+	d3.select("#RBM_sampler"+identifier).selectAll("line").remove() 
+	d3.select("#RBM_sampler"+identifier).selectAll("line")
+	        .data(connection_graph)
+	        .enter()
+	        .append("line")
+	        .attr("id", function(d){return 'weight_h'+identifier+ d[0] + '' + d[1]})
+	    //     .attr("class", "RBM_line")
+	        .attr("stroke","rgb(0,0,0,0.5)") //These attr are defined by class
+	        .attr("stroke-width", 4.0)
+	        .attr("x1", function(d){return line_pos_gen_x1(d,identifier)})
+	        .attr("y1", function(d){return line_pos_gen_y1(d,identifier)})
+	        .attr("x2", function(d){return line_pos_gen_x2(d,identifier)})
+	        .attr("y2", function(d){return line_pos_gen_y2(d,identifier)})
+	        .on("mouseover", function(d) {
+	            tooltip.text('Coupling:' + d[0] +',' + d[1]+ ' Strength: '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
+	                    .style("visibility", "visible")
+	         d3.select(this).attr("stroke","rgb(0,0,0,1.0)")           ;
+	      })
+	  
+	       .on("mousemove", function(d) {
+	            tooltip.style("top", (event.pageY+10)+ "px")
+	            .style("left", event.pageX+10 + "px")
+	            d3.select(this).attr("stroke","rgb(0,0,0,1.0)");
+	      })
+	  
+	      .on("mouseout", function() {tooltip.style("visibility", "hidden")
+	      d3.select(this).attr("stroke","rgb(0,0,0,0.5)");
+	      })
+	      .on("click", function(d){
+	               line = d3.select(this)
+	                   coupling = d
+	               index = connection_graph.indexOf(coupling)
+	                   var idx1 = connection_graph[index][0]	
+	                   var idx2 = connection_graph[index][1]	    
+	                   arg = dictionary["weight_matrix"+identifier][idx1][idx2]
+		           document.getElementById("weight_slider_id"+identifier).value = arg
+	               //text = d3.select("#weighttext")
+	               //text.text(function(){return "Weight: ("+ idx1+', ' + idx2+')'})
+		      text = document.getElementById("weight_slider_text"+identifier)
+		      text.innerHTML =  "Weight: ("+ idx1+", "+idx2+")"	
+		      value = document.getElementById("weight_slider_value"+identifier)
+		      value.innerHTML =  arg	
+	              dictionary["weight_slider_index"+identifier] = index
+      })	
+
 }
 
