@@ -36,12 +36,14 @@ d3.select(RBM_complete_XOR)
     .attr("width", width) // use whole space given in article
     .attr("height", svg_histo_height); // This is height of figure without 'selectors'
 
-test = d3.select("#RBM_sampler_histo"+IDENTIFIERXOR)
-	.append("svg")
-	.attr("width", 100)
-	.attr("height", 100)
-	.attr("x", 200)
-	.attr("y", 100)
+d3.select("#RBM_sampler_histo"+IDENTIFIERXOR).append('image')
+      .attr('id', 'teaser_main_img_big_id')
+      .attr('xlink:href', "figures/CD_algorithm/histogram_labels3.png")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 100)
+      .attr("height", 250)
+      .attr("opacity", 1.0)
 // VERY IMPORTANT WE WILL HAVE TO CHANGE THIS WIDTH PARAMETER TO 100% TO ADAPT FIGURE SIZE FOR DIFFERENT DEVICES.
 
 //==============================================================================
@@ -54,7 +56,7 @@ dictionary["weight_slider_index"+IDENTIFIERXOR] = 0
 dictionary["bias_slider_index"+IDENTIFIERXOR] = 0
 //background_rectangles_hidden_visible(IDENTIFIERXOR)
 
-generate_histogram("histogram_pos_phase",50, IDENTIFIERXOR)
+generate_histogram("histogram_pos_phase",80, IDENTIFIERXOR)
 generate_histogram("histogram_neg_phase",300, IDENTIFIERXOR)
 
 generate_RBM_nodes(IDENTIFIERXOR)
@@ -66,14 +68,14 @@ add_text_elements(IDENTIFIERXOR)
 dictionary["configuration_to_learn"+IDENTIFIERXOR] = [[1,1,1,],[1,-1,1],[-1,1,-1],[-1,-1,-1],[-1,1,1],[-1,-1,1], [1,-1,-1], [1,1,-1]]
 wanted_config = 'red'
 unwanted_config = 'blue'
-add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(0), 4, 10, [1,1,1], wanted_config,IDENTIFIERXOR)
-add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(1), 4, 10, [1,0,1], wanted_config,IDENTIFIERXOR)
-add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(2), 4, 10, [0,1,0], wanted_config,IDENTIFIERXOR)
-add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(3), 4, 10, [0,0,0], wanted_config,IDENTIFIERXOR)
-add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(4), 4, 10, [1,1,0], unwanted_config,IDENTIFIERXOR)
-add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(5), 4, 10, [1,0,0], unwanted_config,IDENTIFIERXOR)
-add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(6), 4, 10, [0,1,1], unwanted_config,IDENTIFIERXOR)
-add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(7), 4, 10, [0,0,1], unwanted_config,IDENTIFIERXOR)
+//add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(0), 4, 10, [1,1,1], wanted_config,IDENTIFIERXOR)
+//add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(1), 4, 10, [1,0,1], wanted_config,IDENTIFIERXOR)
+//add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(2), 4, 10, [0,1,0], wanted_config,IDENTIFIERXOR)
+//add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(3), 4, 10, [0,0,0], wanted_config,IDENTIFIERXOR)
+//add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(4), 4, 10, [1,1,0], unwanted_config,IDENTIFIERXOR)
+//add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(5), 4, 10, [1,0,0], unwanted_config,IDENTIFIERXOR)
+//add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(6), 4, 10, [0,1,1], unwanted_config,IDENTIFIERXOR)
+//add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(7), 4, 10, [0,0,1], unwanted_config,IDENTIFIERXOR)
 
 slider_bias_fct_RBM(0, IDENTIFIERXOR)
 slider_fct_RBM(0, IDENTIFIERXOR)

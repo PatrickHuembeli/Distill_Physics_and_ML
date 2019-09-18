@@ -22,10 +22,10 @@ var width = 500;
 var svg_RBM_height = 150;
 var svg_histo_height = 280;
 var radius = 10.0
-var space = 15.0
+var space = 13.0
 //var histo_x_pos = 50
 var histo_label_x_pos = 10
-var histo_width = 20
+var histo_width = 18
 var histo_height = 200
 var histo_y_pos = 10
 
