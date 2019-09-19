@@ -365,6 +365,15 @@ var color_init_stroke = ['black','black', 'blue']
       .on("mouseout", function() {
         return tooltip.style("visibility", "hidden");
       })
+var dragHandler = d3.drag()	
+   .on("drag", function () {
+         xpos = d3.event.x
+         ypos = d3.event.y
+         console.log(xpos,ypos, function(d,i){return d, i})
+         d3.select(this)
+             .attr("cx", xpos)
+             .attr("cy", ypos);})
+	dragHandler(d3.select("#RBM_complete_main_svg"+identifier).selectAll("circle"))
 }
     // -------------------------------------------------------------------------
     // Draw bias rectangles for the RBM 
