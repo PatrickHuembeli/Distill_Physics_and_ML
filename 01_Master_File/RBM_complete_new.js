@@ -19,7 +19,7 @@ dictionary["total_spins"+IDENTIFIER] = 3
 dictionary["hidden_vecs"+IDENTIFIER] = permutations_of_vector(dictionary["h_units"+IDENTIFIER])
 dictionary["bm_permutations"+IDENTIFIER] = permutations_of_vector(dictionary["total_spins"+IDENTIFIER])
 var width = 500;
-var svg_RBM_height = 150;
+var svg_RBM_height = 200;
 var svg_histo_height = 280;
 var radius = 10.0
 var space = 13.0
@@ -602,12 +602,12 @@ function add_text_elements(identifier){
 	var bias_slider_index = dictionary["bias_slider_index"+identifier]
 	var connection_graph = dictionary["connection_graph"+identifier]
 	var biases = dictionary["biases"+identifier]
-	text = document.getElementById("bias_slider_text"+identifier)
-	text.innerHTML = "Bias: "+bias_slider_index
+	//text = document.getElementById("bias_slider_text"+identifier)
+	//text.innerHTML = "Bias: "+bias_slider_index
 	text = document.getElementById("weight_slider_text"+identifier)
 	text.innerHTML = "Weight: (" + connection_graph[weight_slider_index][0]+', '+connection_graph[weight_slider_index][1]+')'
-	value = document.getElementById("bias_slider_value"+identifier)
-	value.innerHTML =biases[bias_slider_index]
+	//value = document.getElementById("bias_slider_value"+identifier)
+	//value.innerHTML =biases[bias_slider_index]
 	value = document.getElementById("weight_slider_value"+identifier)
 	value.innerHTML = dictionary["weight_matrix"+identifier][ connection_graph[weight_slider_index][0]][connection_graph[weight_slider_index][1]] 
 	}

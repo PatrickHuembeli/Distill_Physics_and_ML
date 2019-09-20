@@ -19,8 +19,6 @@ dictionary["total_spins"+IDENTIFIERXOR] = 3
 dictionary["histogram_data"+IDENTIFIERXOR] = [0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.0]
 dictionary["hidden_vecs"+IDENTIFIERXOR] = permutations_of_vector(dictionary["h_units"+IDENTIFIERXOR])
 dictionary["bm_permutations"+IDENTIFIERXOR] = permutations_of_vector(dictionary["total_spins"+IDENTIFIERXOR])
-
-
 // Add the space where it draws the RBM
 d3.select(RBM_complete_XOR)
     .append("svg")
@@ -46,6 +44,37 @@ d3.select("#RBM_sampler_histo"+IDENTIFIERXOR).append('image')
       .attr("opacity", 1.0)
 // VERY IMPORTANT WE WILL HAVE TO CHANGE THIS WIDTH PARAMETER TO 100% TO ADAPT FIGURE SIZE FOR DIFFERENT DEVICES.
 
+
+ var magnet_gradient = d3.select("#RBM_sampler"+IDENTIFIERXOR).append("defs")
+   .append("linearGradient")
+     .attr("id", "magnet_gradient")
+	.attr("gradientTransform", "rotate(90)");
+//     .attr("x1", "0%")
+//     .attr("y1", "0%")
+//     .attr("x2", "0%")
+//     .attr("y2", "100%")
+//     .attr("spreadMethod", "pad");
+ 
+ magnet_gradient.append("stop")
+     .attr("offset", "0%")
+     .attr("stop-color", "blue")
+     .attr("stop-opacity", 0.4);
+ 
+ magnet_gradient.append("stop")
+     .attr("offset", "50%")
+     .attr("stop-color", "white")
+     .attr("stop-opacity", 0.4);
+ 
+magnet_gradient.append("stop")
+     .attr("offset", "100%")
+     .attr("stop-color", "red")
+     .attr("stop-opacity", 0.4);
+ 
+ 
+
+add_magnetic_field_background(0)
+add_magnetic_field_background(1)
+add_magnetic_field_background(2)
 //==============================================================================
 // Initialize Variables dependent on architecture
 // ----------------------------------------------------------------------------
@@ -77,8 +106,21 @@ unwanted_config = 'blue'
 //add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(6), 4, 10, [0,1,1], unwanted_config,IDENTIFIERXOR)
 //add_visible_configs_XOR(histo_label_x_pos, histo_pos_gen(7), 4, 10, [0,0,1], unwanted_config,IDENTIFIERXOR)
 
-slider_bias_fct_RBM(0, IDENTIFIERXOR)
-slider_fct_RBM(0, IDENTIFIERXOR)
+//slider_bias_fct_RBM(0, IDENTIFIERXOR)
+//slider_fct_RBM(0, IDENTIFIERXOR)
+
+
+function add_magnetic_field_background(index){
+magnet_field_radius = 35
+
+ d3.select("#RBM_sampler"+IDENTIFIERXOR)
+         .append("circle")
+         .attr("cx", function(d,i){return pos_gen_x(index,index,IDENTIFIERXOR)})
+         .attr("cy", function(d,i){return pos_gen_y(index,index,IDENTIFIERXOR)})
+     		.attr("r", magnet_field_radius)
+     		.style("fill", "url(#magnet_gradient)");
+}
+
 
 console.log(dictionary["spins_data"+IDENTIFIERXOR] )
 function add_visible_configs_XOR(x_pos, y_pos, radius, margin, config,color,identifier){
@@ -244,8 +286,8 @@ function bias_fct_RBM_new(h, index, identifier) {
         var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
         var hidden_vecs = dictionary["hidden_vecs"+identifier]
        dictionary["biases"+identifier][bias_slider_index] = h
-        value = document.getElementById("bias_slider_value"+identifier)
-        value.innerHTML =  h
+        //value = document.getElementById("bias_slider_value"+identifier)
+        //value.innerHTML =  h
         //d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
           histogram_data = []
           for (j=0; j<configuration_to_learn.length; j++){
