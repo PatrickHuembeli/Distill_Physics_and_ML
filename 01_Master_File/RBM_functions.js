@@ -29,7 +29,7 @@ var histo_width = 18
 var histo_height = 200
 var histo_y_pos = 10
 
-var center_x = 200;
+var center_x = 100;
 var center_y = 110;
 var scaling = 50
 
@@ -48,74 +48,6 @@ var tooltip = d3.select("body") //This is in body not svg
   .append("div")
   .attr('class', 'tooltip');
 
-// Scaling for the positioning functions. Changes size of graph
-
-// Add the space where it draws the RBM
-//d3.select(RBM_complete)
-//    .append("svg")
-//    .attr("id", "RBM_sampler"+IDENTIFIER)
-//    .attr('class','figures')
-//    .attr("width", width) // use whole space given in article
-//    .attr("height", height); // This is height of figure without 'selectors'
-//
-//d3.select(RBM_complete)
-//    .append("svg")
-//    .attr("id", "RBM_sampler_histo"+IDENTIFIER)
-//    .attr('class','figures')
-//    .attr("width", width) // use whole space given in article
-//    .attr("height", height); // This is height of figure without 'selectors'
-// VERY IMPORTANT WE WILL HAVE TO CHANGE THIS WIDTH PARAMETER TO 100% TO ADAPT FIGURE SIZE FOR DIFFERENT DEVICES.
-
-//==============================================================================
-// Initialize Variables dependent on architecture
-// ----------------------------------------------------------------------------
-
-//update_architecture(IDENTIFIER) 
-
-//dictionary["weight_slider_index"+IDENTIFIER] = 0
-//dictionary["bias_slider_index"+IDENTIFIER] = 0
-//dictionary["histogram_data_init"+IDENTIFIER] = [0.05,0.05,0.05,0.05,0.05,0.05] 
-//background_rectangles_hidden_visible(IDENTIFIER)
-//generate_histogram(IDENTIFIER)
-//generate_RBM_nodes(IDENTIFIER)   
-//generate_RBM_biases(IDENTIFIER)   
-//generate_RBM_connections(IDENTIFIER)   
-//add_text_elements(IDENTIFIER)
-
-//dictionary["configuration_to_learn"+IDENTIFIER] = [[-1,-1,1,1],[1,-1,-1,1],[1,1,-1,-1],[-1,1,1,-1],[-1,-1,-1,-1],[1,1,1,1]]
-//add_visible_configs(histo_pos_gen(0), histo_y_pos, 4, 10, [0,0,1,1],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(1), histo_y_pos, 4, 10, [1,0,1,0],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(2), histo_y_pos, 4, 10, [1,1,0,0],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(3), histo_y_pos, 4, 10, [0,1,0,1],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(4), histo_y_pos, 4, 10, [1,1,1,1],IDENTIFIER)
-//add_visible_configs(histo_pos_gen(5), histo_y_pos, 4, 10, [0,0,0,0],IDENTIFIER)
-
-//function background_rectangles_hidden_visible(identifier){
-//	vis_background_rect_width = 250
-//	vis_background_rect_height = 130
-//	hid_background_rect_height = 100
-//	hid_background_rect_width = 150
-//	visible_background_rect_x = center_x-vis_background_rect_width/2 
-//	visible_background_rect_y = center_y-radius*1.5 
-//	d3.select("#RBM_complete_main_svg"+identifier).append("rect")
-//		.attr("x", visible_background_rect_x)
-//		.attr("y", visible_background_rect_y)
-//		.attr("height", vis_background_rect_height)
-//		.attr("width", vis_background_rect_width)
-//		.attr("fill", "blue")
-//		.attr("opacity", 0.1)
-//		.attr("rx", 10)
-//	
-//	d3.select("#RBM_complete_main_svg"+identifier).append("rect")
-//		.attr("x", visible_background_rect_x+(vis_background_rect_width-hid_background_rect_width)/2)
-//		.attr("y", visible_background_rect_y-hid_background_rect_height)
-//		.attr("height", hid_background_rect_height)
-//		.attr("width", hid_background_rect_width)
-//		.attr("fill", "red")
-//		.attr("opacity", 0.1)
-//		.attr("rx", 10)
-//		}
-//
 
 function update_architecture(identifier){
 	var h_units = dictionary["h_units"+identifier]
@@ -147,8 +79,6 @@ function update_architecture(identifier){
 	d3.select("#RBM_sampler"+identifier).append("svg")
 			.attr("id", "RBM_complete_main_svg"+identifier)
 
-	//background_rectangles_hidden_visible()
-	//visible_vecs = permutations_of_vector(v_units)
 }
 
 function generate_histogram(histo_id, histo_x_pos, identifier){
@@ -200,8 +130,6 @@ function make_connection_new(identifier){
 	var total_nodes = total_spins
 	stringer = "hidden_check"+identifier
 	console.log("hidden_check"+identifier, stringer)
-	//hidden_active = document.getElementById("hidden_check"+identifier).checked 
-	//restricted_active = document.getElementById("restricted_check"+identifier).checked 
 	if (hidden_active== false){
 		total_nodes = total_spins - h_units
 	}
@@ -235,24 +163,6 @@ function make_connection_new(identifier){
 	}
 }
 return [connection_graph, weight_matrix]};
-
-// -----------------------------------------------------------------------------
-// Toggle function for spin color and value
-// -----------------------------------------------------------------------------
-function toggle_colors(selection, spins_vec,  d){
-	current_color = selection.style("fill")
-	if(current_color == 'rgb(173, 173, 255)'){current_color = 'hsl(0,100%,84%)'
-	                            spins_vec[d]= 1}
-	else if(current_color == 'rgb(255, 173, 173)'){current_color = 'hsl(240,100%,84%)'
-	                            spins_vec[d]= -1}
-	else if(current_color == 'white'){current_color = 'black'
-	                            spins_vec[d]= 1}
-	else if(current_color == 'black'){current_color = 'white'
-	                            spins_vec[d]= -1}
-	selection.transition()
-	selection.style("fill", current_color)
-		return spins_vec
-	}
 
 // -----------------------------------------------------------------------------
 // Update function for selectors hidden active and restricted active
@@ -321,102 +231,102 @@ function line_pos_gen_y2(d,identifier){
 // Genearte the RBM Graph
 // =============================================================================
 
-function generate_RBM_nodes(identifier){
-// Define tooltips for hovering information
-	
-var colors_init = ['white','white', 'hsl(240, 100%, 84%)']
-var color_init_stroke = ['black','black', 'blue']	
-//var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
-//var hidden_colors_stroke = ["blue", "red"]
-    // -------------------------------------------------------------------------
-    // Draw nodes for the RBM 
-    // -------------------------------------------------------------------------
-    d3.select("#RBM_complete_main_svg"+identifier).selectAll("circle")
-        .data(dictionary["spins_data"+identifier])
-        .enter()
-        .append("circle")
-        .style("fill", function(d,i){return colors_init[d]})
-	.attr("stroke", function(d,i){return color_init_stroke[d]})
-        //.attr('class', 'hidden_circle') // class is needed for style sheet
-        .attr("cx", function(d,i){return pos_gen_x(d,i,identifier)})
-        .attr("cy", function(d,i){return pos_gen_y(d,i,identifier)}) 
-        .attr("r", RBM_node_radius)
-        .attr('id', "hidden")
-    
-        .on("click", function(d) {var selection = d3.select(this)
-			   	  var spins_new = dictionary["spins_new"+identifier]
-                                    spins_new = toggle_colors(selection, spins_new, d)
-                                    d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
-                                    tooltip.text('h' + d +' = '+ spins_new[d]) 
-				    dictionary["spins_new"+identifier] = spins_new;
-       }) 
-   
-        .on("mouseover", function(d) {
-       	    var spins_new = dictionary["spins_new"+identifier]
-                 tooltip.text('h' + d +' = '+ spins_new[d])   
-                        .style("visibility", "visible")
-      })
-  
-       .on("mousemove", function() {
-         tooltip.style("top", (event.pageY+10)+ "px") // event.pageX is mouse position
-                .style("left", event.pageX+10 + "px");
-      })
-  
-      .on("mouseout", function() {
-        return tooltip.style("visibility", "hidden");
-      })
-var dragHandler = d3.drag()	
-   .on("drag", function () {
-         xpos = d3.event.x
-         ypos = d3.event.y
-         console.log(xpos,ypos, function(d,i){return d, i})
-         d3.select(this)
-             .attr("cx", xpos)
-             .attr("cy", ypos);})
-	dragHandler(d3.select("#RBM_complete_main_svg"+identifier).selectAll("circle"))
-}
-    // -------------------------------------------------------------------------
-    // Draw bias rectangles for the RBM 
-    // -------------------------------------------------------------------------
-function generate_RBM_biases(identifier){   
-    d3.select("#RBM_complete_main_svg"+identifier).selectAll()
-        .data(dictionary["spins_data"+identifier])
-        .enter()	
-        .append("rect")
-        .attr("x",function(d,i){return pos_gen_x_rect(d,i,identifier)})
-        .attr("y", function(d,i){return pos_gen_y(d,i,identifier)})
-        .attr("width", 10)
-        .attr("height", 20)
-        .style("fill", "red")
-    
-      .on("click", function(d){
-               line = d3.select(this)
-                   bias_idx = d
-                   arg = dictionary["biases"+identifier][bias_idx]
-	           document.getElementById("bias_slider_id"+identifier).value = arg
-               //text = d3.select("#biastext")
-               //text.text(function(){return "Bias: "+bias_idx })
-	      text = document.getElementById("bias_slider_text"+identifier)
-	       text.innerHTML = "Bias: "+ bias_idx
-	      value = document.getElementById("bias_slider_value"+identifier)
-	      value.innerHTML =  arg	
-               dictionary["bias_slider_index"+identifier] = bias_idx
-      })	
-   
-        .on("mouseover", function(d) {
-                 tooltip.text('bias' + d +' = '+ dictionary["biases"+identifier][d])   
-                        .style("visibility", "visible")
-      })
-  
-       .on("mousemove", function() {
-         tooltip.style("top", (event.pageY+10)+ "px") // event.pageX is mouse position
-                .style("left", event.pageX+10 + "px");
-      })
-  
-      .on("mouseout", function() {
-        return tooltip.style("visibility", "hidden");
-      })
-}
+//function generate_RBM_nodes(identifier){
+//// Define tooltips for hovering information
+//	
+//var colors_init = ['white','white', 'hsl(240, 100%, 84%)']
+//var color_init_stroke = ['black','black', 'blue']	
+////var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
+////var hidden_colors_stroke = ["blue", "red"]
+//    // -------------------------------------------------------------------------
+//    // Draw nodes for the RBM 
+//    // -------------------------------------------------------------------------
+//    d3.select("#RBM_complete_main_svg"+identifier).selectAll("circle")
+//        .data(dictionary["spins_data"+identifier])
+//        .enter()
+//        .append("circle")
+//        .style("fill", function(d,i){return colors_init[d]})
+//	.attr("stroke", function(d,i){return color_init_stroke[d]})
+//        //.attr('class', 'hidden_circle') // class is needed for style sheet
+//        .attr("cx", function(d,i){return pos_gen_x(d,i,identifier)})
+//        .attr("cy", function(d,i){return pos_gen_y(d,i,identifier)}) 
+//        .attr("r", RBM_node_radius)
+//        .attr('id', "hidden")
+//    
+//        .on("click", function(d) {var selection = d3.select(this)
+//			   	  var spins_new = dictionary["spins_new"+identifier]
+//                                    spins_new = toggle_colors(selection, spins_new, d)
+//                                    d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
+//                                    tooltip.text('h' + d +' = '+ spins_new[d]) 
+//				    dictionary["spins_new"+identifier] = spins_new;
+//       }) 
+//   
+//        .on("mouseover", function(d) {
+//       	    var spins_new = dictionary["spins_new"+identifier]
+//                 tooltip.text('h' + d +' = '+ spins_new[d])   
+//                        .style("visibility", "visible")
+//      })
+//  
+//       .on("mousemove", function() {
+//         tooltip.style("top", (event.pageY+10)+ "px") // event.pageX is mouse position
+//                .style("left", event.pageX+10 + "px");
+//      })
+//  
+//      .on("mouseout", function() {
+//        return tooltip.style("visibility", "hidden");
+//      })
+//var dragHandler = d3.drag()	
+//   .on("drag", function () {
+//         xpos = d3.event.x
+//         ypos = d3.event.y
+//         console.log(xpos,ypos, function(d,i){return d, i})
+//         d3.select(this)
+//             .attr("cx", xpos)
+//             .attr("cy", ypos);})
+//	dragHandler(d3.select("#RBM_complete_main_svg"+identifier).selectAll("circle"))
+//}
+//    // -------------------------------------------------------------------------
+//    // Draw bias rectangles for the RBM 
+//    // -------------------------------------------------------------------------
+//function generate_RBM_biases(identifier){   
+//    d3.select("#RBM_complete_main_svg"+identifier).selectAll()
+//        .data(dictionary["spins_data"+identifier])
+//        .enter()	
+//        .append("rect")
+//        .attr("x",function(d,i){return pos_gen_x_rect(d,i,identifier)})
+//        .attr("y", function(d,i){return pos_gen_y(d,i,identifier)})
+//        .attr("width", 10)
+//        .attr("height", 20)
+//        .style("fill", "red")
+//    
+//      .on("click", function(d){
+//               line = d3.select(this)
+//                   bias_idx = d
+//                   arg = dictionary["biases"+identifier][bias_idx]
+//	           document.getElementById("bias_slider_id"+identifier).value = arg
+//               //text = d3.select("#biastext")
+//               //text.text(function(){return "Bias: "+bias_idx })
+//	      text = document.getElementById("bias_slider_text"+identifier)
+//	       text.innerHTML = "Bias: "+ bias_idx
+//	      value = document.getElementById("bias_slider_value"+identifier)
+//	      value.innerHTML =  arg	
+//               dictionary["bias_slider_index"+identifier] = bias_idx
+//      })	
+//   
+//        .on("mouseover", function(d) {
+//                 tooltip.text('bias' + d +' = '+ dictionary["biases"+identifier][d])   
+//                        .style("visibility", "visible")
+//      })
+//  
+//       .on("mousemove", function() {
+//         tooltip.style("top", (event.pageY+10)+ "px") // event.pageX is mouse position
+//                .style("left", event.pageX+10 + "px");
+//      })
+//  
+//      .on("mouseout", function() {
+//        return tooltip.style("visibility", "hidden");
+//      })
+//}
     // -------------------------------------------------------------------------
     // Draw lines for the RBM 
     // -------------------------------------------------------------------------
@@ -478,13 +388,14 @@ function energy_fct(spins_vec, identifier){
 	var connection_graph = dictionary["connection_graph"+identifier]
 	var biases = dictionary["biases"+identifier]
 	var energy = 0
+	var order=[0,2,1]
 	for (var i = 0; i<connection_graph.length; i++){
 		kk = connection_graph[i][0]
 		ll = connection_graph[i][1]
 		energy += spins_vec[kk]*spins_vec[ll]*dictionary["weight_matrix"+identifier][kk][ll]
 		}	
 	for (var j = 0; j<total_spins; j++){
-		energy+= spins_vec[j]*biases[j]}	
+		energy+= spins_vec[j]*biases[order[j]]}	
         return energy
 };
 
@@ -560,6 +471,7 @@ function prob_of_config(config, identifier){
     boltzmann_factor = 0
         energy_v = energy_fct(config, identifier) 
         boltzmann_factor += Math.exp(-energy_v)
+	console.log(energy_v, config)
     return (boltzmann_factor/Z)    
 }
 
@@ -604,12 +516,12 @@ function add_text_elements(identifier){
 	var biases = dictionary["biases"+identifier]
 	//text = document.getElementById("bias_slider_text"+identifier)
 	//text.innerHTML = "Bias: "+bias_slider_index
-	text = document.getElementById("weight_slider_text"+identifier)
-	text.innerHTML = "Weight: (" + connection_graph[weight_slider_index][0]+', '+connection_graph[weight_slider_index][1]+')'
+	//text = document.getElementById("weight_slider_text"+identifier)
+	//text.innerHTML = "Weight: (" + connection_graph[weight_slider_index][0]+', '+connection_graph[weight_slider_index][1]+')'
 	//value = document.getElementById("bias_slider_value"+identifier)
 	//value.innerHTML =biases[bias_slider_index]
-	value = document.getElementById("weight_slider_value"+identifier)
-	value.innerHTML = dictionary["weight_matrix"+identifier][ connection_graph[weight_slider_index][0]][connection_graph[weight_slider_index][1]] 
+	//value = document.getElementById("weight_slider_value"+identifier)
+	//value.innerHTML = dictionary["weight_matrix"+identifier][ connection_graph[weight_slider_index][0]][connection_graph[weight_slider_index][1]] 
 	}
 
 
