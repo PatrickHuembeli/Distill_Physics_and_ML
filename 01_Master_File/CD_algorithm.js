@@ -169,7 +169,7 @@ function change_bias_value(y, index){
 	y_zero = pos_gen_y(index,index,IDENTIFIERXOR)
 	if(Math.abs(y-y_zero)>(magnet_field_radius-RBM_node_radius)){
 	y = y_zero + Math.sign(y-y_zero)*(magnet_field_radius-RBM_node_radius)} 
-	bias_value = 100*((y-y_zero)/(magnet_field_radius-RBM_node_radius)).toPrecision(2)  
+	bias_value = 1*((y-y_zero)/(magnet_field_radius-RBM_node_radius)).toPrecision(2)  
 	d3.select("#biastext"+index).text(function(){return "bias: "+bias_value})
 	return [y,bias_value]
 }
