@@ -195,7 +195,8 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
 	    .transition()
 	    .duration(teaser_time_steps)
             .style("fill", function(d) { return colors[d[2]] });
-        
+       
+	d3.select("#Teaser_Text_id").attr("opacity", 0.0)    
    if (teaser_total_equilibration_steps%2 == 1 ){
     	d3.selectAll('.teaser_equilibrationcircles')
 	   	.attr("opacity", 0.1)
@@ -297,6 +298,12 @@ teaser_equilibration_step_rbm()}})
 	    .attr("transform", "rotate(18), skewX(18)")
 	    .on("click", function(){if (teaser_total_equilibration_steps%2 == 0 ){
 teaser_equilibration_step_rbm()}})
+     d3.select("#teaser_NNContainer").append("text")
+	    .attr("id", "Teaser_Text_id")
+	    .attr("class", "annotation")
+	    .attr("x", 100)
+	    .attr("y", 270)
+	    .text("(Click on nodes to equilibrate)")
         }
 }
 
