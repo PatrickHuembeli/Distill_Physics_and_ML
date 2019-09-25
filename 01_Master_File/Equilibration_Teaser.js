@@ -286,7 +286,8 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
 	    .attr("height", 200)
 	    .attr("opacity", 0.0)
 	    .attr("transform", "rotate(18), skewX(18)")
-	    .on("click", function(){teaser_equilibration_step_rbm()})
+	    .on("click", function(){if (teaser_total_equilibration_steps%2 == 1 ){
+teaser_equilibration_step_rbm()}})
      d3.select("#teaser_NNContainer").append("rect")
 	    .attr("x", 240)
 	    .attr("y", -75)
@@ -294,7 +295,8 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
 	    .attr("height", 200)
 	    .attr("opacity", 0.0)
 	    .attr("transform", "rotate(18), skewX(18)")
-	    .on("click", function(){teaser_equilibration_step_rbm()})
+	    .on("click", function(){if (teaser_total_equilibration_steps%2 == 0 ){
+teaser_equilibration_step_rbm()}})
         }
 }
 
