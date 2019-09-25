@@ -163,7 +163,7 @@ function getwholeImage_new(url, threshold) {
   return points }
 
 function teaser_equilibration_step_rbm(){
-        d3.select('#teaser_main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+Math.floor(teaser_total_equilibration_steps/2)+'.jpg')
+        //d3.select('#teaser_main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+Math.floor(teaser_total_equilibration_steps/2)+'.jpg')
         d3.select('#teaser_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+Math.floor(teaser_total_equilibration_steps/2)+'.jpg')
         d3.select('#teaser_hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+Math.ceil(teaser_total_equilibration_steps/2)+'.jpg')
 	if (teaser_total_equilibration_steps < max_equilibration_steps){
@@ -175,7 +175,7 @@ teaser_time_steps = 2000
 
 async function teaser_update_drawing() {
     await new Promise(r => setTimeout(r, 200)); // Wait a short time until data is really loaded.
-console.log(d3.select('#teaser_compressed_img_id').attr('xlink:href'))    
+//console.log(d3.select('#teaser_compressed_img_id').attr('xlink:href'))    
 points = getwholeImage_new(d3.select('#teaser_compressed_img_id').attr('xlink:href'), 100)	
 hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').attr('xlink:href'), 20)
     if (initialize_flag){
@@ -197,7 +197,6 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
             .style("fill", function(d) { return colors[d[2]] });
         
    if (teaser_total_equilibration_steps%2 == 1 ){
-	   console.log("even")
     	d3.selectAll('.teaser_equilibrationcircles')
 	   	.attr("opacity", 0.1)
 	        .transition().duration(teaser_time_steps)
@@ -206,8 +205,7 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
             	.attr('cy', function(d){return (15+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
             //.attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
 	    }
-   else {console.log("odd")
-    	d3.selectAll('.teaser_equilibrationcircles')
+   else {d3.selectAll('.teaser_equilibrationcircles')
 	        .transition().duration(teaser_time_steps)
             	//.attr('cx', function(d){return (10 +  neuron_margin_x*points[0][0] - 5*points[0][0] )})
             	.attr('cx', function(d){return (15 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
@@ -222,7 +220,6 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
         .duration(teaser_time_steps)
         .style("fill", function(d) { return hidden_colors[d[2]]})
 	.style("stroke", function(d){return hidden_colors_stroke[d[2]]})    
-
        teaser_circle_energy_equilbration.attr("cx", x_scale_eq_plot(teaser_total_equilibration_steps) )
     		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[teaser_total_equilibration_steps].y))
     		.attr("r", 4)
@@ -280,7 +277,24 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
         .style("fill", function(d) { return hidden_colors[d[2]]})
 	.style("stroke", "blue")    
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0]- 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
-        .attr("r", neuron_radius)   
+        .attr("r", neuron_radius)     
+
+     d3.select("#teaser_NNContainer").append("rect")
+	    .attr("x", 0)
+	    .attr("y", -5)
+	    .attr("width", 175)
+	    .attr("height", 200)
+	    .attr("opacity", 0.0)
+	    .attr("transform", "rotate(18), skewX(18)")
+	    .on("click", function(){teaser_equilibration_step_rbm()})
+     d3.select("#teaser_NNContainer").append("rect")
+	    .attr("x", 240)
+	    .attr("y", -75)
+	    .attr("width", 175)
+	    .attr("height", 200)
+	    .attr("opacity", 0.0)
+	    .attr("transform", "rotate(18), skewX(18)")
+	    .on("click", function(){teaser_equilibration_step_rbm()})
         }
 }
 
