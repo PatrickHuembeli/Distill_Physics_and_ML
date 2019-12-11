@@ -171,7 +171,7 @@ As ambitious scientists, we are now in good shape: as intended, collections of i
        </div>
      </div>
 
-     <div class="triplecolumn"> <p class="figure-text"> Effect of temperature and coupling on a two-particle system. The histogram on the left show the probability of different states <d-math>x = (x_1, x_2)</d-math> of a system of two particles. The energy function of the system is <d-math>E(x_1, x_2) = W x_1 x_2 </d-math>, where <d-math>W</d-math> is a coupling constant and <d-math>x_i=\{-1, 1\}</d-math>. In this simple case, the sign of the coupling determines which configurations are more likely: if <d-math>W>0</d-math>, opposite configurations <d-math>x_1=-x_2</d-math> have lower energy and are therefore more likely. If instead <d-math>W<0</d-math>, equal configurations <d-math>x_1=x_2</d-math> have lower energy and a correspondingly higher probability of occurrence. With increasing temperature <d-math>T</d-math>, high energy configurations become more likely.<p></div>
+     <div class="triplecolumn"> <p class="figure-text"> Effect of temperature and coupling on the Boltzmann distribution of a two-particle system. The histogram on the left shows the probability of each possible state <d-math>x = (x_1, x_2)</d-math>, where <d-math>x_i=\{-1, 1\}</d-math>. The energy function is <d-math>E(x_1, x_2) = W x_1 x_2 </d-math>, where <d-math>W</d-math> is a coupling constant. The sign of the coupling determines which configurations are more likely: if <d-math>W>0</d-math>, opposite configurations <d-math>x_1=-x_2</d-math> have lower energy (higher probability). If <d-math>W<0</d-math>, equal configurations <d-math>x_1=x_2</d-math> have lower energy (higher probability). Increasing the temperature <d-math>T</d-math> makes high-energy configurations more likely. In the limit of very large temperatures, states become approximately equiprobable regardless of coupling strength.<p></div>
 
 
 
@@ -233,13 +233,13 @@ Compared to the fully-connected Boltzmann machine, the RBM is less expressive be
 
 <div class="row">
 	<div class="column">
-		<p class="figure-text">Hopfield network: The number of nodes is equal to the size of the input data. There are no hidden nodes (dashed) contributing to the energy.</p>
+		<p class="figure-text"><b>Hopfield network:</b> The number of nodes is equal to the size of the input data. There are no hidden nodes (dashed) contributing to the energy, which limits the expressive power of this model. You can click on the nodes to change their state.</p>
 	</div>
 	<div class="column">
-    <p class="figure-text">Boltzmann machine: The Boltzmann machine network is fully connected. The visible nodes (blue) are clamped to the input data. The hidden nodes (white) are free parameters.</p>
+    <p class="figure-text"><b>Boltzmann machine:</b> The Boltzmann machine network is fully connected. The visible nodes (blue) are clamped to the input data and the hidden nodes (white) are free parameters. This is a powerful model, but challenging to train.</p>
 	</div>
 	<div class="column">
-    <p class="figure-text">Restricted Boltzmann machine: Uses hidden and visible nodes, but connections are not allowed within the same layer. This restriction greatly simplifies training.
+    <p class="figure-text"><b>Restricted Boltzmann machine:</b> RBMs use hidden and visible nodes, but connections are not allowed within the same layer, i.e., the network is bipartite. This restriction greatly simplifies training.
 	</div>
 </div>
 
@@ -247,7 +247,7 @@ Compared to the fully-connected Boltzmann machine, the RBM is less expressive be
   <a class="marker" href="#section-3.1" id="section-3.1"><span>Sampling</span></a>
   <h3 id="sampling">Sampling</h3>
 <p>
-From an experimental perspective, sampling from the Boltzmann distribution of a system at a given temperature is straightforward: just place it in contact with an environment at the desired temperature and register the system's state at different times. The challenge we face is to simulate this process using computer algorithms. </p>
+From an experimental perspective, sampling from the Boltzmann distribution of a system is straightforward: just place it in contact with an environment at the desired temperature and register the system's state at different times. The challenge we face is to simulate this process using computer algorithms. </p>
 
 <p>
 Consider first the zero-temperature case. The key physical principle underlying the Boltzmann distribution is the connection between energy and probability: the likelihood of observing a specific configuration decreases exponentially with its energy. A strategy to simulate sampling from a Boltzmann distribution is to identify low-energy configurations and, depending on temperature, ocassionally select also states with higher energy. One simple strategy is to locally change the state of each particle such that it decreases the total energy of the system. For an Ising energy function, the change in energy <d-math>\Delta E</d-math> introduced by changing the <d-math>i</d-math>-th particle's state from <d-math>\sigma_i</d-math> to <d-math>-\sigma_i</d-math> is 
@@ -291,8 +291,7 @@ where <d-math>p = \exp(-1/T \Delta E) </d-math>. Physically, these jumps to high
     <script type = "text/javascript" src = "energy_minima_and_temp.js" ></script>
     </div>
   </div>
-  <div class="triplecolumn"><p class="figure-text"> This figure illustrates two local energy minima that contain a different MNIST number as their minimum energy. If we are at zero temperature any higher energy configuration would equilibrate to the closest local minimum and the only configurations that can be retrieved are the ones at the minimum energy. If we allow a certain temperature (blue shaded area) we can also retrieve configurations with a slightly higher energy. This eventually makes the system to generalize training data.</p>  </div>
-    <p class="figure-text"><b>Influence of Temperature on Configurations: </b>After training local energy minima correspond to configurations of the training set. At zero temperature configurations with higher energy will equilibrate to the minimum energy configuration. For non zero temperature higher energy configurations can be occupied with a certain probability here shown as a shaded blue area around the minima.</p>
+  <div class="triplecolumn"><p class="figure-text"> <b>Sampling from a Boltzmann distribution.</b> This figure illustrates an energy function with two minima. The states of minimum energy correspond to an MNIST digit, while neighbouring states are variants that become increasingly noisy as energy increases. The sampling algorithm begins from a randomly chosen state, which you can choose by clicking on the corresponding yellow point. At very low temperature, each step of the algorithm updates the state to one with lower energy, until we reach and stay at a local minima. The current state is highlighted in red. At higher temperature, each step of the algorithm may jump to higher-energy configurations and the final sampled state may not necessarily be a local minimum. This can eventually allow the model to generalize training data.</p>  
 
 
 <p>
@@ -354,7 +353,7 @@ When forces are out of equilibrium, for instance if the pull of gravity outweigh
   </p>
   <p>
 where <d-math>\eta>0</d-math> is a constant that depends on the object's mass and the time for which the forces act. The first force, <d-math>\langle f(x) \rangle_{\text{data}}</d-math>, can be interpreted as an external force due to an outside system, like the Earth's gravitational field. For energy-based models, the external system is actually a set of training data that provides a constant downward "pull" towards the preferred configurations appearing in the dataset. 
-The second force,  <d-math>\langle f(x) \rangle_{\text{model}}</d-math>, represents the system's natural preference for certain configurations. This provides an internal "lift", working against the downward pull of the training data. Crucially, in the presence of two competing forces acting in different directions, the resulting displacement causes the object to move to a position that reduces the inbalance of forces. For example, in a spring-mass system, if <d-math> F_g> ky </d-math>, the mass is pulled downwards to a new position <d-math>y'>y</d-math> that increases the force due the spring such that both forces are closer to balance. By repeatedly applying the update rule above for sufficiently small step sizes, we can find a parameter value that balances the two ficticious forces, leading to a trained model. Let's explore how to develop this physical intuition into concrete training strategies for energy-based models.
+The second force,  <d-math>\langle f(x) \rangle_{\text{model}}</d-math>, represents the system's natural preference for certain configurations. This provides an internal "lift", working against the downward pull of the training data. Crucially, in the presence of two competing forces acting in different directions, the resulting displacement causes the object to move to a position that reduces the inbalance of forces. For example, in a spring-mass system, if <d-math> F_g> ky </d-math>, the mass is pulled downwards to a new position <d-math>y'>y</d-math> that increases the force due the spring, bringing both forces closer to balance. By repeatedly applying the update rule above for sufficiently small step sizes, we can find a parameter value that balances the two ficticious forces, leading to a trained model. Let's explore how to develop this physical intuition into concrete training strategies for energy-based models.
 </p>
 
 
@@ -405,7 +404,7 @@ By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase
   </figure>
   </div>
   <div class="triplecolumn">
-	  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized spin system has a energy landscape with many different local minima, which in physics is often referred to as the spinglass phase <d-cite key="amit1985spin"> </d-cite>. Learning a certain configuration (red dots) in energy based models means we need to decrease its energy. But only by learning a configuration we do not get rid of spurious minima that contain unwanted configuration (yellow). They have to be unlearned.</p>
+	  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized spin system has an energy landscape with many different local minima. In physics this is often referred to as the spinglass phase <d-cite key="amit1985spin"> </d-cite>. In energy-based models, learning a certain configuration (red dots) means that their energy needs to be decreased. This can be achieved through "learning steps" that locally update the weights of the model as to decrease the energy of data configurations. You can try this by repeatedly clicking on the learning step button. This strategy suffers from the drawback that the energy of other points is also decreased, resulting in spurious local minima. Instead, by alternating between learning and unlearning steps &mdash; which you can do by clicking on the corresponding buttons &mdash; the occurrence of spurious minima can be reduced.</p>
   </div> 
   <script type = "text/javascript" src = "energy_landscape.js" ></script>
   </div>
@@ -518,10 +517,7 @@ By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase
 This rule is known as the <em>contrastive divergence</em> formula for training RBMs. It is usually derived from the gradient of the Kullback-Leibler divergence between the model and data distributions, but our analysis provides deeper intuition about its properties.</p>
 
 <p> The Hebbian learning term <d-math> \langle v_i h_j\rangle_{\text{Data}}</d-math>, usually referred to as the <em>positive phase</em>, decreases the energy of the configurations of the training data, while the unlearning term <d-math> \langle v_i h_j\rangle_{\text{Model}}</d-math>  (the <em>negative phase</em>) increases the energy of all the configurations that are at equilibrium. From this perspective, the role of contrastive divergence is to gradually shape the energy function of the model until all low energy states of the model correspond to data points. Additionally, viewing the weights as generalized positions, we interpret the term <d-math>\Delta w_{ij}:=\langle v_i h_j \rangle_{\text{data}} - \langle v_i h_j \rangle_{\text{model}}</d-math> as a net force originating from two competing forces, a fixed external one due data and an internal one due to specific generalized positions of the system. When the forces are not balanced, this causes a shift in position, here represented by the parameter <d-math> w_{ij}</d-math>. Depending on which force is strongest, the parameter will increase or decrease in value, with the effect of bringing these forces closer to balance. Each shift in weight propagates across the entire model affecting all forces, so the strategy of the contrastive divergence training algorithm is to perform many small shifts (small learning rate <d-math> \eta</d-math>) until all forces are balanced and the model is trained.
-  </p>
-
-
-  
+  </p>  
 
   <div class="row">
   <div class="triplecolumn">
@@ -530,7 +526,7 @@ This rule is known as the <em>contrastive divergence</em> formula for training R
   </figure>
   </div>
   <div class="triplecolumn">
-    <p class="figure-text"> One  <input id="equilibrate_button_id" type="button" value="Equilibration step" onclick="equilibration_step_rbm()"> brings the damaged initial configuration closer to a low energy configuration. The hidden and the visible layers are updated one after another. </p><p class="figure-text"><b>Sampling through equilibration:</b> This figure shows a restricted Boltzmann machine, where the visible units are initialized with a partially damaged MNIST digit and the hidden units are initiallized all in the same direction. In an RBM, the equilibration is sequentially, where the hidden and the visible layer is sampled one after another dependend of the configuration of the other layer. The energy during the equilibration process will go to a lower value.</p>
+    <p class="figure-text"> <b>Using an RBM to retrieve damaged images.</b> In this example, visible units of a trained model are initialized with a partially damaged MNIST digit. Low-energy states of the trained model correspond to true MNIST digits, so the input can be repaired by updating the nodes of the network until they correspond to such low-energy or equilibrium states. This can be achieved through Gibbs sampling. In the first step, visible nodes are fixed, and hidden nodes are updated by sampling their new state from the conditional distribution <d-math>P(h|v)</d-math>. Try it: <input id="equilibrate_button_id" type="button" value="step" onclick="equilibration_step_rbm()">. The next step fixes the hidden nodes and samples visible nodes: <input id="equilibrate_button_id" type="button" value="step" onclick="equilibration_step_rbm()">. This process is repeated, lowering the energy with each <input id="equilibrate_button_id" type="button" value="step" onclick="equilibration_step_rbm()"> until an equilibrium configuration is retrieved.</p>
   </div>
   </div>
   <script type = "text/javascript" src = "image_equilibration_script.js" ></script>
