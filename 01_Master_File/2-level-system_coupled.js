@@ -232,7 +232,7 @@ function draw_parity_systems(x0,y0,up,width,radius,identity){
 	    .attr("r", radius)
 	    .style("fill", circle2_color)
 	    //.style("opacity", 0.5)
-	    .style("stroke", circle2_color)
+	    .style("stroke", circle2_color_stroke)
 }
 
 function twoL_histo_pos_gen(d) {
