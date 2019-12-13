@@ -2,30 +2,31 @@ var Hopfield_id = "#architecture_Hopfield_id" // This defines in which div we wr
 var RBM_id = "#architecture_RBM_id"
 var BM_id = "#architecture_BM_id" 
 
-var hidden_nodes_colors = ["blue", "red"]
-var visible_nodes_colors = ["white", "black"]
+var hidden_nodes_colors = [c_hid_node1, c_hid_node2]
+var visible_nodes_colors = [c_vis_node1, c_vis_node2]
+var hidden_nodes_stroke_colors = [c_hid_node1_stroke, c_hid_node2_stroke]
+var visible_nodes_stroke_colors = [c_vis_node1_stroke, c_vis_node2_stroke]
+
 
 function toggle_colors_architecture(selection, d){
+	console.log(d)
         selection_id = selection.attr('id')
          if(d>3){
 	 	if(selection_id=="hiddenHopfield_figure"+d){
 		}
-		 else {switch_color(selection, hidden_nodes_colors)}
+		 else {switch_color(selection, hidden_nodes_colors, hidden_nodes_stroke_colors)}
 	 }
-	else {switch_color(selection, visible_nodes_colors)}
+	else {switch_color(selection, visible_nodes_colors, visible_nodes_stroke_colors)}
          }
 
-function switch_color(selection, nodes_color){
-         current_color = selection.style("fill")
-	 stroke_color = selection.style("stroke")
-         if(current_color == nodes_color[0]){current_color = nodes_color[1]}
-         else {current_color = nodes_color[0]}
-	 if (nodes_color[0] ==hidden_nodes_colors[0]){ 
-         if(stroke_color == nodes_color[0]){stroke_color = nodes_color[1]}
-         else {stroke_color = nodes_color[0]}}
+function switch_color(selection, nodes_color, stroke_color){
+	 current_state = selection.attr("node_state")
+	 if(current_state==0){current_state=1}
+	 else{current_state=0}
          selection.transition()
-	 selection.style("stroke", stroke_color)
-         selection.style("fill", current_color)
+	 selection.style("stroke", stroke_color[current_state])
+         selection.style("fill", nodes_color[current_state])
+	 selection.attr("node_state", current_state)
 }
 
 // Default Variables
@@ -35,7 +36,7 @@ var total_spins = h_units + v_units
 
 var width = 700;
 var height = 200;
-var radius = 15.0
+var radius = nodes_radius;
 var space = 70.0
 
 var center_x = 100;
@@ -100,10 +101,11 @@ spins_new = []
 biases = []
 for (var i = 0; i < total_spins; i++) {
     spins_data.push(i);
-    spins_new.push(-1); 
+    spins_new.push(Math.floor(Math.random() * 2)) 
     biases.push(-1);	
 }
 
+console.log(spins_new)
 
 nodes_svg = svg_Figure.append("svg")
 visible_svg = svg_Figure.append("svg")
@@ -224,38 +226,6 @@ var tooltip = d3.select("body") //This is in body not svg
   .attr('class', 'tooltip');
 
     // -------------------------------------------------------------------------
-    // Draw nodes for the RBM 
-    // -------------------------------------------------------------------------
-    nodes_svg.selectAll("circle")
-        .data(spins_data)
-        .enter()
-        .append("circle")
-        .style("fill", visible_nodes_colors[0])
-        .attr('class', 'visible_circle') // class is needed for style sheet
-        .attr("cx", pos_gen_x)
-        .attr("cy", pos_gen_y) 
-        .attr("r", radius)
-        .attr('id', function(d,i){return "hidden"+Figure_id+i})
-	.on("click", function(d){toggle_colors_architecture(d3.select(this), d)})
-
-if (hidden_active==true){
-for (j=v_units; j<v_units+h_units; j++){
-	d3.select("#hidden"+Figure_id+j)
-	.attr("class", "hidden_circle")
-	.style("fill", hidden_nodes_colors[0])
-        .style("stroke", hidden_nodes_colors[0])}
-}
-
-if (hidden_active==false){
-for (j=v_units; j<v_units+h_units; j++){
-	d3.select("#hidden"+Figure_id+j)
-	.attr("class", "unused_circle")
-	.style("fill", "rgb(0,0,0,0.1)")
-	.style("stroke", "rgb(0,0,0,0.5)")
-	.style("stroke-dasharray","5,5")}
-}
-
-    // -------------------------------------------------------------------------
     // Draw lines for the RBM 
     // -------------------------------------------------------------------------
     d3.select("#"+Figure_id).selectAll()
@@ -264,11 +234,56 @@ for (j=v_units; j<v_units+h_units; j++){
         .append("line")
         .attr("id", function(d){return 'weight_h' + d[0] + '' + d[1]})
     //     .attr("class", "RBM_line")
-        .attr("stroke","rgb(0,0,0,0.5)") //These attr are defined by class
-        .attr("stroke-width", 4.0)
+        .attr("stroke", c_architecture_connection) //These attr are defined by class
+        .attr("stroke-width", connection_stroke_width)
         .attr("x1", line_pos_gen_x1)
         .attr("y1", line_pos_gen_y1)
         .attr("x2", line_pos_gen_x2)
         .attr("y2", line_pos_gen_y2)
+    // -------------------------------------------------------------------------
+    // Draw nodes for the RBM 
+    // -------------------------------------------------------------------------
+    nodes_svg.selectAll("circle")
+        .data(spins_new)
+        .enter()
+        .append("circle")
+        .style("fill", function(d,i){
+		if (hidden_active==true && i>=v_units){
+			return hidden_nodes_colors[d]
+		}
+		else {return visible_nodes_colors[d]}})
+        .style("stroke", function(d,i){
+		if (hidden_active==true && i>=v_units){
+			return hidden_nodes_stroke_colors[d]
+		}
+		else {return visible_nodes_stroke_colors[d]}})
+	.style("stroke-width", nodes_stroke_width)
+	.attr("node_state", function(d,i){return d})
+        .attr('class', 'visible_circle') // class is needed for style sheet
+        .attr("cx", pos_gen_x)
+        .attr("cy", pos_gen_y) 
+        .attr("r", radius)
+        .attr('id', function(d,i){return "hidden"+Figure_id+i})
+	.on("click", function(d,i){toggle_colors_architecture(d3.select(this), i)})
+
+//if (hidden_active==true){
+//for (j=v_units; j<v_units+h_units; j++){
+//	d3.select("#hidden"+Figure_id+j)
+//	.attr("class", "hidden_circle")
+//	.style("fill", hidden_nodes_colors[0])
+//        .style("stroke", hidden_nodes_colors[0])}
+//}
+//
+if (hidden_active==false){
+for (j=v_units; j<v_units+h_units; j++){
+	d3.select("#hidden"+Figure_id+j)
+	.attr("class", "unused_circle")
+	.style("fill", "rgb(0,0,0,0.1)")
+	.style("stroke", "rgb(0,0,0,0.5)")
+	.style("stroke-dasharray","5,5")
+	.on("click", function(d,i){return})
+}
+}
+
     } 
 } 
