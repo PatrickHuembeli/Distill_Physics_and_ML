@@ -23,4 +23,4 @@ var 	c_vis_node1 = "white" 			// Color for visible nodes
 	// OTHER STYLE PARAMETERS FOR FIGURE 2
 	var 	connection_stroke_width = 2 	// width of the connection lines
 		nodes_stroke_width = 1 		// Stroke width of the nodes
-		nodes_radius = 12
+		nodes_radius = 12 		// Radius of the RBM nodes
