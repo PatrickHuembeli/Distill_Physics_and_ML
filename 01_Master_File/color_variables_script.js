@@ -41,4 +41,7 @@ var c_energy_line = "blue"  // Color of energy line (Also for Figure 4)
 	// Other Style Parameter FOR FIGURE 3
 	var r_inactive_dot = 4.0 // Radius of inactive dot 
 	    r_active_dot = 5.0   // Radius of active dot
-            stroke_energy_line = 3.0
+            stroke_energy_line = 3.0 // stroke thickness energy line
+	// Convergence Parameters
+	var time_steps_convergence = 400; // time parameter for convergence speed
+	var nr_of_steps_per_loop = 100; // # of steps after starting convergence

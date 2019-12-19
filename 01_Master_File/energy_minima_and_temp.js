@@ -127,8 +127,6 @@ circle_energy_2 = svg_2.selectAll(".dot")
       .on("click", function(d,i){start_convergence(i, 32, true)})
 
 
-var time_steps = 200 // time step that defines convergence time
-
 var x_temp_energy = d3.scalePow()
      .exponent(2)
      .domain([0.01, 100])
@@ -191,7 +189,7 @@ function convergence_inverse_hopfield(position, n){
 
 function convergence_boltzmann(position, n){
 	Temp = document.getElementById("temperature_slider_energy_minima").innerHTML
-	if (Math.exp(-1/Temp)<Math.random()*1.8){
+	if (Math.exp(-1/Temp)<Math.random()*1.5){
 	position = convergence_hopfield(position)}
 	else {position = convergence_inverse_hopfield(position, n)}
 	return position
@@ -205,16 +203,16 @@ function draw_red_dot(iterator, pos_list){
 	a = pos_list[iterator]
 	selected_circle = d3.select("#configuration"+a)
 	selected_image = d3.select("#energy_min_img"+a)	
-	d3.selectAll(".energy_min_images").transition().delay(iterator*time_steps).duration(time_steps)
+	d3.selectAll(".energy_min_images").transition().delay(iterator*time_steps_convergence).duration(time_steps_convergence)
 			.attr("opacity", 0)
-	selected_image.transition().delay(iterator*time_steps).duration(time_steps)
+	selected_image.transition().delay(iterator*time_steps_convergence).duration(time_steps_convergence)
 			.attr("opacity", 1.0)
-	selected_circle.transition().delay(iterator*time_steps).duration(time_steps)
+	selected_circle.transition().delay(iterator*time_steps_convergence).duration(time_steps_convergence)
 			.attr("fill", c_active_dot)
 			.style("stroke", c_stroke_dot_active)
 			.attr("activity", "active")
 			.attr("r", r_active_dot)	
-			.transition().duration(time_steps)
+			.transition().duration(time_steps_convergence)
 			.attr("fill", c_inactive_dot)
 			.style("stroke", c_stroke_dot_inactive)
 			.attr("activity", "inactive")
@@ -242,7 +240,7 @@ function start_convergence(a, number_of_images, boltzmann){
 	d3.select(".energy_min_images").interrupt()
 	pos_list = [a]
 	pos = a
-	for(i=1;i<50;i++){
+	for(i=1;i<nr_of_steps_per_loop;i++){
    		pos = convergence_boltzmann(pos, number_of_images)
 		pos_list.push(pos)}
 	//sequence(0, pos_list)
