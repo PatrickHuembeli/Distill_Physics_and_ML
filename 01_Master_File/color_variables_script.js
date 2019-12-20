@@ -24,3 +24,24 @@ var 	c_vis_node1 = "white" 			// Color for visible nodes
 	var 	connection_stroke_width = 2 	// width of the connection lines
 		nodes_stroke_width = 1 		// Stroke width of the nodes
 		nodes_radius = 12 		// Radius of the RBM nodes
+
+// COLORS FIGURE 3 (Temp dependent convergence)
+var c_energy_line = "blue"  // Color of energy line (Also for Figure 4)
+    c_inactive_dot = "#ffab00" // Color of iniactive dots
+    c_active_dot = "red" // Color of active dot
+    c_stroke_dot_inactive = "#fff"
+    c_stroke_dot_active = "black"
+    c1_temp_background = "blue" // Background lower color
+    c2_temp_background = "white" // Background upper color
+    opacity1_temp_background = 0.5 // Opacity lower color
+    opacity2_temp_background = 0.5 // Opacity upper color
+    temp_grad_offset = "50%" 	//This value determines, From when on gradient stops.
+				//The smaller the value the further up blue goes.
+   
+	// Other Style Parameter FOR FIGURE 3
+	var r_inactive_dot = 4.0 // Radius of inactive dot 
+	    r_active_dot = 5.0   // Radius of active dot
+            stroke_energy_line = 3.0 // stroke thickness energy line
+	// Convergence Parameters
+	var time_steps_convergence = 400; // time parameter for convergence speed
+	var nr_of_steps_per_loop = 100; // # of steps after starting convergence

@@ -13,7 +13,7 @@ path.plotline {
 /* Style the dots by assigning a fill and stroke */
 .dot {
  /*   fill: #ffab00;*/
-    stroke: #fff;
+/*    stroke: #fff;*/
 }
   
 .dot_energy_img {

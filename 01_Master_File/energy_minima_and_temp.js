@@ -1,6 +1,5 @@
 const energy_minima_temp_id = "#energy_minima_and_temp_id"
 
-c_temp_gradient_background = "blue"
 
 // 2. Use the margin convention practice 
 var margin = {top: 0, right: 50, bottom: 50, left: 20}
@@ -50,6 +49,10 @@ var svg_2 = d3.select(energy_minima_temp_id).append("svg")
   //.append("g")
    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// Draw background
+make_temp_gradient_new(0,0,280,400)
+
+// Add Image
 image_for_node_2 = svg_2.selectAll(".images")
 	.data(plot_data).enter()
 	.append('image')
@@ -69,13 +72,41 @@ d3.select("#energy_min_img0").attr("opacity", 1.0)
 
 line_energy_2 = svg_2.append("path")
     .datum(plot_data) // 10. Binds data to the line 
-    .attr("class", "plotline") // Assign a class for styling 
+    //.attr("class", "plotline") // Assign a class for styling 
     .attr("d", plot_line)
-	.style("stroke", "blue")
+	.style("stroke", c_energy_line)
+	.style("stroke-width", stroke_energy_line)
 	.style("fill", "none" ); // 11. Calls the line generator 
 
-// Draw background
-make_temp_gradient(0, height_new, 150, 5, c_temp_gradient_background)
+function make_temp_gradient_new(x_pos, y_pos, height, width){
+var gradient_temp = svg_2.append("defs")
+   .append("linearGradient")
+     .attr("id", "gradient_temp")
+     .attr("x1", "0%")
+     .attr("y1", "0%")
+     .attr("x2", "0%")
+     .attr("y2", "100%")
+     .attr("spreadMethod", "pad");
+
+ gradient_temp.append("stop")
+     .attr("offset", temp_grad_offset)
+     .attr("stop-color", c2_temp_background)
+     .attr("stop-opacity", opacity2_temp_background);
+
+ gradient_temp.append("stop")
+     .attr("offset", "100%")
+     .attr("stop-color", c1_temp_background)
+     .attr("stop-opacity", opacity1_temp_background);
+
+
+ svg_2.append("rect")
+     .attr("width", width)
+     .attr("height", height)
+     .attr("x", x_pos)
+     .attr("y",y_pos)
+         .attr("rx", slider_2D_rx)
+     .style("fill", "url(#gradient_temp)");
+}
 
 // Draw dots
 circle_energy_2 = svg_2.selectAll(".dot")
@@ -85,7 +116,8 @@ circle_energy_2 = svg_2.selectAll(".dot")
     .attr("cx", function(d, i) { return x_scale(i) })
     .attr("cy", function(d) { return y_scale(d.y) })
     .attr("r", 4)
-    .attr("fill", "#ffab00")
+    .attr("fill", c_inactive_dot)
+    .style("stroke", c_stroke_dot_inactive)
     .attr("id", function(d,i){return "configuration"+i})
     .attr("activity", "inactive")
 //      .on("mouseover", function(d,i){
@@ -94,8 +126,6 @@ circle_energy_2 = svg_2.selectAll(".dot")
 //      })
       .on("click", function(d,i){start_convergence(i, 32, true)})
 
-
-var time_steps = 200 // time step that defines convergence time
 
 var x_temp_energy = d3.scalePow()
      .exponent(2)
@@ -109,26 +139,26 @@ var x_temp_energy = d3.scalePow()
 //	console.log(pos)}
 
 // Function for background
-function make_temp_gradient(x_bottom, y_bottom, total_height, stepsize, color){
-	max_opacity = 0.2
-	for (i=1; i<Math.floor(total_height/stepsize); i++){
-	  y = y_bottom - i*stepsize
-	  x = x_bottom	
-	  append_rect(max_opacity-0.0075*i, x, y, stepsize, 400, color)
-	}
-}
+//function make_temp_gradient(x_bottom, y_bottom, total_height, stepsize, color){
+//	max_opacity = 0.2
+//	for (i=1; i<Math.floor(total_height/stepsize); i++){
+//	  y = y_bottom - i*stepsize
+//	  x = x_bottom	
+//	  append_rect(max_opacity-0.0075*i, x, y, stepsize, 400, color)
+//	}
+//}
 
 // Function for Background
-function append_rect(opacity, x, y, height, width, color){
-	svg_2.append("rect")
-	.attr("id", "temp_rectangle")
-	.attr("x", x)
-	.attr("y", y)
-	.attr("height", height)
-	.attr("width", width)
-	.style("fill", color)
-	.style("opacity", opacity)
-}
+//function append_rect(opacity, x, y, height, width, color){
+//	svg_2.append("rect")
+//	.attr("id", "temp_rectangle")
+//	.attr("x", x)
+//	.attr("y", y)
+//	.attr("height", height)
+//	.attr("width", width)
+//	.style("fill", color)
+//	.style("opacity", opacity)
+//}
 
 
 // The minimas and maximas are hardcoded
@@ -159,7 +189,7 @@ function convergence_inverse_hopfield(position, n){
 
 function convergence_boltzmann(position, n){
 	Temp = document.getElementById("temperature_slider_energy_minima").innerHTML
-	if (Math.exp(-1/Temp)<Math.random()*1.8){
+	if (Math.exp(-1/Temp)<Math.random()*1.5){
 	position = convergence_hopfield(position)}
 	else {position = convergence_inverse_hopfield(position, n)}
 	return position
@@ -173,18 +203,20 @@ function draw_red_dot(iterator, pos_list){
 	a = pos_list[iterator]
 	selected_circle = d3.select("#configuration"+a)
 	selected_image = d3.select("#energy_min_img"+a)	
-	d3.selectAll(".energy_min_images").transition().delay(iterator*time_steps).duration(time_steps)
+	d3.selectAll(".energy_min_images").transition().delay(iterator*time_steps_convergence).duration(time_steps_convergence)
 			.attr("opacity", 0)
-	selected_image.transition().delay(iterator*time_steps).duration(time_steps)
+	selected_image.transition().delay(iterator*time_steps_convergence).duration(time_steps_convergence)
 			.attr("opacity", 1.0)
-	selected_circle.transition().delay(iterator*time_steps).duration(time_steps)
-			.attr("fill", "red")
+	selected_circle.transition().delay(iterator*time_steps_convergence).duration(time_steps_convergence)
+			.attr("fill", c_active_dot)
+			.style("stroke", c_stroke_dot_active)
 			.attr("activity", "active")
-			.attr("r", 5.0)	
-			.transition().duration(time_steps)
-			.attr("fill", "#ffab00")
+			.attr("r", r_active_dot)	
+			.transition().duration(time_steps_convergence)
+			.attr("fill", c_inactive_dot)
+			.style("stroke", c_stroke_dot_inactive)
 			.attr("activity", "inactive")
-			.attr("r", 4.0);
+			.attr("r", r_inactive_dot);
 	iterator += 1
 	d3.select("#configuration"+a)
 				.on("end", draw_red_dot(iterator, pos_list))
@@ -192,21 +224,30 @@ function draw_red_dot(iterator, pos_list){
 }
 
 
+//intervalID = setInterval(infinite_loop, 2000)
+
+function infinite_loop(){
+	console.log("STAAAAAART")
+	start_convergence(0, 32, true)
+}
+
 function start_convergence(a, number_of_images, boltzmann){
 	d3.selectAll(".dot").interrupt()
-			.attr("fill", "#ffab00")
-			.attr("r", 4.0);
-	d3.select("#configuration" + a).attr("fill", "red").attr("r", 5.0)
+			.attr("fill", c_inactive_dot)
+			.attr("r", r_inactive_dot).style("stroke", c_stroke_dot_inactive);
+	d3.select("#configuration" + a).attr("fill", c_active_dot).attr("r", r_active_dot)
+	.style("stroke", c_stroke_dot_active)
 	d3.select(".energy_min_images").interrupt()
 	pos_list = [a]
 	pos = a
-	for(i=1;i<50;i++){
+	for(i=1;i<nr_of_steps_per_loop;i++){
    		pos = convergence_boltzmann(pos, number_of_images)
 		pos_list.push(pos)}
 	//sequence(0, pos_list)
 	draw_red_dot(0, pos_list)
 	//draw_images(0, pos_list)
 }
+
 
 function temp_slider_energy_min(val){
 	console.log(x_temp_energy(val).toPrecision(2))
