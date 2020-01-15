@@ -91,6 +91,7 @@ var svg_Figure = d3.select(SVG_id)
 
 var all_connections, connection_graph, weight_matrix, spins_data, spins_new, biases, nodes_svg, visible_svg, weight_select_svg, energy_text
 
+
 function generate_figure(){
 all_connections = make_connection_new()
 connection_graph = all_connections[0]
