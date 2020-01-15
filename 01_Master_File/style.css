@@ -156,6 +156,30 @@ padding: 10px;
 border-radius: 5px;
 border-spacing: 15px; */
 }
+div.single_slider{
+float: left;
+width: 100px; /*This is 33% of the width in normal scale */
+padding: 10px;
+/*border: 2px solid red;
+border-radius: 5px;
+border-spacing: 15px; */
+}
+div.spring_fig{
+float: left;
+width: 200px; /*This is 33% of the width in normal scale */
+padding: 10px;
+/*border: 2px solid red;
+border-radius: 5px;
+border-spacing: 15px; */
+}
+div.spring_column {
+float: left;	
+width: 330px; 
+padding: 10px;
+/*border: 2px solid red;
+border-radius: 5px;
+border-spacing: 15px; */
+}
 div.column_2level {
 float: left;
 width: 180px; 

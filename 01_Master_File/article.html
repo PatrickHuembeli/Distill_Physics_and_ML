@@ -344,21 +344,34 @@ Significant progress has been made in our journey to design models based on fund
 <p>
 The identification of binary variables with physical spins, as was done above, is a common connection between energy-based models and physical systems. For illustrative purposes, consider instead a simple physical system which may be more familiar: a mass attached to a spring. The spring is characterized by a constant <d-math>k</d-math> and the mass experiences a position-dependent force <d-math>F(y)= -k y</d-math>, where <d-math>y</d-math> is the position of the mass. If the mass is placed in a gravitational field, it experiences a constant external force <d-math>F_g = mg </d-math>, where <d-math>g</d-math> is the acceleration due to gravity. The mass is only in equilibrium at the precise position where these two forces balance, i.e., when <d-math>F_g+F(y) = 0</d-math>.</p>
 
-<div class="column"> 
- <input id="spring_slider_id" type="range"  onchange="spring_slider(this.value)" min="0.01" max="100" step="0.1" value="32" class="vranger">
-	</div>
-    <div class="column">
-       <d-figure style = "width:800px; height:160px; display:block; margin-left:20px; margin-right:auto; position:relative" id = "Spring_Figure">
-       <div id = "spring_figure_id" style="position:absolute; left:0px; top:0px">
+<div class="row">
+<div class="spring_column">
+	<div class="single_slider">	
+		<input id="spring_slider_id" type="range"  onchange="spring_slider(this.value)" min="0" max="1" step="0.01" value="0" class="vranger"></div>
+	<div class="spring_fig">
+       <d-figure style = "width:250px; height:160px; display:block; margin-left:20px; margin-right:auto; position:relative" id = "Spring_Figure1">
+       <div id = "spring_figure_id1" style="position:absolute; left:0px; top:0px">
 	</div>
        
        </d-figure>
-       <script type = "text/javascript" src = "spring_figure.js" ></script>
-       </div>
+	</div>
+       <script type = "text/javascript" src = "spring_figure1.js" ></script>
      </div>
 
+<div class="spring_column"> 
+	<div class="single_slider">	
+		<input id="spring_slider_id" type="range"  onchange="spring_slider(this.value)" min="0" max="1" step="0.01" value="0" class="vranger"></div>
+	<div class="spring_fig">
+       <d-figure style = "width:800px; height:160px; display:block; margin-left:20px; margin-right:auto; position:relative" id = "Spring_Figure2">
+       <div id = "spring_figure_id2" style="position:absolute; left:0px; top:0px">
+	</div>
+       
+       </d-figure>
+       <script type = "text/javascript" src = "spring_figure2.js" ></script></div>
+     </div>
+     </div>
      <div class="triplecolumn"> <p class="figure-text"> 
-	    Spring Figure Caption<p></div>
+	    Spring Figure Caption</p></div>
 
 
 
