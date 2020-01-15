@@ -81,42 +81,4 @@ var couple_scale = d3.scaleLinear()
 
 function spring_slider(value){console.log(value)}
 
-// End 2D param selection
-
-// =============================================================
-// 2D Histogram
-
-d3.select("#two_level_histogram").append("text")
-     .text("Probability")
-     .attr("class", "general_text")
-    .attr("transform", "translate(90,100),rotate(-90)")
-    .style("fill", c_text_histogram)
-
-    max_scale = 10 //max scale for x_e
-    max_log_scale = 10000
-    y_line1 = 50 // y position of 2-level lines
-    y_line2 = 250 
-    xplot = 50 // position of plot
-    yplot = y_line1
-    width_plot = 200 // Size plot
-    hight_plot = 200
-    x_2level = 310 // 2level sys position
-    x_text_prob = 280
-    variable = 0
-    plot_steps = 500
-
-    
-generate_histogram_2_level()
-
-d3.select("#SVG_fig1_histo").append("text")
-     .text("Parity")
-     .attr("class", "general_text")
-     .attr("x", 245)
-    .attr("y", 20)
-    .style("fill", c_text_histogram)
-updown = [[false,false],[true,false],[false,true],[true,true]]
-for (n=0;n<updown.length;n++){
-draw_parity_systems(twoL_histo_pos_gen(n)+14,y0_systems,updown[n],node_distance_parity,radius_systems,"paritystate"+n)
-}
-
 
