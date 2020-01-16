@@ -131,12 +131,12 @@ function draw_spring_new(center_x, center_y, width,  nr_of_kinks, descent){
 
 arrow_color = "#ffccff"
 spring_color = "red"
-arrow_stroke = 6
+arrow_stroke = 5
 spring_stroke = 3
-x_change = 20
-y_change = 20
+x_change = 10
+y_change = 10
 x_pos_arrows = 100
-down_arrow_length = 60
+down_arrow_length = 50
 margin_between_arrows = 10
 
 draw_arrow_up(x_pos_arrows, 10, x_pos_arrows, 100)
@@ -169,14 +169,32 @@ var couple_scale = d3.scaleLinear()
     .range([-1, 1])
     .clamp(true);   
 
+spring_svg.append('image')
+       .attr('id', 'spring_fig_Fy')
+       .attr('xlink:href', "figures/Fy.png")
+       .attr("x", 110)
+       .attr("y", 0)
+       .attr("width", 80)
+       .attr("height", 50)
+       .attr("opacity", 1.0)
+spring_svg.append('image')
+       .attr('id', 'spring_fig_Fg')
+       .attr('xlink:href', "figures/Fg.png")
+       .attr("x", 110)
+       .attr("y", 100)
+       .attr("width", 80)
+       .attr("height", 50)
+       .attr("opacity", 1.0)
+
 function spring_slider(value){
 	val = (1-value) 
 	d3.selectAll(".spring_line").remove()
 	d3.selectAll(".down_arrow").remove()
 	d3.selectAll(".up_arrow").remove()
 	y_pos_final = draw_spring_new(center_x_spring, y_start, 40, 10, val*7)
+	d3.select("#spring_fig_Fg").attr("y", y_pos_final)
 	draw_arrow_down(x_pos_arrows, y_pos_final, x_pos_arrows, y_pos_final+down_arrow_length)	
-	draw_arrow_up(x_pos_arrows, y_pos_final-val*100, x_pos_arrows, y_pos_final-margin_between_arrows)
+	draw_arrow_up(x_pos_arrows, 20, x_pos_arrows, y_pos_final-margin_between_arrows)
 	d3.select("#spring_weight").attr("y", y_pos_final)
 }
 
