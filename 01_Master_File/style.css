@@ -1,6 +1,6 @@
 .vranger {
   margin-top: 50px;
-   transform: rotate(270deg);
+   transform: translate(-50px , 20px) rotate(270deg); 
   -moz-transform: rotate(270deg); /*do same for other browsers if required*/
 }
 
@@ -163,7 +163,7 @@ border-spacing: 15px; */
 }
 div.single_slider{
 float: left;
-width: 100px; /*This is 33% of the width in normal scale */
+width: 40px; /*This is 33% of the width in normal scale */
 padding: 10px;
 /*border: 2px solid red;
 border-radius: 5px;
@@ -181,7 +181,7 @@ div.spring_column {
 float: left;	
 width: 330px; 
 padding: 10px;
-/*border: 2px solid red;
+border: 0.5px solid grey;
 border-radius: 5px;
 border-spacing: 15px; */
 }
