@@ -61,6 +61,11 @@ circle.visible_circle {
     stroke-width: 1.0;
 }
 
+line.spring_line {
+	stroke: red;
+	stroke-width: 3.0;
+}
+
 circle.unused_circle {
     opacity: 0.5;
     stroke-width: 1.0; 
