@@ -5,8 +5,48 @@ spring_svg = d3.select(identity_spring)
 	.append("svg")
 	.attr("id", "fig4_SVG")
 	.attr("x", 0)
+	.attr("height", 200)
 
 
+function draw_arrow_up(x1, y1, x2, y2){
+spring_svg.append("line")
+		.attr("class", "up_arrow")
+             .attr("x1",x1)  
+             .attr("y1",y1)  
+             .attr("x2",x2)  
+             .attr("y2",y2)  
+             .attr("stroke",arrow_color)  
+             .attr("stroke-width",arrow_stroke)  
+
+var string = String(x1-x_change)+" "+String(y1+y_change)+" "+String(x1)+" "+String(y1)+" "+String(x1+x_change)+" "+String(y1+y_change)
+
+spring_svg.append("polyline")
+	.attr("class", "up_arrow")
+	.attr("points", string)
+	.attr("stroke", arrow_color)
+	.attr("stroke-width", arrow_stroke)
+	.attr("fill", "none")
+}
+
+function draw_arrow_down(x1, y1, x2, y2){
+spring_svg.append("line")
+		.attr("class", "down_arrow")
+             .attr("x1",x1)  
+             .attr("y1",y1)  
+             .attr("x2",x2)  
+             .attr("y2",y2)  
+             .attr("stroke",arrow_color)  
+             .attr("stroke-width",arrow_stroke)  
+
+var string = String(x2-x_change)+" "+String(y2-y_change)+" "+String(x2)+" "+String(y2)+" "+String(x2+x_change)+" "+String(y2-y_change)
+
+spring_svg.append("polyline")
+	.attr("class", "down_arrow")
+	.attr("points", string)
+	.attr("stroke", arrow_color)
+	.attr("stroke-width", arrow_stroke)
+	.attr("fill", "none")
+}
 
 function draw_spring(center_x, center_y, width,  nr_of_kinks, descent){
 	start_length = 20
@@ -56,6 +96,17 @@ function draw_spring(center_x, center_y, width,  nr_of_kinks, descent){
 	return y_pos + start_length
 }
 
+arrow_color = "blue"
+arrow_stroke = 10
+x_change = 20
+y_change = 20
+x_pos_arrows = 100
+down_arrow_length = 60
+margin_between_arrows = 10
+
+draw_arrow_up(x_pos_arrows, 10, x_pos_arrows, 100)
+draw_arrow_down(x_pos_arrows, 120, x_pos_arrows, 180)
+
 center_x_spring = 50
 y_start = 0
 y_pos_final = draw_spring(center_x_spring, y_start, 40, 10, 5)
@@ -81,11 +132,15 @@ var couple_scale = d3.scaleLinear()
     .clamp(true);   
 
 function spring_slider(value){
-	val = (1-value)
-	console.log(value)
+	val = (1-value) 
 	d3.selectAll(".spring_line").remove()
-	y_pos_final = draw_spring(center_x_spring, y_start, 40, 10, val*5)
+	d3.selectAll(".down_arrow").remove()
+	d3.selectAll(".up_arrow").remove()
+	y_pos_final = draw_spring(center_x_spring, y_start, 40, 10, val*7)
+	draw_arrow_down(x_pos_arrows, y_pos_final, x_pos_arrows, y_pos_final+down_arrow_length)	
+	draw_arrow_up(x_pos_arrows, y_pos_final-val*100, x_pos_arrows, y_pos_final-margin_between_arrows)
 	d3.select("#spring_weight").attr("y", y_pos_final)
 }
 
+spring_slider(0.0)
 

@@ -7,6 +7,7 @@ spring_svg2 = d3.select(identity_spring2)
 	.attr("x", 0)
 
 spring_svg2.append("line")
+	.attr("id", "spring_fig_coupling")
 	.attr("x1", center_x_spring)
 	.attr("x2", center_x_spring)
 	.attr("y1", 20)
@@ -35,12 +36,11 @@ var couple_scale = d3.scaleLinear()
     .range([-1, 1])
     .clamp(true);   
 
-function spring_slider(value){
-	val = (1-value)
+function spring_slider2(value){
+	val = (1-value)+0.1
 	console.log(value)
-	d3.selectAll(".spring_line").remove()
-	y_pos_final = draw_spring(center_x_spring, y_start, 40, 10, val*5)
-	d3.select("#spring_weight").attr("y", y_pos_final)
+	d3.select("#spring_fig_coupling").attr("stroke-width", val*5)
+	d3.select("#spring_fig_coupling").attr("opacity", val)
 }
 
 
