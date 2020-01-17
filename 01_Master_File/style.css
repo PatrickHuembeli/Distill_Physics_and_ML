@@ -163,11 +163,16 @@ border-spacing: 15px; */
 }
 div.single_slider{
 float: left;
-width: 40px; /*This is 33% of the width in normal scale */
-padding: 10px;
-/*border: 2px solid red;
+width: 40px;
+height: 200px;
+padding: 2px;
+border: 0.5px solid rgb(0,0,0,0.1);
 border-radius: 5px;
-border-spacing: 15px; */
+border-spacing: 15px; 
+}
+div.slider_img{
+  margin-left: 10px;
+  margin-top: 10px;
 }
 div.spring_fig{
 float: left;
