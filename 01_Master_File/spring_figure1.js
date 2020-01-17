@@ -191,7 +191,7 @@ function spring_slider(value){
 	d3.selectAll(".spring_line").remove()
 	d3.selectAll(".down_arrow").remove()
 	d3.selectAll(".up_arrow").remove()
-	y_pos_final = draw_spring_new(center_x_spring, y_start, 40, 10, val*7)
+	y_pos_final = draw_spring_new(center_x_spring, y_start, 40, 8, (val+0.1)*9)
 	d3.select("#spring_fig_Fg").attr("y", y_pos_final)
 	draw_arrow_down(x_pos_arrows, y_pos_final, x_pos_arrows, y_pos_final+down_arrow_length)	
 	draw_arrow_up(x_pos_arrows, 20, x_pos_arrows, y_pos_final-margin_between_arrows)
