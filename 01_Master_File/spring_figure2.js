@@ -188,4 +188,4 @@ function spring_slider2(value){
 	draw_arrow_up2(x_pos_arrows, 20, x_pos_arrows, y_pos-margin_between_arrows)
 }
 
-
+spring_slider2(0.15)
