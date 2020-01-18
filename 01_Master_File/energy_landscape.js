@@ -30,12 +30,21 @@ var line = d3.line()
     .curve(d3.curveMonotoneX) // apply smoothing to the line
 
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-var dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(0.3,0.6)() } })
+function init_dataset(){
+var dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(0.1,1.0)() } })
+dataset[0].y=0.9
+dataset[31].y=0.9 //Fix most left and right points
+return dataset
+}
+dataset = init_dataset()	
 var points_data = [8,24]
 
 //for (i=0; i<Math.floor(n/n_points); i++) {points_data.push(i*Math.floor(n/n_points)+1)}
 
 // 1. Add the SVG to the page and employ #2
+var svg_img = d3.select(energy_figure_id).append("svg")
+    .attr("width", width_new)
+    .attr("height", 50)
 var svg = d3.select(energy_figure_id).append("svg")
     .attr("width", width_new)
     .attr("height", height_new)
@@ -44,10 +53,10 @@ var svg = d3.select(energy_figure_id).append("svg")
 
 // Random initial positions
 var images_list = [0,1]; 
-image_for_node = svg.append('image')
+image_for_node = svg_img.append('image')
     .attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+images_list[0]+'.jpg')
     .attr("x", 20)
-    .attr("y", 20)
+    .attr("y", 0)
     .attr("width", 50)
     .attr("height", 50)
 
@@ -95,54 +104,83 @@ neighbour1 = [5,6,7,8,9,10,11]
 neighbour2 = [21,22,23,24,25,26,27]
 learning_steps = 0
 unlearning_steps = 0
-learn_adjust = 0.05
-unlearn_adjust = 0.05
+learn_adjust = 0.1
+unlearn_adjust = 0.06
 
+//function learn_phase(){
+//	if (dataset[8].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[3])/2)>0.001){ 
+//	// This if loop checks that the red dot never goes outside the image
+//		for (j=0; j<neighbour1.length;j++){
+//			dataset_update1 =  dataset[neighbour1[j]].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[j])/2)//*Math.exp(-learning_steps/4)
+//			console.log(dataset_update1, neighbour1[3])
+//			dataset[neighbour1[j]].y = dataset_update1}}
+//	if (dataset[24].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[3])/2)>0){ 
+//	for (j=0; j<neighbour2.length;j++){
+//		dataset_update2 =  dataset[neighbour2[j]].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[j])/2)//*Math.exp(-learning_steps/4)
+//		dataset[neighbour2[j]].y = dataset_update2}}	
+//	update_line()
+//	learning_steps +=1
+//	learning_fct_image_energies((learning_steps-unlearning_steps)*10)
+//}
 function learn_phase(){
-	if (dataset[8].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[3])/2)>0.001){ 
-	// This if loop checks that the red dot never goes outside the image
-		for (j=0; j<neighbour1.length;j++){
-			dataset_update1 =  dataset[neighbour1[j]].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[j])/2)//*Math.exp(-learning_steps/4)
-			console.log(dataset_update1, neighbour1[3])
-			dataset[neighbour1[j]].y = dataset_update1}}
-	if (dataset[24].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[3])/2)>0){ 
-	for (j=0; j<neighbour2.length;j++){
-		dataset_update2 =  dataset[neighbour2[j]].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[j])/2)//*Math.exp(-learning_steps/4)
-		dataset[neighbour2[j]].y = dataset_update2}}	
-	update_line()
-	learning_steps +=1
-	learning_fct_image_energies((learning_steps-unlearning_steps)*10)
+	update1 = dataset[8].y - learn_adjust
+	update2 = dataset[24].y - learn_adjust
+	console.log(update2)
+	if (update1>0.02){
+	dataset[8].y = update1}
+	if (update2>0.02){
+	dataset[24].y = update2}
+	//update_line(0, 400)
+	//learning_fct_image_energies((learning_steps-unlearning_steps)*10)
 }
-
-init_learn_energy = 0
 
 function unlearn_phase(){
 	minimas = find_local_minima()
 	minimas.forEach(
 		function(element){
-			dataset[element].y = dataset[element].y + unlearn_adjust//*Math.exp(-unlearning_steps/4)
+			update = dataset[element].y + unlearn_adjust
+			if (update<0.95 ){
+			console.log(update)
+			dataset[element].y = update}		
 		}
 	) 
-	unlearning_steps +=1
-	learning_fct_image_energies((learning_steps-unlearning_steps)*10)
-	update_line()
+	//learning_fct_image_energies((learning_steps-unlearning_steps)*10)
+	//update_line(0, 200)
+}
+
+function unlearn_training(){
+	for (i=0; i<20; i++){
+		step_length = 500
+		learn_phase()
+		update_line(2*i*step_length, step_length)
+		unlearn_phase()
+		update_line((2*i+1)*step_length, step_length)
+	} 
+}
+
+function learn_training(){
+	for (i=0; i<20; i++){
+		step_length = 500
+		learn_phase()
+		update_line(i*step_length, step_length)
+	} 
 }
 
 function reinitialize_phase(){
 	learning_steps = 0
 	unlearning_steps = 0
-	dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(0.3,0.6)() } })
+	dataset = init_dataset()
 	learning_fct_image_energies(0)
-	update_line()
+	update_line(0, 2000)
 }
 
-function update_line(){
+function update_line(delay, duration){
 line_energy.datum(dataset)
-	.transition().duration(4000)
+	.transition().delay(delay).duration(duration)
     .attr("d", line)
 
 circle_energy.data(dataset).transition()
-	.attr("cy", function(d){return yScale(d.y)}).duration(4000)
+	.attr("cy", function(d){return yScale(d.y)}).delay(delay).duration(duration)
 }
 
 function find_local_minima(){

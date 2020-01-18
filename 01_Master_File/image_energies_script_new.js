@@ -20,14 +20,14 @@ var distance_hidden = 230 // how far are hidden and visible appart
 
 // Random initial positions
 var img_nr = [];
-number_of_images = 42
+UL_FIG_number_of_images = 42
 modulo_of_images = 6 //How many copies with noise are there of each image
 x_margin_left = 0
 x_margin_right = 20
 y_margins = 20
 final_y = 400
 
-for (var i = 0; i < number_of_images; i++) {
+for (var i = 0; i < UL_FIG_number_of_images; i++) {
    noise_level = i%modulo_of_images
    x_init = x_margin_left+Math.floor((width_energies_img-x_margin_left-x_margin_right)*Math.random())
    y_init = Math.floor(y_margins + Math.random()*(height-2*y_margins))
@@ -82,17 +82,17 @@ function addpath(image,  index){
 }
 
 // add path to each image
-for (var i = 0; i < number_of_images; i++) {
+for (var i = 0; i < UL_FIG_number_of_images; i++) {
    selected_image = d3.select('#image'+i)
    addpath(selected_image, i)
   // pathtest = document.getElementById('path'+ i)
 } 
 
 all_paths = []
-number_of_steps = 101 // This is defined in slider fct in article.html
-for (j=0;j<number_of_images;j++){
+UL_FIG_number_of_steps = 101 // This is defined in slider fct in article.html
+for (j=0;j<UL_FIG_number_of_images;j++){
    single_path = []	
-   for (i=0;i<number_of_steps;i++){
+   for (i=0;i<UL_FIG_number_of_steps;i++){
     pathtest = document.getElementById('path'+j)
     pathLength = Math.floor( pathtest.getTotalLength() )
     start = pathtest.getPointAtLength(0).y
@@ -107,16 +107,30 @@ for (j=0;j<number_of_images;j++){
 }
 // Slider Function
 // -------------------------------------------------
-function learning_fct_image_energies(h) {
-  for (var i = 0; i < number_of_images; i++) {
+function unlearning_fct_image_energies(h) {
+  for (var i = 0; i < UL_FIG_number_of_images; i++) {
   //change_image_pos(i, h);
    xx = all_paths[i][h][0]
    yy = all_paths[i][h][1]
-
     d3.select('#image'+i).transition().duration(4000)
                     .attr('x', xx)
                     .attr('y', yy)   
   }
 }
-
+function learning_fct_image_energies(h) {
+  good_img_list = [0,6,12,18,24,30,36]	
+  for (var i=0; i< good_img_list.length; i++) {
+  //change_image_pos(i, h);
+	 idx = good_img_list[i]
+	 console.log(idx)
+   xx = all_paths[idx][h][0]
+   yy = all_paths[idx][h][1]
+    d3.select('#image'+idx).transition().duration(4000)
+                    .attr('x', xx)
+                    .attr('y', yy)   
+  }
+}
+function move_images_learning(){
+	learning_fct_image_energies(UL_FIG_number_of_steps-1)
+}
 
