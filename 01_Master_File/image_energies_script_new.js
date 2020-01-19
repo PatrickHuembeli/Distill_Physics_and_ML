@@ -94,76 +94,81 @@ images = svg_imgequil.selectAll()
 initialize_image_energies()
 
 
-function make_random_paths(){
-paths = []
-for (j=0;j<UL_FIG_number_of_images;j++){
-   single_path = []	
-   for (i=0;i<UL_FIG_number_of_steps;i++){
-    pathtest = document.getElementById('path'+j)
-    pathLength = Math.floor( pathtest.getTotalLength() )
-    start = pathtest.getPointAtLength(0).y
-    end = pathtest.getPointAtLength(100).y
-    prcnt = (i*pathLength) / 100;
-    pt = pathtest.getPointAtLength(prcnt);
-      pt.x = Math.round(pt.x);
-      pt.y = Math.round(pt.y);
-   single_path.push([pt.x,pt.y])	   
-   }
-   paths.push(single_path)	
-}
-return paths}
-
-// function to add paths to image
-function addpath(image,  index){
-    var start_x = image.attr('x')
-    var start_y = image.attr('y')
-    var end_y = image.attr("ende")
-    var data_path = d3.range(11).map(function(){return Math.random()*1}) // defines amount of 'wiggling in x direction'
-    var x = d3.scaleLinear().domain([0, 10]).range([start_x, width_energies_img]);
-    var y = d3.scaleLinear().domain([0, 10]).range([start_y, end_y]);
-//     console.log(y)
-    var line = d3.line()
-          .x(function(d,i) {if (i != 0){return x(d)}
-                            else{return x(i)}}    )
-          .y(function(d,i) {return y(i);})
-          .curve(d3.curveMonotoneY)
-    d3.select('#main_svg_imag_energy').append("path")
-                    .attr("d", line(data_path)) 
-                    .attr('id', 'path'+ index)
-		    .attr("class", "image_path")
-                    .attr("fill", "none")
-                    .attr("stroke-width", 1)
-                    .attr("stroke", "rgb(0,0,0,0.3)")
-                    //.attr('visibility', 'hidden')   
-}
+//function make_random_paths(){
+//paths = []
+//for (j=0;j<UL_FIG_number_of_images;j++){
+//   single_path = []	
+//   for (i=0;i<UL_FIG_number_of_steps;i++){
+//    pathtest = document.getElementById('path'+j)
+//    pathLength = Math.floor( pathtest.getTotalLength() )
+//    start = pathtest.getPointAtLength(0).y
+//    end = pathtest.getPointAtLength(100).y
+//    prcnt = (i*pathLength) / 100;
+//    pt = pathtest.getPointAtLength(prcnt);
+//      pt.x = Math.round(pt.x);
+//      pt.y = Math.round(pt.y);
+//   single_path.push([pt.x,pt.y])	   
+//   }
+//   paths.push(single_path)	
+//}
+//return paths}
+//
+//// function to add paths to image
+//function addpath(image,  index){
+//    var start_x = image.attr('x')
+//    var start_y = image.attr('y')
+//    var end_y = image.attr("ende")
+//    var data_path = d3.range(11).map(function(){return Math.random()*1}) // defines amount of 'wiggling in x direction'
+//    var x = d3.scaleLinear().domain([0, 10]).range([start_x, width_energies_img]);
+//    var y = d3.scaleLinear().domain([0, 10]).range([start_y, end_y]);
+////     console.log(y)
+//    var line = d3.line()
+//          .x(function(d,i) {if (i != 0){return x(d)}
+//                            else{return x(i)}}    )
+//          .y(function(d,i) {return y(i);})
+//          .curve(d3.curveMonotoneY)
+//    d3.select('#main_svg_imag_energy').append("path")
+//                    .attr("d", line(data_path)) 
+//                    .attr('id', 'path'+ index)
+//		    .attr("class", "image_path")
+//                    .attr("fill", "none")
+//                    .attr("stroke-width", 1)
+//                    .attr("stroke", "rgb(0,0,0,0.3)")
+//                    //.attr('visibility', 'hidden')   
+//}
 
 // Slider Function
 // -------------------------------------------------
+number_of_learning_steps = 20
 function unlearning_fct_image_energies(h) {
   for (var i = 0; i < UL_FIG_number_of_images; i++) {
 	image = d3.select('#energy_image'+i)	  
       var start_x = image.attr('x')
       var start_y = image.attr('y')
       var end_y = image.attr("ende")
-      var y = d3.scaleLinear().domain([0, 10]).range([start_y, end_y]);
+      var y = d3.scaleLinear().domain([0, 2*number_of_learning_steps]).range([start_y, end_y]);
   //change_image_pos(i, h);
    //xx = all_paths[i][h][0]
    //yy = all_paths[i][h][1]
-    d3.select('#energy_image'+i).transition().duration(4000)
+    d3.select('#energy_image'+i).transition().delay(h*step_length).duration(step_length)
                     .attr('x', start_x)
                     .attr('y', y(h))   
   }
 }
+
 function learning_fct_image_energies(h) {
   good_img_list = [0,6,12,18,24,30,36]	
   for (var i=0; i< good_img_list.length; i++) {
   //change_image_pos(i, h);
 	 idx = good_img_list[i]
-   xx = all_paths[idx][h][0]
-   yy = all_paths[idx][h][1]
-    d3.select('#image'+idx).transition().duration(4000)
-                    .attr('x', xx)
-                    .attr('y', yy)   
+	image = d3.select('#energy_image'+idx)	  
+      var start_x = image.attr('x')
+      var start_y = image.attr('y')
+      var end_y = image.attr("ende")
+      var y = d3.scaleLinear().domain([0, number_of_learning_steps]).range([start_y, end_y]);
+    d3.select('#energy_image'+idx).transition().delay(h*step_length).duration(step_length)
+                    .attr('x', start_x)
+                    .attr('y', y(h))   
   }
 }
 function move_images_learning(){

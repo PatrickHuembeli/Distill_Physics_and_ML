@@ -154,6 +154,8 @@ function unlearn_training(){
 		update_line(2*i*step_length, step_length)
 		unlearn_phase()
 		update_line((2*i+1)*step_length, step_length)
+		unlearning_fct_image_energies(2*i)
+		unlearning_fct_image_energies(2*i+1)
 	} 
 }
 
@@ -162,6 +164,7 @@ function learn_training(){
 		step_length = 500
 		learn_phase()
 		update_line(i*step_length, step_length)
+		learning_fct_image_energies(i)
 	} 
 }
 
@@ -169,8 +172,10 @@ function reinitialize_phase(){
 	learning_steps = 0
 	unlearning_steps = 0
 	dataset = init_dataset()
-	learning_fct_image_energies(0)
+	//learning_fct_image_energies(0)
 	update_line(0, 2000)
+	step_length = 500
+	reinitialize_image_energies()
 }
 
 function update_line(delay, duration){
