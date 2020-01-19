@@ -140,7 +140,6 @@ function unlearn_phase(){
 		function(element){
 			update = dataset[element].y + unlearn_adjust
 			if (update<0.95 ){
-			console.log(update)
 			dataset[element].y = update}		
 		}
 	) 
