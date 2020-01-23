@@ -150,6 +150,44 @@ function draw_arrow_up2(x1, y1, x2, y2){
          .attr("fill", "none")
  }
 
+function Arrow_Sum2(center_x, center_y, max_length, slider_input){
+ min = d3.select("#spring_slider2_id").attr("min")
+ max = d3.select("#spring_slider2_id").attr("max")
+ mean = (max - min)/2
+ diff =  (mean-slider_input)*max_length
+ scale = Math.floor((1-Math.abs((slider_input-mean)/(max-mean)))*gradient_steps_spring_fig)
+ y2 = center_y - diff
+console.log(scale)	
+ spring_svg2.append("line")
+                 .attr("class", "sum_arrow2")
+              .attr("x1",center_x)
+              .attr("y1",center_y)
+              .attr("x2",center_x)
+              .attr("y2",y2)
+         .attr("stroke", grad_arrow_sum[scale])
+             //.attr("stroke","rgb(0,0,0)")
+         .attr("stroke-linejoin", "round")
+         .attr("stroke-linecap", "round")
+              .attr("stroke-width",arrow_sum_stroke)
+
+
+
+ var string_down = String(center_x-x_change)+" "+String(y2-y_change)+" "+String(center_x)+" "+String(y2)+" "+String(center_x+x_change)+" "+String(y2-y_change)
+ var string_up = String(center_x-x_change)+" "+String(y2+y_change)+" "+String(center_x)+" "+String(y2)+" "+String(center_x+x_change)+" "+String(y2+y_change)
+
+ if (diff>0){string = string_up}
+         else {string = string_down}
+
+ spring_svg2.append("polyline")
+         .attr("class", "sum_arrow2")
+         .attr("points", string)
+         .attr("stroke", grad_arrow_sum[scale])
+         .attr("stroke-width", arrow_sum_stroke)
+         .attr("stroke-linejoin", "round")
+         .attr("stroke-linecap", "round")
+         .attr("fill", "none")
+ }
+
 spring_svg2.append('image')
        .attr('id', 'spring_fig_F_theta')
        .attr('xlink:href', "figures/F_theta.png")
@@ -183,9 +221,11 @@ function spring_slider2(value){
 	d3.select("#spring_fig_Fd").attr("y", y_pos-30)
 	d3.selectAll(".up_arrow2").remove()
 	d3.selectAll(".down_arrow2").remove()
+	d3.selectAll(".sum_arrow2").remove()
 	y_pos = y_pos -arrow_shift
 	draw_arrow_down2(x_pos_arrows, y_pos, x_pos_arrows, y_pos+down_arrow_length)
 	draw_arrow_up2(x_pos_arrows, 20, x_pos_arrows, y_pos-margin_between_arrows)
+	Arrow_Sum2(200, 100, 100, value)
 }
 
 spring_slider2(0.15)

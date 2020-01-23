@@ -56,48 +56,44 @@ spring_svg.append("polyline")
 	.attr("fill", "none")
 }
 
-function draw_spring(center_x, center_y, width,  nr_of_kinks, descent){
-	start_length = 20
-	y_pos = center_y+start_length
-	spring_svg.append("line")
-		.attr("class", "spring_line")
-		.attr("x1", center_x)
-		.attr("x2", center_x)
-		.attr("y1", center_y)
-		.attr("y2", y_pos)
-	spring_svg.append("line")
-		.attr("class", "spring_line")
-		.attr("x1", center_x)
-		.attr("x2", center_x+width/2)
-		.attr("y1", y_pos)
-		.attr("y2", y_pos + descent)
-	y_pos = y_pos + descent
-	x_pos = center_x + width/2		
-	for (i=1; i<=nr_of_kinks; i++){
-	spring_svg.append("line")	
-		.attr("class", "spring_line")
-		.attr("x1", x_pos)
-		.attr("x2", x_pos + (-1)**i*width)
-		.attr("y1", y_pos)
-		.attr("y2", y_pos + descent)
-	x_pos = x_pos + (-1)**i*width
-	y_pos = y_pos + descent		
-	}
-	spring_svg.append("line")
-		.attr("class", "spring_line")
-		.attr("x1", x_pos)
-		.attr("x2", center_x)
-		.attr("y1", y_pos)
-		.attr("y2", y_pos +descent/2)
-	y_pos = y_pos + descent/2
-	spring_svg.append("line")
-		.attr("class", "spring_line")
-		.attr("x1", center_x)
-		.attr("x2", center_x)
-		.attr("y1", y_pos)
-		.attr("y2", y_pos+start_length)
-	return y_pos + start_length
+
+function Arrow_Sum(center_x, center_y, max_length, slider_input){
+min = d3.select("#spring_slider1_id").attr("min")
+max = d3.select("#spring_slider1_id").attr("max")	
+mean = (max - min)/2
+diff = 	(mean-slider_input)*max_length
+scale = Math.floor((1-Math.abs((slider_input-mean)/(max-mean)))*gradient_steps_spring_fig)
+y2 = center_y - diff 
+spring_svg.append("line")
+		.attr("class", "sum_arrow")
+             .attr("x1",center_x)  
+             .attr("y1",center_y)  
+             .attr("x2",center_x)  
+             .attr("y2",y2)
+	.attr("stroke", grad_arrow_sum[scale])
+            //.attr("stroke","rgb(0,0,0)")  
+	.attr("stroke-linejoin", "round")
+	.attr("stroke-linecap", "round")
+             .attr("stroke-width",arrow_sum_stroke)
+
+
+
+var string_down = String(center_x-x_change)+" "+String(y2-y_change)+" "+String(center_x)+" "+String(y2)+" "+String(center_x+x_change)+" "+String(y2-y_change)
+var string_up = String(center_x-x_change)+" "+String(y2+y_change)+" "+String(center_x)+" "+String(y2)+" "+String(center_x+x_change)+" "+String(y2+y_change)
+
+if (diff>0){string = string_up}
+	else {string = string_down}	
+
+spring_svg.append("polyline")
+	.attr("class", "sum_arrow")
+	.attr("points", string)
+	.attr("stroke", grad_arrow_sum[scale])
+	.attr("stroke-width", arrow_sum_stroke)
+	.attr("stroke-linejoin", "round")
+	.attr("stroke-linecap", "round")
+	.attr("fill", "none")
 }
+
 function draw_spring_new(center_x, center_y, width,  nr_of_kinks, descent){
 	var pos_string = String(center_x)+" "+String(center_y)+" "+String(center_x)
 	start_length = 20
@@ -129,14 +125,10 @@ function draw_spring_new(center_x, center_y, width,  nr_of_kinks, descent){
 	return y_pos + start_length
 }
 
-arrow_color = "#ffccff"
-spring_color = "red"
-arrow_stroke = 5
-spring_stroke = 3
 x_change = 10
 y_change = 10
 x_pos_arrows = 100
-down_arrow_length = 50
+down_arrow_length = 62
 margin_between_arrows = 10
 
 draw_arrow_up(x_pos_arrows, 10, x_pos_arrows, 100)
@@ -148,7 +140,6 @@ y_pos_final = draw_spring_new(center_x_spring, y_start, 40, 10, 5)
 
 rect_height = 40
 rect_width = 40
-weight_color = "blue"
 
 spring_svg.append("rect")
 	.attr("id", "spring_weight")
@@ -191,11 +182,13 @@ function spring_slider(value){
 	d3.selectAll(".spring_line").remove()
 	d3.selectAll(".down_arrow").remove()
 	d3.selectAll(".up_arrow").remove()
+	d3.selectAll(".sum_arrow").remove()
 	y_pos_final = draw_spring_new(center_x_spring, y_start, 40, 8, (val+0.1)*9)
 	d3.select("#spring_fig_Fg").attr("y", y_pos_final)
 	draw_arrow_down(x_pos_arrows, y_pos_final, x_pos_arrows, y_pos_final+down_arrow_length)	
 	draw_arrow_up(x_pos_arrows, 20, x_pos_arrows, y_pos_final-margin_between_arrows)
 	d3.select("#spring_weight").attr("y", y_pos_final)
+	Arrow_Sum(200, 100, 100, value)
 }
 
 spring_slider(0.0)
