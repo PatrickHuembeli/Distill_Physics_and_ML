@@ -96,8 +96,7 @@ spring_svg.append("polyline")
 
 function draw_spring_new(center_x, center_y, width,  nr_of_kinks, descent){
 	var pos_string = String(center_x)+" "+String(center_y)+" "+String(center_x)
-	start_length = 20
-	y_pos = center_y+start_length
+	y_pos = center_y+spring_start_length
 	pos_string = pos_string + " "+String(y_pos)
 	y_pos = y_pos + descent
 	x_pos = center_x + width/2		
@@ -113,7 +112,7 @@ function draw_spring_new(center_x, center_y, width,  nr_of_kinks, descent){
 	pos_string = pos_string + " "+String(center_x)
 	pos_string = pos_string + " "+String(y_pos)
 	pos_string = pos_string + " "+String(center_x)
-	pos_string = pos_string + " "+String(y_pos+start_length)
+	pos_string = pos_string + " "+String(y_pos+spring_start_length)
 	spring_svg.append("polyline")
 		.attr("class", "down_arrow")
 		.attr("points", pos_string)
@@ -122,7 +121,7 @@ function draw_spring_new(center_x, center_y, width,  nr_of_kinks, descent){
 		.attr("stroke-linejoin", "round")
 		.attr("stroke-linecap", "round")
 		.attr("fill", "none")
-	return y_pos + start_length
+	return y_pos + spring_start_length
 }
 
 x_change = 10
@@ -136,7 +135,11 @@ draw_arrow_down(x_pos_arrows, 120, x_pos_arrows, 180)
 
 center_x_spring = 50
 y_start = 0
-y_pos_final = draw_spring_new(center_x_spring, y_start, 40, 10, 5)
+spring_width = 40
+number_of_kinks = 8
+spring_descent = 9
+
+y_pos_final = draw_spring_new(center_x_spring, y_start, spring_width, number_of_kinks, spring_descent)
 
 rect_height = 40
 rect_width = 40
@@ -165,16 +168,24 @@ spring_svg.append('image')
        .attr('xlink:href', "figures/Fy.png")
        .attr("x", 110)
        .attr("y", 0)
-       .attr("width", 80)
-       .attr("height", 50)
+       .attr("width", 50)
+       .attr("height", 35)
        .attr("opacity", 1.0)
 spring_svg.append('image')
        .attr('id', 'spring_fig_Fg')
        .attr('xlink:href', "figures/Fg.png")
        .attr("x", 110)
        .attr("y", 100)
-       .attr("width", 80)
-       .attr("height", 50)
+       .attr("width", 50)
+       .attr("height", 35)
+       .attr("opacity", 1.0)
+spring_svg.append('image')
+       .attr('id', 'spring_fig_Fsum1')
+       .attr('xlink:href', "figures/F_sum.png")
+       .attr("x", 140)
+       .attr("y", 77)
+       .attr("width", 50)
+       .attr("height", 35)
        .attr("opacity", 1.0)
 
 function spring_slider(value){
@@ -183,7 +194,7 @@ function spring_slider(value){
 	d3.selectAll(".down_arrow").remove()
 	d3.selectAll(".up_arrow").remove()
 	d3.selectAll(".sum_arrow").remove()
-	y_pos_final = draw_spring_new(center_x_spring, y_start, 40, 8, (val+0.1)*9)
+	y_pos_final = draw_spring_new(center_x_spring, y_start, spring_width, number_of_kinks, (val+0.1)*spring_descent)
 	d3.select("#spring_fig_Fg").attr("y", y_pos_final)
 	draw_arrow_down(x_pos_arrows, y_pos_final, x_pos_arrows, y_pos_final+down_arrow_length)	
 	draw_arrow_up(x_pos_arrows, 20, x_pos_arrows, y_pos_final-margin_between_arrows)

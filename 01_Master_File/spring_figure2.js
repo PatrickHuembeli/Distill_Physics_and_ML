@@ -157,7 +157,6 @@ function Arrow_Sum2(center_x, center_y, max_length, slider_input){
  diff =  (mean-slider_input)*max_length
  scale = Math.floor((1-Math.abs((slider_input-mean)/(max-mean)))*gradient_steps_spring_fig)
  y2 = center_y - diff
-console.log(scale)	
  spring_svg2.append("line")
                  .attr("class", "sum_arrow2")
               .attr("x1",center_x)
@@ -188,44 +187,61 @@ console.log(scale)
          .attr("fill", "none")
  }
 
+function draw_spring_ypos2(center_x, center_y, nr_of_kinks, descent){
+         y_pos = center_y+spring_start_length
+         y_pos = y_pos + descent
+         for (i=1; i<=nr_of_kinks; i++){
+                 y_pos = y_pos + descent
+         }
+         y_pos = y_pos + descent/2
+         return y_pos + spring_start_length
+ }
+
 spring_svg2.append('image')
        .attr('id', 'spring_fig_F_theta')
        .attr('xlink:href', "figures/F_theta.png")
        .attr("x", 110)
        .attr("y", 0)
-       .attr("width", 80)
-       .attr("height", 50)
+       .attr("width", 50)
+       .attr("height", 35)
        .attr("opacity", 1.0)
 spring_svg2.append('image')
        .attr('id', 'spring_fig_Fd')
        .attr('xlink:href', "figures/Fd.png")
        .attr("x", 110)
        .attr("y", 100)
-       .attr("width", 80)
-       .attr("height", 50)
+       .attr("width", 50)
+       .attr("height", 35)
+       .attr("opacity", 1.0)
+spring_svg2.append('image')
+       .attr('id', 'spring_fig_Fsum2')
+       .attr('xlink:href', "figures/F_sum.png")
+       .attr("x", 140)
+       .attr("y", 77)
+       .attr("width", 50)
+       .attr("height", 35)
        .attr("opacity", 1.0)
 
+	y_pos_final = draw_spring_ypos2(center_x_spring, y_start, number_of_kinks, spring_descent)
 
-	draw_arrow_down2(x_pos_arrows, y_pos_final, x_pos_arrows, y_pos_final+down_arrow_length)
+        draw_arrow_down2(x_pos_arrows, 120, x_pos_arrows, 180)
 	draw_arrow_up2(x_pos_arrows, y_pos_final-val*100, x_pos_arrows, y_pos_final-margin_between_arrows)
 
 function spring_slider2(value){
-	val = (1-value)+0.3
-	y_pos = val*node_y_length
-	arrow_shift = 30
-	console.log(value)
-	d3.select("#spring_fig_coupling").attr("stroke-width", value*5)
-		.attr("opacity", value)
-		.attr("y2", val*node_y_length)
-	d3.select("#node2").attr("cy", y_pos)
-	d3.select("#spring_fig_Fd").attr("y", y_pos-30)
+	val = (1-value)
+	value = value*(1.0)+0.2
 	d3.selectAll(".up_arrow2").remove()
 	d3.selectAll(".down_arrow2").remove()
 	d3.selectAll(".sum_arrow2").remove()
-	y_pos = y_pos -arrow_shift
+	y_pos= draw_spring_ypos2(center_x_spring, y_start, number_of_kinks, (val+0.1)*spring_descent)
 	draw_arrow_down2(x_pos_arrows, y_pos, x_pos_arrows, y_pos+down_arrow_length)
 	draw_arrow_up2(x_pos_arrows, 20, x_pos_arrows, y_pos-margin_between_arrows)
-	Arrow_Sum2(200, 100, 100, value)
+	Arrow_Sum2(200, 100, 100, -val+1)
+	d3.select("#spring_fig_coupling").attr("stroke-width", value*5)
+		.attr("opacity", value)
+		.attr("y2", 1.2*y_pos)
+	d3.select("#node2").attr("cy", 1.2*y_pos)
+	d3.select("#spring_fig_Fd").attr("y", y_pos)
 }
 
-spring_slider2(0.15)
+spring_slider2(0.0)
