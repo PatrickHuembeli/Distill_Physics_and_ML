@@ -14,22 +14,22 @@ d3.select(RBM_complete_XOR)
     .append("svg")
     .attr("id", "CD_algo_main_svg")
 	.attr("width", 800)
-	.attr("height", 300)
+	.attr("height", 270)
 
 
 d3.select("#CD_algo_main_svg")
     .append("svg")
     .attr("id", "RBM_sampler"+IDENTIFIERXOR)
     .attr('class','figures')
-    .attr("width", 1000) // use whole space given in article
-    .attr("height", 1000); // This is height of figure without 'selectors'
+    //.attr("width", 1000) // use whole space given in article
+    //.attr("height", 1000); // This is height of figure without 'selectors'
 
 d3.select("#CD_algo_main_svg")
     .append("svg")
     .attr("id", "RBM_sampler_histo"+IDENTIFIERXOR)
     .attr('class','figures')
-    .attr("width", width) // use whole space given in article
-    .attr("height", 500) // This is height of figure without 'selectors'
+    //.attr("width", width) // use whole space given in article
+    //.attr("height", 500) // This is height of figure without 'selectors'
 	.attr("x", 400)
 	.attr("y", 0)
 
