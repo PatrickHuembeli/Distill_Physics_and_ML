@@ -163,12 +163,13 @@ var x_temp_energy = d3.scalePow()
 
 // The minimas and maximas are hardcoded
 min1 = 8
-max = 16
+E_max = 16
 min2 = 24
 
 function convergence_hopfield(position){
-	if(position<max){position += Math.sign(min1-position)} 	    //go to min1
-	else {  if(position==max){ position+= Math.sign(Math.random()-0.5)} // exception for position = max
+	console.log(position, E_max)
+	if(position<E_max){position += Math.sign(min1-position)} 	    //go to min1
+	else {  if(position==E_max){ position+= Math.sign(Math.random()-0.5)} // exception for position = max
 		else{position += Math.sign(min2-position)} // go to min2
 	}
 	return position
@@ -177,11 +178,11 @@ function convergence_hopfield(position){
 function convergence_inverse_hopfield(position, n){
 	// The minimas and maximas are hardcoded
 	if (position>0&&position<n-1){
-	if(position<max){if(position==min1){ position+= Math.sign(Math.random()-0.5) }
-			else if(position==max){position = position}
+	if(position<E_max){if(position==min1){ position+= Math.sign(Math.random()-0.5) }
+			else if(position==E_max){position = position}
 			 else {position += Math.sign(-min1+position)}} 	    //go to min1
 	else {  	 if(position==min2){ position+= Math.sign(Math.random()-0.5)} // exception for position = max
-			else if(position==max){position = position}
+			else if(position==E_max){position = position}
 			 else{position += Math.sign(-min2+position)} // go to min2
 	}}
 	return position
