@@ -5,7 +5,7 @@ var IDENTIFIERXOR = '_XOR'
 dictionary["h_units"+IDENTIFIERXOR] = 1
 dictionary["v_units"+IDENTIFIERXOR] = 2
 dictionary["total_spins"+IDENTIFIERXOR] = 3
-dictionary["histogram_data"+IDENTIFIERXOR] = [0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.0]
+dictionary["histogram_data"+IDENTIFIERXOR] = [0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125]
 dictionary["hidden_vecs"+IDENTIFIERXOR] = permutations_of_vector(dictionary["h_units"+IDENTIFIERXOR])
 dictionary["bm_permutations"+IDENTIFIERXOR] = permutations_of_vector(dictionary["total_spins"+IDENTIFIERXOR])
 // Add the space where it draws the RBM
@@ -98,8 +98,8 @@ dictionary["weight_slider_index"+IDENTIFIERXOR] = 0
 dictionary["bias_slider_index"+IDENTIFIERXOR] = 0
 //background_rectangles_hidden_visible(IDENTIFIERXOR)
 
-generate_histogram("histogram_pos_phase",80, IDENTIFIERXOR)
-generate_histogram("histogram_neg_phase",300, IDENTIFIERXOR)
+//generate_histogram("histogram_pos_phase",80, IDENTIFIERXOR)
+generate_histogram("histogram_neg_phase",80, IDENTIFIERXOR)
 
 generate_RBM_biases_new(IDENTIFIERXOR)
 generate_RBM_connections_new(IDENTIFIERXOR)
@@ -114,10 +114,10 @@ unwanted_config = 'blue'
 
 function add_magnetic_field_background(index, v){
 magnet_field_radius = 35
-	console.log(v)
+	//console.log(v)
 if (v==1){url = "url(#magnet_gradient_v)"}
 if (v==0 ) { url = "url(#magnet_gradient_h)"}
-	console.log(url)
+	//console.log(url)
  d3.select("#RBM_sampler"+IDENTIFIERXOR)
          .append("circle")
          .attr("cx", function(d,i){return pos_gen_x(index,index,IDENTIFIERXOR)})
@@ -144,8 +144,8 @@ function add_magnetic_field_background_rect(index, field_color){
 function generate_RBM_nodes_new(identifier){
  // Define tooltips for hovering information
 
- var colors_init = ['white','white', 'hsl(240, 100%, 84%)']
- var color_init_stroke = ['black','black', 'blue']
+ var colors_init = [c_vis_node1,c_vis_node1, c_hid_node1]
+ var color_init_stroke = [c_vis_node1_stroke,c_vis_node1_stroke, c_hid_node1_stroke]
  //var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
  //var hidden_colors_stroke = ["blue", "red"]
      // -------------------------------------------------------------------------
@@ -169,32 +169,35 @@ function change_bias_value(y, index){
 	y_zero = pos_gen_y(index,index,IDENTIFIERXOR)
 	if(Math.abs(y-y_zero)>(magnet_field_radius-RBM_node_radius)){
 	y = y_zero + Math.sign(y-y_zero)*(magnet_field_radius-RBM_node_radius)} 
-	bias_value = 1*((y-y_zero)/(magnet_field_radius-RBM_node_radius)).toPrecision(2)  
+	bias_value = 1*((y-y_zero)/(magnet_field_radius-RBM_node_radius)).toFixed(1)  
 	d3.select("#biastext"+index).text(function(){return "bias: "+bias_value})
 	return [y,bias_value]
 }
+
  var dragHandler = d3.drag()
     .on("drag", function () {
  //         xpos = d3.event.x
     	  index = d3.select(this).attr("index")
           ypos = d3.event.y
-	  out = change_bias_value(ypos, index) 
+	  out = change_bias_value(ypos, index)
+	    //console.log(out)
 	    ypos = out[0]
 	    bias_value = out[1]
+          d3.select(this).attr("cy", ypos);
        dictionary["biases"+identifier][index] = bias_value
 	    if (index<2){
    line_w = d3.select("#weight"+index)
 //	   line_w.attr("x1", xpos)
-	   line_w.attr("y1", ypos)}
-	    else { 
+	   line_w.attr("y1", ypos)
+	    }
+            else { 
    line_w = d3.select("#weight0")
 //	   line_w.attr("x2", xpos)
-	   line_w.attr("y2", ypos)
+	   line_w.attr("y2", ypos+RBM_node_radius)
    line_w = d3.select("#weight1")
 //	   line_w.attr("x2", xpos)
-	   line_w.attr("y2", ypos)}
+	   line_w.attr("y2", ypos+RBM_node_radius)}
 //              .attr("cx", xpos)
-          d3.select(this).attr("cy", ypos);
 //	  bias_value = -2*(ypos/svg_RBM_height - 1/2).toPrecision(2)  
 //		d3.select("#biastext"+index).text(function(){return "bias: "+bias_value})    
 		    
@@ -229,8 +232,8 @@ function generate_RBM_connections_new(identifier){
          .attr("y1", function(d){return line_pos_gen_y1(d,identifier)})
          .attr("x2", function(d){return line_pos_gen_x2(d,identifier)})
          .attr("y2", function(d){return line_pos_gen_y2(d,identifier)})
-         .on("mouseover", function(d) {
-             tooltip.text('Coupling:' + d[0] +',' + d[1]+ ' Strength: '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
+         .on("mouseover", function(d,i) {
+             tooltip.text('W' + i +' Strength: '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
                      .style("visibility", "visible")
           d3.select(this).attr("stroke","rgb(0,0,0,1.0)")           ;
        })
@@ -243,22 +246,6 @@ function generate_RBM_connections_new(identifier){
 
        .on("mouseout", function() {tooltip.style("visibility", "hidden")
        d3.select(this).attr("stroke","rgb(0,0,0,0.5)");
-       })
-       .on("click", function(d){
-                line = d3.select(this)
-                    coupling = d
-                index = dictionary["connection_graph"+identifier].indexOf(coupling)
-                    var idx1 = dictionary["connection_graph"+identifier][index][0]
-                    var idx2 = dictionary["connection_graph"+identifier][index][1]
-                    arg = dictionary["weight_matrix"+identifier][idx1][idx2]
-                    document.getElementById("weight_slider_id"+identifier).value = arg
-                //text = d3.select("#weighttext")
-                //text.text(function(){return "Weight: ("+ idx1+', ' + idx2+')'})
-               text = document.getElementById("weight_slider_text"+identifier)
-               text.innerHTML =  "Weight: ("+ idx1+", "+idx2+")"
-               value = document.getElementById("weight_slider_value"+identifier)
-               value.innerHTML =  arg
-                dictionary["weight_slider_index"+identifier] = index
        })
  }
 
@@ -306,47 +293,35 @@ var RBM_2D_slider_pos_x = 200
 var RBM_2D_slider_pos_y = 50
 var RBM_2D_slider_width = 100
 var RBM_2D_slider_height = 100
-var init_pos_x = 220
-var init_pos_y = 120
+var init_pos_x = 250
+var init_pos_y = 100
 
 var RBM_gradient = d3.select("#RBM_sampler"+IDENTIFIERXOR).append("defs")
   .append("linearGradient")
     .attr("id", "RBM_gradient")
     .attr("x1", "0%")
     .attr("y1", "0%")
-    .attr("x2", "100%")
+    .attr("x2", "0%")
     .attr("y2", "100%")
     .attr("spreadMethod", "pad");
 
 RBM_gradient.append("stop")
     .attr("offset", "0%")
-    .attr("stop-color", "blue")
-    .attr("stop-opacity", 0.8);
-
-RBM_gradient.append("stop")
-    .attr("offset", "50%")
-    .attr("stop-color", "purple")
+    .attr("stop-color", c2_2D_slider)
     .attr("stop-opacity", 0.8);
 
 RBM_gradient.append("stop")
     .attr("offset", "100%")
-    .attr("stop-color", "red")
+    .attr("stop-color", c1_2D_slider)
     .attr("stop-opacity", 0.8);
-
 
 d3.select("#RBM_sampler"+IDENTIFIERXOR).append("rect")
     .attr("width", RBM_2D_slider_width)
     .attr("height", RBM_2D_slider_height)
     .attr("x", RBM_2D_slider_pos_x)
     .attr("y",RBM_2D_slider_pos_y)
+    .attr("rx", slider_2D_rx)
     .style("fill", "url(#RBM_gradient)");
-
-d3.select("#RBM_sampler"+IDENTIFIERXOR).append("circle")
-	.attr("class", "RBM_2D_slider")
-       .attr("cx", init_pos_x)
-      .attr("cy", init_pos_y)
-      .attr("r", 10)
-      .attr("fill", "white")
 
 d3.select("#RBM_sampler"+IDENTIFIERXOR).append("line")
 	.attr("id", "RBM_weight_line1")
@@ -354,33 +329,40 @@ d3.select("#RBM_sampler"+IDENTIFIERXOR).append("line")
 	.attr("x2", RBM_2D_slider_pos_x+RBM_2D_slider_width)
 	.attr("y1", init_pos_y)
 	.attr("y2", init_pos_y)
-	.style("stroke", "white")
+	.style("stroke", c_stroke_2D_slider)
 d3.select("#RBM_sampler"+IDENTIFIERXOR).append("line")
 	.attr("id", "RBM_weight_line2")
 	.attr("x1", init_pos_x)
 	.attr("x2", init_pos_x)
 	.attr("y1", RBM_2D_slider_pos_y)
 	.attr("y2", RBM_2D_slider_pos_y + RBM_2D_slider_height)
-	.style("stroke", "white")
+	.style("stroke", c_stroke_2D_slider)
+d3.select("#RBM_sampler"+IDENTIFIERXOR).append("circle")
+	.attr("class", "RBM_2D_slider")
+       .attr("cx", init_pos_x)
+      .attr("cy", init_pos_y)
+      .attr("r", handle_2D_slider_radius)
+      .attr("fill", c_handle_2D_slider)
+	.attr("stroke", c_stroke_2D_slider)
 
 d3.select("#RBM_sampler"+IDENTIFIERXOR).append("text")
-	.text(function(){return "W₂="+couple_scale(70).toPrecision(2)})
+	.text(function(){return "W₂="+0.0.toFixed(1)})
 	.attr("id", "RBM_text_weight1")
      	.attr("class", "general_text")
 	.attr("x", RBM_2D_slider_pos_x+RBM_2D_slider_width)
 	.attr("y", init_pos_y)
-    	.style("fill", "#004669")
+    	.style("fill", c_text_slider)
 
 d3.select("#RBM_sampler"+IDENTIFIERXOR).append("text")
-	.text(function(){return "W₁="+ temp_scale(20).toPrecision(2)})
+	.text(function(){return "W₁="+ 0.0.toFixed(1)})
 	.attr("id", "RBM_text_weight2")
 	.attr("class", "general_text")
 	.attr("x", init_pos_x)
 	.attr("y", RBM_2D_slider_pos_y)
-    	.style("fill", "#004669")
+    	.style("fill", c_text_slider)
 
 
-var dragHandler = d3.drag()
+var dragHandler_slider = d3.drag()
     .on("drag", function () {
 	xpos = d3.event.x
 	ypos = d3.event.y
@@ -394,7 +376,7 @@ var dragHandler = d3.drag()
             .attr("cy", ypos);
     });
 
-dragHandler(d3.select("#RBM_sampler"+IDENTIFIERXOR).selectAll(".RBM_2D_slider"));
+dragHandler_slider(d3.select("#RBM_sampler"+IDENTIFIERXOR).selectAll(".RBM_2D_slider"));
 
 function RBM_twoD_pos_to_weight(xpos, ypos){
 	x = 2*(xpos - RBM_2D_slider_pos_x - RBM_2D_slider_width/2)/RBM_2D_slider_width
@@ -412,8 +394,8 @@ function twoD_slider_RBM(xpos, ypos) {
 	Weights_RBM = RBM_twoD_pos_to_weight(xpos, ypos)
 	weight_1 = Weights_RBM[0]
 	weight_2 = Weights_RBM[1]
-		d3.select("#RBM_text_weight2").text(function(){return "W₂="+ weight_1.toPrecision(2)})
-		d3.select("#RBM_text_weight1").text(function(){return "W₁="+ weight_2.toPrecision(2)})
+		d3.select("#RBM_text_weight2").text(function(){return "W₂="+ weight_1.toFixed(1)})
+		d3.select("#RBM_text_weight1").text(function(){return "W₁="+ weight_2.toFixed(1)})
           
 	  var connection_graph = dictionary["connection_graph"+identifier]
           var weight_matrix = dictionary["weight_matrix"+identifier]
@@ -423,8 +405,8 @@ function twoD_slider_RBM(xpos, ypos) {
           var hidden_vecs = dictionary["hidden_vecs"+identifier]
           idx1 = connection_graph[weight_slider_index][0]
           idx2 = connection_graph[weight_slider_index][1]
-          weight_matrix[0][2] = weight_1
-	  weight_matrix[1][2] = weight_2
+          weight_matrix[0][2] = weight_1.toFixed(1)
+	  weight_matrix[1][2] = weight_2.toFixed(1)
           //value = document.getElementById("weight_slider_value"+identifier)
           //value.innerHTML =  weight_1
           //d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
@@ -432,10 +414,10 @@ function twoD_slider_RBM(xpos, ypos) {
           for (j=0; j<configuration_to_learn.length; j++){
                 histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
           histo_data_neg = histogram_data
-          histo_data_pos = histo_pos_phase(histogram_data)
-          histo_id1 = "histogram_pos_phase"
+          //histo_data_pos = histo_pos_phase(histogram_data)
+          //histo_id1 = "histogram_pos_phase"
           histo_id2 = "histogram_neg_phase"
-          update_histogram(histo_data_pos, histo_id1, identifier) // pos phase
+          //update_histogram(histo_data_pos, histo_id1, identifier) // pos phase
           update_histogram(histo_data_neg, histo_id2, identifier) // neg phase
 }
 

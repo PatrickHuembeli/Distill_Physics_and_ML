@@ -8,7 +8,8 @@ var 	c_histo_bars = "blue" 			//Color of the histogram bars
 	c1_2D_slider = "white" 			// Slider background color1 (2 COLORS BECAUSE IT IS A GRADIENT)
 	c2_2D_slider = "grey" 			// Slider background color2
 	c_handle_2D_slider = "orange" 		// SLider Handle color
-	c_stroke_2D_slider = "white" 		// Slider lines color
+	c_stroke_2D_slider = "white" 		// Slider lines and circle stroke color 
+        handle_2D_slider_radius = 8
 	c_text_slider = "grey" 			// Slider Text color
 	c_text_histogram = "grey" 		// Histogram text color
 
@@ -61,7 +62,7 @@ var grad_arrow_sum = ["#EB70E5", "#EB70E5", "#EB71E5", "#EB71E5", "#EB72E5", "#E
 
 
 
-
-
+// Trainable RBM Figure
+var RBM_node_radius = 10.0
 
 

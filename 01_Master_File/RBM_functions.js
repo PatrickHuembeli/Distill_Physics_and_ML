@@ -21,7 +21,6 @@ dictionary["bm_permutations"+IDENTIFIER] = permutations_of_vector(dictionary["to
 var width = 500;
 var svg_RBM_height = 200;
 var svg_histo_height = 280;
-var RBM_node_radius = 10.0
 var space = 13.0
 //var histo_x_pos = 50
 var histo_label_x_pos = 10
@@ -129,7 +128,7 @@ function make_connection_new(identifier){
 	var total_spins = dictionary["total_spins"+identifier]
 	var total_nodes = total_spins
 	stringer = "hidden_check"+identifier
-	console.log("hidden_check"+identifier, stringer)
+	//console.log("hidden_check"+identifier, stringer)
 	if (hidden_active== false){
 		total_nodes = total_spins - h_units
 	}
@@ -170,7 +169,7 @@ return [connection_graph, weight_matrix]};
 function update_select(){
 	hidden_activate = sel_hid_active.property('value')
 	restricted_activate = sel_rest_active.property("value")
-	console.log(hidden_activate)
+	//console.log(hidden_activate)
 };
 
 // -----------------------------------------------------------------------------
@@ -454,7 +453,7 @@ function all_configs_given_v(single_visible, hidden_permutations){
 // =============================================================================
 function prob_of_v(single_visible, hidden_permutations, identifier){
     var bm_permutations = dictionary["bm_permutations"+identifier]
-	console.log(bm_permutations)
+	//console.log(bm_permutations)
     Z = part_fct(bm_permutations, identifier)
     boltzmann_factor = 0
     all_conf = all_configs_given_v(single_visible, hidden_permutations)
@@ -471,7 +470,7 @@ function prob_of_config(config, identifier){
     boltzmann_factor = 0
         energy_v = energy_fct(config, identifier) 
         boltzmann_factor += Math.exp(-energy_v)
-	console.log(energy_v, config)
+	//console.log(energy_v, config)
     return (boltzmann_factor/Z)    
 }
 
