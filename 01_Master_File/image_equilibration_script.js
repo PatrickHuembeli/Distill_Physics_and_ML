@@ -173,9 +173,9 @@ function equilibration_step_rbm(){
         d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
         d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+Math.ceil(total_equilibration_steps/2)+'.jpg')
 	if (total_equilibration_steps < max_equilibration_steps){
-	total_equilibration_steps += 1}
+	total_equilibration_steps += 1
 	console.log(total_equilibration_steps)
-	initialize_NN()
+	initialize_NN()}
 }
 
 

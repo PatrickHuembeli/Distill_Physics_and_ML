@@ -43,34 +43,34 @@ var images_visible = ['damaged_zeros_visible_','damaged_fours_visible_','damaged
 var images_hidden = ['resized_damaged_zeros_hidden_','resized_damaged_fours_hidden_','resized_damaged_nines_hidden_']
 var image_nr = [0,1,2,3,4,5,6,7,8]
 
-teaser_svg_imgequil.append('image')
-    .attr('id', 'teaser_main_img_big_id')
-    .attr('xlink:href', folder_path+folder_nr[0] + images_visible[0] +0+'.jpg')
-    .attr("x", 500)
-    .attr("y", 20)
-    .attr("width", main_img_width)
-    .attr("height", main_img_height)
-    .attr("opacity", 0.0)
-    
-teaser_compressed_image = teaser_svg_imgequil.append('image')
-    .attr('id', 'teaser_compressed_img_id')
-    .attr('xlink:href', folder_path+folder_nr[0]+'resized_'+images_visible[0]+0+'.jpg')
-    .attr("x", 50)
-    .attr("y", 350)
-    .attr("width", img_width)
-    .attr("height", img_height)
-
-teaser_hidden_compressed_image = teaser_svg_imgequil.append('image')
-    .attr('id', 'teaser_hidden_compressed_img_id')
-    .attr('xlink:href', folder_path+folder_nr[0]+images_hidden[0]+0+'.jpg')
-    .attr("x", 100)
-    .attr("y", 500)
-    .attr("width", img_width/2)
-    .attr("height", img_height/2)
+//teaser_svg_imgequil.append('image')
+//    .attr('id', 'teaser_main_img_big_id')
+//    .attr('xlink:href', folder_path+folder_nr[0] + images_visible[0] +0+'.jpg')
+//    .attr("x", 500)
+//    .attr("y", 20)
+//    .attr("width", main_img_width)
+//    .attr("height", main_img_height)
+//    .attr("opacity", 0.0)
+//    
+//teaser_compressed_image = teaser_svg_imgequil.append('image')
+//    .attr('id', 'teaser_compressed_img_id')
+//    .attr('xlink:href', folder_path+folder_nr[0]+'resized_'+images_visible[0]+0+'.jpg')
+//    .attr("x", 50)
+//    .attr("y", 350)
+//    .attr("width", img_width)
+//    .attr("height", img_height)
+//
+//teaser_hidden_compressed_image = teaser_svg_imgequil.append('image')
+//    .attr('id', 'teaser_hidden_compressed_img_id')
+//    .attr('xlink:href', folder_path+folder_nr[0]+images_hidden[0]+0+'.jpg')
+//    .attr("x", 100)
+//    .attr("y", 500)
+//    .attr("width", img_width/2)
+//    .attr("height", img_height/2)
 
 // This lines make the images invisible
-document.getElementById("teaser_hidden_compressed_img_id").style.display = "none";
-document.getElementById("teaser_compressed_img_id").style.display = "none";
+//document.getElementById("teaser_hidden_compressed_img_id").style.display = "none";
+//document.getElementById("teaser_compressed_img_id").style.display = "none";
 
 path_for_pixel =  folder_path+'zero/resized_damaged_zeros_visible_'+teaser_main_image_var+'.jpg'
 
@@ -102,15 +102,12 @@ teaser_images = teaser_svg_imgequil.selectAll()
                                     .style("opacity", 1.0)})  
     .on("mouseout", function() {d3.select(this)
                                     .style("opacity", 0.5)})  
-    .on("click", function(d){teaser_main_image_var = d,
+    .on("click", function(d,i){teaser_main_image_var = d,
 		path_vis = folder_path +folder_nr[d]+images_visible[d]+0+'.jpg',
-	        console.log(path_vis),    
-                d3.select('#teaser_main_img_big_id').attr('xlink:href', path_vis),
-                d3.select('#teaser_compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+'resized_'+images_visible[d]+0+'.jpg')
-                d3.select('#teaser_hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+images_hidden[d]+0+'.jpg')
 	        which_number_index = d
 	        teaser_total_equilibration_steps = 1
-                teaser_initialize_NN()
+	        teaser_selected_number = i
+                teaser_single_step()
     		});
 
 
@@ -136,93 +133,95 @@ var teaser_Energy_Plot_Container = teaser_svg_imgequil.append("svg")
     .attr("height", 200)
     .attr('id','teaser_Energy_Container')
 // -----------------------------------------------------------------------------
-var colors = ['white', 'black'];
-var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
-var hidden_colors_stroke = ["blue", "red"]
+var colors = [c_vis_node1, c_vis_node2];
+var stroke_colors_visible = [c_vis_node1_stroke, c_vis_node2_stroke]
+var hidden_colors = [c_hid_node1, c_hid_node2];
+var hidden_colors_stroke = [c_hid_node1_stroke, c_hid_node2_stroke]
 var initialize_flag = false
 
-function getwholeImage_new(url, threshold) {
-  var img = new Image();
-  img.src = url;
-  var teaser_canvas = document.createElement('canvas');
-  teaser_canvas.width = compressed_size
-  teaser_canvas.height = compressed_size
-  var context = teaser_canvas.getContext('2d');
-  context.drawImage(img, 0, 0);
-  imgData = context.getImageData(0, 0, teaser_canvas.width, teaser_canvas.height)
-  data_image_full = context.getImageData(0, 0, teaser_canvas.width, teaser_canvas.height).data
-  data_image_one_channel = teaser_every_nth(data_image_full, 4)
-  raw_data = binarizeArray(data_image_one_channel, threshold) // This value gives threshold for black and white	
-  var points = [];
+function getwholeImage_N(digit_index, visible) {
+	if (digit_index==0){
+	if (visible==true){	
+	raw_data = zeros_visible[Math.ceil(teaser_total_equilibration_steps/2)-1]}
+	else {raw_data = zeros_hidden[Math.floor(teaser_total_equilibration_steps/2)]
+	}
+	} 
+	if (digit_index==1){
+	if (visible==true){	
+	raw_data = fours_visible[Math.ceil(teaser_total_equilibration_steps/2)-1]}
+	else {raw_data = fours_hidden[Math.floor(teaser_total_equilibration_steps/2)]
+	}
+	} 
+	if (digit_index==2){
+	if (visible==true){	
+	raw_data = nines_visible[Math.ceil(teaser_total_equilibration_steps/2)-1]}
+	else {raw_data = nines_hidden[Math.floor(teaser_total_equilibration_steps/2)]
+	}
+	}
+	console.log(visible, teaser_total_equilibration_steps)
+var points = [];
   for (var s=0; s<compressed_size*compressed_size; s++){
   	x = s % compressed_size,
         y = Math.floor(s/compressed_size),
 	c = raw_data[s],
 	points.push([x,y,c]) ; 
   }
-  return points }
+  return points}
 
 function teaser_equilibration_step_rbm(){
-        //d3.select('#teaser_main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+Math.floor(teaser_total_equilibration_steps/2)+'.jpg')
-        d3.select('#teaser_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+Math.floor(teaser_total_equilibration_steps/2)+'.jpg')
-        d3.select('#teaser_hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+Math.ceil(teaser_total_equilibration_steps/2)+'.jpg')
 	if (teaser_total_equilibration_steps < max_equilibration_steps){
-	teaser_total_equilibration_steps += 1}
+	teaser_total_equilibration_steps += 1
 	teaser_initialize_NN()
+	}
 }
 
-teaser_time_steps = 2000
+teaser_selected_number = 0
 
-async function teaser_update_drawing() {
-    await new Promise(r => setTimeout(r, 200)); // Wait a short time until data is really loaded.
-//console.log(d3.select('#teaser_compressed_img_id').attr('xlink:href'))    
-points = getwholeImage_new(d3.select('#teaser_compressed_img_id').attr('xlink:href'), 100)	
-hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').attr('xlink:href'), 20)
+function teaser_update_drawing(delay_time, transition_time) {
+points = getwholeImage_N(teaser_selected_number, true) 	
+hidden_points = getwholeImage_N(teaser_selected_number, false)
     if (initialize_flag){
         d3.selectAll(".teaser_weightline1")
-            //.data(points)
 	    .transition()
 	    .duration(100) 
-            .attr('stroke', 'blue')
+            .attr('stroke', c_weight_lines_active)
 	    .attr('opacity', '0.1')
 	    .transition()
-            .duration(teaser_time_steps)
-            .attr('stroke', 'black')
+            .delay(delay_time).duration(transition_time)
+            .attr('stroke', c_weight_lines_inactive)
 	    .attr('opacity', '0.1')
 	
 	d3.selectAll(".teaser_visible_units_circles")
             .data(points)
 	    .transition()
-	    .duration(teaser_time_steps)
+	    .delay(delay_time).duration(transition_time)
             .style("fill", function(d) { return colors[d[2]] });
        
 	d3.select("#Teaser_Text_id").attr("opacity", 0.0)    
    if (teaser_total_equilibration_steps%2 == 1 ){
     	d3.selectAll('.teaser_equilibrationcircles')
-	   	.attr("opacity", 0.1)
-	        .transition().duration(teaser_time_steps)
+	   	.attr("opacity", 0.05)
+	        .transition().delay(delay_time).duration(transition_time)
             	.attr('cx', function(d){return (15 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
-            //.attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
             	.attr('cy', function(d){return (15+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
-            //.attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
 	    }
    else {d3.selectAll('.teaser_equilibrationcircles')
-	        .transition().duration(teaser_time_steps)
-            	//.attr('cx', function(d){return (10 +  neuron_margin_x*points[0][0] - 5*points[0][0] )})
+	        .transition().delay(delay_time).duration(transition_time)
             	.attr('cx', function(d){return (15 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
-            	//.attr('cy', function(d){return (10+neuron_margin_x*points[0][1]+ 5*points[0][0] )})
             	.attr('cy', function(d){return (15+neuron_margin_x*d[1]+ 5*d[0] )})
-	        .transition().duration(teaser_time_steps/2).attr("opacity", 0.0)
+	        .transition().delay(delay_time).duration(transition_time/2).attr("opacity", 0.0)
 	   }
 
         d3.select("#teaser_HiddenContainer").selectAll("circle")
 	.data(hidden_points)   
         .transition()
-        .duration(teaser_time_steps)
+        .delay(delay_time).duration(transition_time)
         .style("fill", function(d) { return hidden_colors[d[2]]})
 	.style("stroke", function(d){return hidden_colors_stroke[d[2]]})    
-       teaser_circle_energy_equilbration.attr("cx", x_scale_eq_plot(teaser_total_equilibration_steps) )
-    		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[teaser_total_equilibration_steps].y))
+       teaser_circle_energy_equilbration        .transition()
+        .delay(delay_time).duration(transition_time)
+		    .attr("cx", x_scale_eq_plot(teaser_total_equilibration_steps-1) )
+    		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[teaser_total_equilibration_steps-1].y))
     		.attr("r", 4)
     }
     else{ // This is for the first run
@@ -246,9 +245,7 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
             .append("circle")
 	    .attr("class", "teaser_equilibrationcircles")
             .attr('cx', function(d){return (15 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
-            //.attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
             .attr('cy', function(d){return (15+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
-            //.attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
             .attr('fill', 'blue')
 	    .attr('r', 8)
             .attr('opacity', '0.1')
@@ -264,7 +261,6 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0] - 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)
         .attr("stroke", "black")
-        //.attr("opacity", 1.0)
         initialize_flag = true
     
        // Add hidden nodes
@@ -276,7 +272,7 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
 	.attr("cx", 5)
 	.attr("cy", 5)    
         .style("fill", function(d) { return hidden_colors[d[2]]})
-	.style("stroke", "blue")    
+	.style("stroke", c_hid_node1_stroke)    
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0]- 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)     
 
@@ -287,8 +283,7 @@ hidden_points = getwholeImage_new(d3.select('#teaser_hidden_compressed_img_id').
 	    .attr("height", 200)
 	    .attr("opacity", 0.0)
 	    .attr("transform", "rotate(18), skewX(18)")
-	    .on("click", function(){if (teaser_total_equilibration_steps%2 == 1 ){
-teaser_equilibration_step_rbm()}})
+	    .on("click", function(){teaser_equilibration_step_rbm()})
      d3.select("#teaser_NNContainer").append("rect")
 	    .attr("x", 240)
 	    .attr("y", -75)
@@ -296,8 +291,7 @@ teaser_equilibration_step_rbm()}})
 	    .attr("height", 200)
 	    .attr("opacity", 0.0)
 	    .attr("transform", "rotate(18), skewX(18)")
-	    .on("click", function(){if (teaser_total_equilibration_steps%2 == 0 ){
-teaser_equilibration_step_rbm()}})
+	    .on("click", function(){teaser_equilibration_step_rbm()})
      d3.select("#teaser_NNContainer").append("text")
 	    .attr("id", "Teaser_Text_id")
 	    .attr("class", "annotation")
@@ -307,15 +301,18 @@ teaser_equilibration_step_rbm()}})
         }
 }
 
-async function teaser_initialize_NN() {
 
-    img = document.getElementById("teaser_compressed_img_id")
-    try {
-    teaser_update_drawing();}
-    catch {return 'error'} // Wait for short time to load img
+function teaser_initialize_NN() {
+	for (idx=0; idx<max_equilibration_steps;idx++){	
+    teaser_update_drawing(800*idx, 800)
+	teaser_total_equilibration_steps += 1}
 }
 
-teaser_initialize_NN()
+function teaser_single_step(){
+	teaser_update_drawing(0, 800)
+}
+
+teaser_update_drawing(0, 0, 0) //init drawing
 
 // Append Energy Curve
 // The number of datapoints for the graph
@@ -354,14 +351,14 @@ energy_plot_frame = teaser_Energy_Plot_Container.append("rect")
 	.attr("height", teaser_Energy_Plot_Container.attr("height")-20)
 	.attr("fill", "none")
 	.attr("stroke-width", strokewidth_eq_plot)
-        .attr("stroke", "grey")
+        .attr("stroke", c_energy_plot_frame)
 	.attr("stroke-opacity", 0.5);
 
 line_energy_2 = teaser_Energy_Plot_Container.append("path")
     .datum(plot_eq_energy_data) // 10. Binds data to the line 
     .attr("class", "plotline") // Assign a class for styling
     .attr("d", plot_eq_energy_line)
-	.style("stroke", "blue")
+	.style("stroke", c_energy_curve)
 	.style("stroke-opacity", 0.3)
 
 teaser_circle_energy_equilbration = teaser_Energy_Plot_Container.append("circle") // Uses the enter().append() method
@@ -369,6 +366,6 @@ teaser_circle_energy_equilbration = teaser_Energy_Plot_Container.append("circle"
     .attr("cx", x_scale_eq_plot(teaser_total_equilibration_steps) )
     .attr("cy", y_scale_eq_plot(plot_eq_energy_data[teaser_total_equilibration_steps].y))
     .attr("r", 4)
-    .attr("fill", "blue")
-    .attr("opacity", 0.8)
+    .attr("fill", c_energy_position_dot)
+    .attr("opacity", 1.0)
 

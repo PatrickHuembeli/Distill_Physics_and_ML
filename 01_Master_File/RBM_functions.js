@@ -34,13 +34,13 @@ var scaling = 50
 
 var margin_x = 10
 
-var colors = ['white', 'black'];
-var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
-var hidden_colors_stroke = ["blue", "red"]
-var nodes_colors = [colors,hidden_colors, colors]
-var stroke_colors = [["black", "black"], hidden_colors_stroke, ["black", "black"]]
-var ypos1 = 50
-var ypos2 = 200
+//var colors = ['white', 'black'];
+//var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
+//var hidden_colors_stroke = ["blue", "red"]
+//var nodes_colors = [colors,hidden_colors, colors]
+//var stroke_colors = [["black", "black"], hidden_colors_stroke, ["black", "black"]]
+//var ypos1 = 50
+//var ypos2 = 200
 
 
 var tooltip = d3.select("body") //This is in body not svg
@@ -68,12 +68,12 @@ function update_architecture(identifier){
 	dictionary["spins_data"+identifier] = spins_data
 	dictionary["spins_new"+identifier] = spins_new
 
-	d3.select("#RBM_sampler"+identifier).append("text")
-			.attr("id", "energy_text"+identifier)
-                        .attr("x", 20)
-                        .attr("y", 20)
-                        .attr("font-size", 20)
-                        .text("Energy: "+energy_fct(spins_new, identifier))
+//	d3.select("#RBM_sampler"+identifier).append("text")
+//			.attr("id", "energy_text"+identifier)
+//                        .attr("x", 20)
+//                        .attr("y", 20)
+//                        .attr("font-size", 20)
+//                        .text("Energy: "+energy_fct(spins_new, identifier))
 
 	d3.select("#RBM_sampler"+identifier).append("svg")
 			.attr("id", "RBM_complete_main_svg"+identifier)
@@ -512,16 +512,8 @@ function add_text_elements(identifier){
 	var weight_slider_index = dictionary["weight_slider_index"+identifier]
 	var bias_slider_index = dictionary["bias_slider_index"+identifier]
 	var connection_graph = dictionary["connection_graph"+identifier]
-	var biases = dictionary["biases"+identifier]
-	//text = document.getElementById("bias_slider_text"+identifier)
-	//text.innerHTML = "Bias: "+bias_slider_index
-	//text = document.getElementById("weight_slider_text"+identifier)
-	//text.innerHTML = "Weight: (" + connection_graph[weight_slider_index][0]+', '+connection_graph[weight_slider_index][1]+')'
-	//value = document.getElementById("bias_slider_value"+identifier)
-	//value.innerHTML =biases[bias_slider_index]
-	//value = document.getElementById("weight_slider_value"+identifier)
-	//value.innerHTML = dictionary["weight_matrix"+identifier][ connection_graph[weight_slider_index][0]][connection_graph[weight_slider_index][1]] 
-	}
+	var biases = dictionary["biases"+identifier]	
+}
 
 
 
@@ -529,58 +521,58 @@ function add_text_elements(identifier){
 // Slider Function
 // -------------------------------------------------------------------------
 
-function slider_bias_fct_RBM(h, identifier) {
-	var spins_new = dictionary["spins_new"+identifier]
-	var bias_slider_index = dictionary["bias_slider_index"+identifier]
-	var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
-	var hidden_vecs = dictionary["hidden_vecs"+identifier]
-       dictionary["biases"+identifier][bias_slider_index] = h
-	value = document.getElementById("bias_slider_value"+identifier)
-	value.innerHTML =  h
-        d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
-	  histogram_data = []  
-	  for (j=0; j<configuration_to_learn.length; j++){
-	  	histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
-	  histo_data_neg = histogram_data
-	  histo_data_pos = histo_pos_phase(histogram_data)
-	  histo_id1 = "histogram_pos_phase"
-	  histo_id2 = "histogram_neg_phase"
-          update_histogram(histo_data_pos, histo_id1, identifier) // pos phase         
-          update_histogram(histo_data_neg, histo_id2, identifier) // neg phase          
-        }
-
-function slider_bias_just_text(h,identifier) {
-	var spins_new = dictionary["spins_new"+identifier]
-	var bias_slider_index = dictionary["bias_slider_index"+identifier]
-        dictionary["biases"+identifier][bias_slider_index] = h
-	value = document.getElementById("bias_slider_value"+identifier)
-	value.innerHTML =  h	
-        d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
-        }
-
-function slider_fct_RBM(h,identifier) {
-	  var connection_graph = dictionary["connection_graph"+identifier]
-	  var weight_matrix = dictionary["weight_matrix"+identifier]
-	  var spins_new = dictionary["spins_new"+identifier]
-	  var weight_slider_index = dictionary["weight_slider_index"+identifier]
-	  var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
-	  var hidden_vecs = dictionary["hidden_vecs"+identifier]
-          idx1 = connection_graph[weight_slider_index][0]	
-          idx2 = connection_graph[weight_slider_index][1]	    
-          weight_matrix[idx1][idx2] = h 
-	  value = document.getElementById("weight_slider_value"+identifier)
-	  value.innerHTML =  h	
-          d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
-	  histogram_data = []  
-	  for (j=0; j<configuration_to_learn.length; j++){
-	  	histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
-	  histo_data_neg = histogram_data
-	  histo_data_pos = histo_pos_phase(histogram_data)
-	  histo_id1 = "histogram_pos_phase"
-	  histo_id2 = "histogram_neg_phase"
-          update_histogram(histo_data_pos, histo_id1, identifier) // pos phase         
-          update_histogram(histo_data_neg, histo_id2, identifier) // neg phase          
-        } 
+//function slider_bias_fct_RBM(h, identifier) {
+//	var spins_new = dictionary["spins_new"+identifier]
+//	var bias_slider_index = dictionary["bias_slider_index"+identifier]
+//	var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
+//	var hidden_vecs = dictionary["hidden_vecs"+identifier]
+//       dictionary["biases"+identifier][bias_slider_index] = h
+//	value = document.getElementById("bias_slider_value"+identifier)
+//	value.innerHTML =  h
+//        d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
+//	  histogram_data = []  
+//	  for (j=0; j<configuration_to_learn.length; j++){
+//	  	histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
+//	  histo_data_neg = histogram_data
+//	  histo_data_pos = histo_pos_phase(histogram_data)
+//	  histo_id1 = "histogram_pos_phase"
+//	  histo_id2 = "histogram_neg_phase"
+//          update_histogram(histo_data_pos, histo_id1, identifier) // pos phase         
+//          update_histogram(histo_data_neg, histo_id2, identifier) // neg phase          
+//        }
+//
+//function slider_bias_just_text(h,identifier) {
+//	var spins_new = dictionary["spins_new"+identifier]
+//	var bias_slider_index = dictionary["bias_slider_index"+identifier]
+//        dictionary["biases"+identifier][bias_slider_index] = h
+//	value = document.getElementById("bias_slider_value"+identifier)
+//	value.innerHTML =  h	
+//        d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
+//        }
+//
+//function slider_fct_RBM(h,identifier) {
+//	  var connection_graph = dictionary["connection_graph"+identifier]
+//	  var weight_matrix = dictionary["weight_matrix"+identifier]
+//	  var spins_new = dictionary["spins_new"+identifier]
+//	  var weight_slider_index = dictionary["weight_slider_index"+identifier]
+//	  var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
+//	  var hidden_vecs = dictionary["hidden_vecs"+identifier]
+//          idx1 = connection_graph[weight_slider_index][0]	
+//          idx2 = connection_graph[weight_slider_index][1]	    
+//          weight_matrix[idx1][idx2] = h 
+//	  value = document.getElementById("weight_slider_value"+identifier)
+//	  value.innerHTML =  h	
+//          d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))    
+//	  histogram_data = []  
+//	  for (j=0; j<configuration_to_learn.length; j++){
+//	  	histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
+//	  histo_data_neg = histogram_data
+//	  histo_data_pos = histo_pos_phase(histogram_data)
+//	  histo_id1 = "histogram_pos_phase"
+//	  histo_id2 = "histogram_neg_phase"
+//          update_histogram(histo_data_pos, histo_id1, identifier) // pos phase         
+//          update_histogram(histo_data_neg, histo_id2, identifier) // neg phase          
+//        } 
 
 
 const add = (a, b) => a + b

@@ -261,10 +261,10 @@ function bias_fct_RBM_new(index, identifier) {
           for (j=0; j<configuration_to_learn.length; j++){
                 histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
 	histo_data_neg = histogram_data
-          histo_data_pos = histo_pos_phase(histogram_data)
-          histo_id1 = "histogram_pos_phase"
+          //histo_data_pos = histo_pos_phase(histogram_data)
+          //histo_id1 = "histogram_pos_phase"
           histo_id2 = "histogram_neg_phase"
-          update_histogram(histo_data_pos, histo_id1, identifier) // pos phase
+          //update_histogram(histo_data_pos, histo_id1, identifier) // pos phase
           update_histogram(histo_data_neg, histo_id2, identifier) // neg phase
         //d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
         }

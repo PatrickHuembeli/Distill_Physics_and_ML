@@ -50,7 +50,7 @@ line.RBM_line {
 }
 
 circle.hidden_circle {
-    fill-opacity: 0.5;
+    fill-opacity: 1.0;
     /*stroke: blue;*/
     stroke-width: 2;
     stroke-opacity: 1.0;
