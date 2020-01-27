@@ -27,10 +27,14 @@ var distance_hidden = 230 // how far are hidden and visible appart
 
 var which_number_index = 0 // defines what number is highlighted (0,1 or 9))
 var teaser_total_equilibration_steps = 1
-var which_equilibration_step_hidden = 1 // how many equil steps have been done.
-var which_equilibration_step_visible = 1 // how many equil steps have been done.
 var max_equilibration_steps = 16
 // ----------------------------------------------------
+
+var colors = [c_vis_node1, c_vis_node2];
+var stroke_colors_visible = [c_vis_node1_stroke, c_vis_node2_stroke]
+var hidden_colors = [c_hid_node1, c_hid_node2];
+var hidden_colors_stroke = [c_hid_node1_stroke, c_hid_node2_stroke]
+var initialize_flag = false
 
 img_nr = [0,1,2,3,4,6]
 number_of_images = [0,1,2] // So far we onl have zero, one, nine
@@ -40,43 +44,6 @@ var teaser_main_image_var = img_nr[0] // define variable globaly
 var folder_path = '/figures/images_for_equilibration/'
 var folder_nr = ['zero/', 'four/', 'nine/']
 var images_visible = ['damaged_zeros_visible_','damaged_fours_visible_','damaged_nines_visible_']
-var images_hidden = ['resized_damaged_zeros_hidden_','resized_damaged_fours_hidden_','resized_damaged_nines_hidden_']
-var image_nr = [0,1,2,3,4,5,6,7,8]
-
-//teaser_svg_imgequil.append('image')
-//    .attr('id', 'teaser_main_img_big_id')
-//    .attr('xlink:href', folder_path+folder_nr[0] + images_visible[0] +0+'.jpg')
-//    .attr("x", 500)
-//    .attr("y", 20)
-//    .attr("width", main_img_width)
-//    .attr("height", main_img_height)
-//    .attr("opacity", 0.0)
-//    
-//teaser_compressed_image = teaser_svg_imgequil.append('image')
-//    .attr('id', 'teaser_compressed_img_id')
-//    .attr('xlink:href', folder_path+folder_nr[0]+'resized_'+images_visible[0]+0+'.jpg')
-//    .attr("x", 50)
-//    .attr("y", 350)
-//    .attr("width", img_width)
-//    .attr("height", img_height)
-//
-//teaser_hidden_compressed_image = teaser_svg_imgequil.append('image')
-//    .attr('id', 'teaser_hidden_compressed_img_id')
-//    .attr('xlink:href', folder_path+folder_nr[0]+images_hidden[0]+0+'.jpg')
-//    .attr("x", 100)
-//    .attr("y", 500)
-//    .attr("width", img_width/2)
-//    .attr("height", img_height/2)
-
-// This lines make the images invisible
-//document.getElementById("teaser_hidden_compressed_img_id").style.display = "none";
-//document.getElementById("teaser_compressed_img_id").style.display = "none";
-
-path_for_pixel =  folder_path+'zero/resized_damaged_zeros_visible_'+teaser_main_image_var+'.jpg'
-
-
-const teaser_every_nth = (arr, nth) => arr.filter((e, i) => i % nth === 0);
-const bigger_than_n = (arr, n) => arr.filter((e, i) => e > 10);
 
 function binarizeArray(array, bigger_than_value){
 	new_array = []
@@ -88,6 +55,7 @@ function binarizeArray(array, bigger_than_value){
 	}
 	return new_array}	
 
+// Add IMAGES to the left
 teaser_images = teaser_svg_imgequil.selectAll()
     .data(number_of_images)
     .enter()
@@ -111,7 +79,7 @@ teaser_images = teaser_svg_imgequil.selectAll()
     		});
 
 
-
+// Define Containers for nodes and Energy Figure
 var hidden_container = teaser_svg_imgequil.append("svg")
     .attr("x", 350)
     .attr("y", 0)
@@ -133,11 +101,6 @@ var teaser_Energy_Plot_Container = teaser_svg_imgequil.append("svg")
     .attr("height", 200)
     .attr('id','teaser_Energy_Container')
 // -----------------------------------------------------------------------------
-var colors = [c_vis_node1, c_vis_node2];
-var stroke_colors_visible = [c_vis_node1_stroke, c_vis_node2_stroke]
-var hidden_colors = [c_hid_node1, c_hid_node2];
-var hidden_colors_stroke = [c_hid_node1_stroke, c_hid_node2_stroke]
-var initialize_flag = false
 
 function getwholeImage_N(digit_index, visible) {
 	if (digit_index==0){
@@ -359,7 +322,7 @@ line_energy_2 = teaser_Energy_Plot_Container.append("path")
     .attr("class", "plotline") // Assign a class for styling
     .attr("d", plot_eq_energy_line)
 	.style("stroke", c_energy_curve)
-	.style("stroke-opacity", 0.3)
+	.style("stroke-opacity", 1.0)
 
 teaser_circle_energy_equilbration = teaser_Energy_Plot_Container.append("circle") // Uses the enter().append() method
     //.attr("class", "dot") // Assign a class for styling

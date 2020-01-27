@@ -1,14 +1,14 @@
 const identity_img_energy = "#image_energies_id"
 
 var margin = {right: 100, left: 50}, // position of slider in color field
-    height = 450
+    height_img_energies = 450
 
 var svg_imgequil = d3.select(identity_img_energy)
     .append("svg")
     .attr('id', 'main_svg_imag_energy')
     .attr('class','figures')
     .attr("width", "100%")
-    .attr("height", height);
+    .attr("height", height_img_energies);
 
 width_energies_img = document.getElementById("image_energies").clientWidth
 
@@ -31,8 +31,8 @@ var UL_FIG_img_nr = [];
 for (var i = 0; i < UL_FIG_number_of_images; i++) {
    noise_level = i%modulo_of_images
    x_init = x_margin_left+Math.floor((width_energies_img-x_margin_left-x_margin_right)*Math.random())
-   y_init = Math.floor(y_margins + Math.random()*(height-2*y_margins))
-   y_end = height-y_margins - Math.floor((height-2*y_margins)/6*noise_level+Math.random()*30)	
+   y_init = Math.floor(y_margins + Math.random()*(height_img_energies-2*y_margins))
+   y_end = height_img_energies-y_margins - Math.floor((height_img_energies-2*y_margins)/6*noise_level+Math.random()*30)	
    UL_FIG_img_nr.push([i,x_init,y_init,y_end ]);
 }
 return UL_FIG_img_nr}
