@@ -1,13 +1,9 @@
 
 // COLORS FIGURE 1 (Temperature, coupling and probability)
-var 	c_histo_bars = "blue" 			//Color of the histogram bars
-	c_hid_node1 = "#CCCCFF" 	// Color1 hidden node
-	c_hid_node2 = "#FFCCCC" 	// Color2 hidden node
-	c_hid_node1_stroke = "blue" 		// Stroke color1 hidden node
-	c_hid_node2_stroke = "red" 		// Storke color2 hidden node
-	c1_2D_slider = "white" 			// Slider background color1 (2 COLORS BECAUSE IT IS A GRADIENT)
-	c2_2D_slider = "grey" 			// Slider background color2
-	c_handle_2D_slider = "orange" 		// SLider Handle color
+var 	c_histo_bars = "#6495ED" 			//Color of the histogram bars
+	c1_2D_slider = "#E6E6FA" 			// Slider background color1 (2 COLORS BECAUSE IT IS A GRADIENT)
+	c2_2D_slider = "#DDA0DD" 			// Slider background color2
+	c_handle_2D_slider = "#DA70D6" 		// SLider Handle color
 	c_stroke_2D_slider = "white" 		// Slider lines and circle stroke color 
         handle_2D_slider_radius = 8
 	c_text_slider = "grey" 			// Slider Text color
@@ -20,6 +16,10 @@ var 	c_vis_node1 = "white" 			// Color for visible nodes
 	c_vis_node1_stroke = "black"
 	c_vis_node2_stroke = "black"
 	c_architecture_connection = "grey"  	// Connections color in architectures
+	c_hid_node1 = "#CCCCFF" 	// Color1 hidden node
+	c_hid_node2 = "#FFCCCC" 	// Color2 hidden node
+	c_hid_node1_stroke = "blue" 		// Stroke color1 hidden node
+	c_hid_node2_stroke = "red" 		// Storke color2 hidden node
 
 	// OTHER STYLE PARAMETERS FOR FIGURE 2
 	var 	connection_stroke_width = 2 	// width of the connection lines

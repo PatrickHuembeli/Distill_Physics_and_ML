@@ -6,6 +6,7 @@ const identity_test = "#test_figure_id"
 var param_width = 100, //width of slider rectangle
     param_height = 100 // heigh
     param_margin_x = 50; // distance of text with values
+    param_margin_y = 10 // y margin 2D slider position
 
 var slider_2D_rx = 10, //Corner radius of histo and slider
     histo_rx = 3;
@@ -13,15 +14,15 @@ var slider_2D_rx = 10, //Corner radius of histo and slider
 // Histogram Variables
 var y0_systems = 13, //y position of parity blobs inside svg
 histo_label_pos_y = 120, // y position of the svg of histo parity labels 
-radius_systems = 5, // Radius of Parity Blobs
-node_distance_parity = 12, // How far are the blobs separated in the parity
-parity_blobs_shift_left = 8 // how much 1st blob is shifted from center of histo bar
+radius_systems = 7, // Radius of Parity Blobs
+node_distance_parity = 17, // How far are the blobs separated in the parity
+parity_blobs_shift_left = 11 // how much 1st blob is shifted from center of histo bar
 twoL_histo_y_pos = 110, //These values are relative to SVG container of histo
 twoL_histo_height = 200, //This scales the whole histogram height
 twoL_margin_x = 20, // margin to the left to have space for Probability text
 twoL_center_x = 200, //center of the histograms wrt svg
-twoL_space = 35, //space between left corner of histo bars
-twoL_histo_width = 25; //size of histo bars
+twoL_space = 45, //space between left corner of histo bars
+twoL_histo_width = 35; //size of histo bars
 
 // Define SVG Histogram
 common_svg = d3.select(identity_test)
@@ -61,8 +62,8 @@ var dragHandler_fig1 = d3.drag()
 	ypos = d3.event.y
 	if (xpos<param_margin_x){xpos = param_margin_x}
 	if (xpos>param_width+param_margin_x){xpos=param_width+param_margin_x} 
-	if (ypos<0){ypos = 0}
-	if (ypos>param_height){ypos=param_height}
+	if (ypos<param_margin_y){ypos = param_margin_y}
+	if (ypos>param_height+param_margin_y){ypos=param_height+param_margin_y}
 	twoD_slider(xpos,ypos)    
         d3.select(this)
             .attr("cx", xpos)
@@ -80,15 +81,12 @@ dragHandler_fig1(d3.select("#param_circle1"));
 d3.select("#two_level_histogram").append("text")
      .text("Probability")
      .attr("class", "general_text")
-    .attr("transform", "translate(90,100),rotate(-90)")
+    .attr("transform", "translate(60,100),rotate(-90)")
     .style("fill", c_text_histogram)
 
     max_scale = 10 //max scale for x_e
     max_log_scale = 10000
-    y_line1 = 50 // y position of 2-level lines
-    y_line2 = 250 
     xplot = 50 // position of plot
-    yplot = y_line1
     width_plot = 200 // Size plot
     hight_plot = 200
     x_2level = 310 // 2level sys position
@@ -107,7 +105,7 @@ d3.select("#SVG_fig1_histo").append("text")
     .style("fill", c_text_histogram)
 updown = [[false,false],[true,false],[false,true],[true,true]]
 for (n=0;n<updown.length;n++){
-draw_parity_systems(twoL_histo_pos_gen(n)+14,y0_systems,updown[n],node_distance_parity,radius_systems,"paritystate"+n)
+draw_parity_systems(twoL_histo_pos_gen(n)+20,y0_systems,updown[n],node_distance_parity,radius_systems,"paritystate"+n)
 }
 
 // FUNCTIONS FOR 2D SLIDER
@@ -131,19 +129,19 @@ var gradient = svg.append("defs")
 gradient.append("stop")
     .attr("offset", "0%")
     .attr("stop-color", c2_2D_slider)
-    .attr("stop-opacity", 0.8);
+    .attr("stop-opacity", 1.0);
 
 gradient.append("stop")
     .attr("offset", "100%")
     .attr("stop-color", c1_2D_slider)
-    .attr("stop-opacity", 0.8);
+    .attr("stop-opacity", 1.0);
 
 
 svg.append("rect")
     .attr("width", param_width)
     .attr("height", param_height)
     .attr("x", param_margin_x)
-    .attr("y",0)
+    .attr("y",param_margin_y)
 	.attr("rx", slider_2D_rx)	
     .style("fill", "url(#gradient)");
 
@@ -152,21 +150,21 @@ svg.append("line")
 	.attr("id", "param_line_y")
 	.attr("x1", param_margin_x)
 	.attr("x2", param_margin_x+param_width)
-	.attr("y1", 50)
-	.attr("y2", 50)
+	.attr("y1", 50+param_margin_y)
+	.attr("y2", 50+param_margin_y)
 	.style("stroke", c_stroke_2D_slider)
 svg.append("line")
 	.attr("id", "param_line_x")
 	.attr("x1", 100)
 	.attr("x2", 100)
-	.attr("y1", 0)
-	.attr("y2", param_height)
+	.attr("y1", param_margin_y)
+	.attr("y2", param_height+param_margin_y)
 	.style("stroke", c_stroke_2D_slider)
 
 svg.append("circle")
 	.attr("id", "param_circle1")
        .attr("cx", 100)
-      .attr("cy", 50)
+      .attr("cy", 50+param_margin_y)
       .attr("r", handle_2D_slider_radius)
       .attr("fill", c_handle_2D_slider)
       .attr("stroke", c_stroke_2D_slider)	

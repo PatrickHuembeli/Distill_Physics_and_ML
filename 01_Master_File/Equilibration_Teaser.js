@@ -303,7 +303,7 @@ energy_plot_frame = teaser_Energy_Plot_Container.append("rect")
 
 line_energy_2 = teaser_Energy_Plot_Container.append("path")
     .datum(plot_eq_energy_data) // 10. Binds data to the line 
-    //.attr("class", "plotline") // Assign a class for styling
+    .attr("class", "plotline") // Assign a class for styling
     .attr("d", plot_eq_energy_line)
 	.style("stroke", c_energy_curve)
 
