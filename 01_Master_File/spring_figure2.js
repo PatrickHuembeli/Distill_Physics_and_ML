@@ -22,14 +22,16 @@ spring_svg2.append("circle")
 	.attr("id", "node1")
 	.attr("cx", center_x_spring)
 	.attr("cy", 20)
-	.attr("r", 20)
-	.attr("fill", node1_color)
+	.attr("r", radius_spring_nodes)
+	.attr("fill", c_hid_node1)
+	.attr("stroke", c_hid_node1_stroke)
 spring_svg2.append("circle")
 	.attr("id", "node2")
 	.attr("cx", center_x_spring)
 	.attr("cy", node_y_length)
-	.attr("r", 20)
-	.attr("fill", node2_color)
+	.attr("r", radius_spring_nodes)
+	.attr("fill", c_hid_node2)
+	.attr("stroke", c_hid_node2_stroke)
 // Define scales for temp and coupling
 var temp_scale = d3.scalePow()
     .exponent(5)
@@ -41,64 +43,64 @@ var couple_scale = d3.scaleLinear()
     .range([-1, 1])
     .clamp(true);   
 
-function draw_bracket_left(x1, y1, x2, y2){
-x_ch_br = 10
-bracket_height = Math.abs(y1-y2)
-center = y1 + bracket_height/2	
- var string = String(x1)+" "+String(y1)+" "+String(x1-x_ch_br)+" "+String(center)+" "+String(x2)+" "+String(y2)
+//function draw_bracket_left(x1, y1, x2, y2){
+//x_ch_br = 10
+//bracket_height = Math.abs(y1-y2)
+//center = y1 + bracket_height/2	
+// var string = String(x1)+" "+String(y1)+" "+String(x1-x_ch_br)+" "+String(center)+" "+String(x2)+" "+String(y2)
+//
+// spring_svg2.append("polyline")
+//         .attr("class", "bracket")
+//         .attr("points", string)
+//         .attr("stroke", bracket_color)
+//         .attr("stroke-width", bracket_stroke)
+//         .attr("stroke-linejoin", "round")
+//         .attr("stroke-linecap", "round")
+//         .attr("fill", "none")
+// }
+//function draw_bracket_right(x1, y1, x2, y2){
+//x_ch_br = 10
+//bracket_height = Math.abs(y1-y2)
+//center = y1 + bracket_height/2	
+// var string = String(x1)+" "+String(y1)+" "+String(x1+x_ch_br)+" "+String(center)+" "+String(x2)+" "+String(y2)
+//
+// spring_svg2.append("polyline")
+//         .attr("class", "bracket")
+//         .attr("points", string)
+//         .attr("stroke", bracket_color)
+//         .attr("stroke-width", bracket_stroke)
+//         .attr("stroke-linejoin", "round")
+//         .attr("stroke-linecap", "round")
+//         .attr("fill", "none")
+//return center	
+// }
 
- spring_svg2.append("polyline")
-         .attr("class", "bracket")
-         .attr("points", string)
-         .attr("stroke", bracket_color)
-         .attr("stroke-width", bracket_stroke)
-         .attr("stroke-linejoin", "round")
-         .attr("stroke-linecap", "round")
-         .attr("fill", "none")
- }
-function draw_bracket_right(x1, y1, x2, y2){
-x_ch_br = 10
-bracket_height = Math.abs(y1-y2)
-center = y1 + bracket_height/2	
- var string = String(x1)+" "+String(y1)+" "+String(x1+x_ch_br)+" "+String(center)+" "+String(x2)+" "+String(y2)
-
- spring_svg2.append("polyline")
-         .attr("class", "bracket")
-         .attr("points", string)
-         .attr("stroke", bracket_color)
-         .attr("stroke-width", bracket_stroke)
-         .attr("stroke-linejoin", "round")
-         .attr("stroke-linecap", "round")
-         .attr("fill", "none")
-return center	
- }
-
-function draw_expectation(x,y, Text_string){
-bracket_color = "black"
-bracket_stroke = 2
-bracket_height = 40	
-bracket_width = 40	
-bracket_margin = 5	
-center = draw_bracket_left(x, y, x, y+bracket_height)
-center = draw_bracket_right(x+bracket_width, y, x+bracket_width, y+bracket_height)
-
-spring_svg2.append("circle")
-	.attr("id", "node1")
-	.attr("cx", x+bracket_margin)
-	.attr("cy", center)
-	.attr("r", 10)
-	.attr("fill", node1_color)
-spring_svg2.append("circle")
-	.attr("id", "node2")
-	.attr("cx", x+bracket_width-bracket_margin)
-	.attr("cy", center)
-	.attr("r", 10)
-	.attr("fill", node2_color)
-spring_svg2.append("text")
-	.text(Text_string)
-	.attr("x", x+bracket_width+6)
-	.attr("y", y+bracket_height)
-}
+//function draw_expectation(x,y, Text_string){
+//bracket_color = "black"
+//bracket_stroke = 2
+//bracket_height = 40	
+//bracket_width = 40	
+//bracket_margin = 5	
+//center = draw_bracket_left(x, y, x, y+bracket_height)
+//center = draw_bracket_right(x+bracket_width, y, x+bracket_width, y+bracket_height)
+//
+//spring_svg2.append("circle")
+//	.attr("id", "node1")
+//	.attr("cx", x+bracket_margin)
+//	.attr("cy", center)
+//	.attr("r", 10)
+//	.attr("fill", node1_color)
+//spring_svg2.append("circle")
+//	.attr("id", "node2")
+//	.attr("cx", x+bracket_width-bracket_margin)
+//	.attr("cy", center)
+//	.attr("r", 10)
+//	.attr("fill", node2_color)
+//spring_svg2.append("text")
+//	.text(Text_string)
+//	.attr("x", x+bracket_width+6)
+//	.attr("y", y+bracket_height)
+//}
 
 //draw_expectation(90, 10, "Model")
 //draw_expectation(90, 100, "Data")
@@ -110,8 +112,8 @@ function draw_arrow_up2(x1, y1, x2, y2){
               .attr("x2",x2)
               .attr("y2",y2)
               .attr("stroke",arrow_color)
-         .attr("stroke-linejoin", "round")
-         .attr("stroke-linecap", "round")
+         .attr("stroke-linejoin", "miter")
+         .attr("stroke-linecap", "miter")
               .attr("stroke-width",arrow_stroke)
 
  var string = String(x1-x_change)+" "+String(y1+y_change)+" "+String(x1)+" "+String(y1    )+" "+String(x1+x_change)+" "+String(y1+y_change)
@@ -120,8 +122,8 @@ function draw_arrow_up2(x1, y1, x2, y2){
          .attr("class", "up_arrow2")
          .attr("points", string)
          .attr("stroke", arrow_color)
-         .attr("stroke-linejoin", "round")
-         .attr("stroke-linecap", "round")
+         .attr("stroke-linejoin", "miter")
+         .attr("stroke-linecap", "miter")
          .attr("stroke-width", arrow_stroke)
          .attr("fill", "none")
  }
@@ -134,8 +136,8 @@ function draw_arrow_up2(x1, y1, x2, y2){
               .attr("x2",x2)
               .attr("y2",y2)
               .attr("stroke",arrow_color)
-         .attr("stroke-linejoin", "round")
-         .attr("stroke-linecap", "round")
+         .attr("stroke-linejoin", "miter")
+         .attr("stroke-linecap", "miter")
               .attr("stroke-width",arrow_stroke)
 
  var string = String(x2-x_change)+" "+String(y2-y_change)+" "+String(x2)+" "+String(y2    )+" "+String(x2+x_change)+" "+String(y2-y_change)
@@ -165,7 +167,7 @@ function Arrow_Sum2(center_x, center_y, max_length, slider_input){
               .attr("y2",y2)
          .attr("stroke", grad_arrow_sum[scale])
              //.attr("stroke","rgb(0,0,0)")
-         .attr("stroke-linejoin", "round")
+         .attr("stroke-linejoin", "miter")
          .attr("stroke-linecap", "round")
               .attr("stroke-width",arrow_sum_stroke)
 
@@ -182,8 +184,8 @@ function Arrow_Sum2(center_x, center_y, max_length, slider_input){
          .attr("points", string)
          .attr("stroke", grad_arrow_sum[scale])
          .attr("stroke-width", arrow_sum_stroke)
-         .attr("stroke-linejoin", "round")
-         .attr("stroke-linecap", "round")
+         .attr("stroke-linejoin", "miter")
+         .attr("stroke-linecap", "miter")
          .attr("fill", "none")
  }
 
@@ -216,10 +218,10 @@ spring_svg2.append('image')
 spring_svg2.append('image')
        .attr('id', 'spring_fig_Fsum2')
        .attr('xlink:href', "figures/F_sum.png")
-       .attr("x", 140)
+       .attr("x", 160)
        .attr("y", 77)
-       .attr("width", 50)
-       .attr("height", 35)
+       .attr("width", 35)
+       .attr("height", 25)
        .attr("opacity", 1.0)
 
 	y_pos_final = draw_spring_ypos2(center_x_spring, y_start, number_of_kinks, spring_descent)
