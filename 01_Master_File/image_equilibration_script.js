@@ -15,9 +15,6 @@ var img_width = 80 // This is the size of the image in the svg
     img_height = 80
     img_margin = 10
 
-var main_img_width = 128
-    main_img_height = 128
-
 var compressed_size = 10,
     canvas_width = 10,
     canvas_height = 20,
@@ -28,8 +25,6 @@ var distance_hidden = 230 // how far are hidden and visible appart
 
 var which_number_index = 0 // defines what number is highlighted (0,1 or 9))
 var total_equilibration_steps = 1
-var which_equilibration_step_hidden = 1 // how many equil steps have been done.
-var which_equilibration_step_visible = 1 // how many equil steps have been done.
 var max_equilibration_steps = 16
 // ----------------------------------------------------
 
@@ -44,49 +39,11 @@ var images_visible = ['damaged_zeros_visible_','damaged_fours_visible_','damaged
 var images_hidden = ['resized_damaged_zeros_hidden_','resized_damaged_fours_hidden_','resized_damaged_nines_hidden_']
 var image_nr = [0,1,2,3,4,5,6,7,8]
 
-//main_image = svg_imgequil.append('image')
-//    .attr('id', 'main_img_big_id')
-//    .attr('xlink:href', folder_path+folder_nr[0] + images_visible[0] +0+'.jpg')
-//    .attr("x", 500)
-//    .attr("y", 20)
-//    .attr("width", main_img_width)
-//    .attr("height", main_img_height)
-    
-compressed_image = svg_imgequil.append('image')
-    .attr('id', 'compressed_img_id')
-    .attr('xlink:href', folder_path+folder_nr[0]+'resized_'+images_visible[0]+0+'.jpg')
-    .attr("x", 50)
-    .attr("y", 350)
-    .attr("width", img_width)
-    .attr("height", img_height)
-
-hidden_compressed_image = svg_imgequil.append('image')
-    .attr('id', 'hidden_compressed_img_id')
-    .attr('xlink:href', folder_path+folder_nr[0]+images_hidden[0]+0+'.jpg')
-    .attr("x", 100)
-    .attr("y", 500)
-    .attr("width", img_width/2)
-    .attr("height", img_height/2)
-
-// This lines make the images invisible
-document.getElementById("hidden_compressed_img_id").style.display = "none";
-document.getElementById("compressed_img_id").style.display = "none";
-
 path_for_pixel =  folder_path+'zero/resized_damaged_zeros_visible_'+main_image_var+'.jpg'
 
 
 const every_nth_main = (arr, nth) => arr.filter((e, i) => i % nth === 0);
 const bigger_than_n_main = (arr, n) => arr.filter((e, i) => e > 10);
-
-function binarizeArray(array, bigger_than_value){
-	new_array = []
-	for (i=0; i<array.length; i++) {
-		if (array[i]>bigger_than_value){
-		new_array.push(1)
-		}
-		else{new_array.push(0)}
-	}
-	return new_array}	
 
 images = svg_imgequil.selectAll()
     .data(number_of_images)
@@ -102,15 +59,10 @@ images = svg_imgequil.selectAll()
                                     .style("opacity", 1.0)})  
     .on("mouseout", function() {d3.select(this)
                                     .style("opacity", 0.5)})  
-    .on("click", function(d){main_image_var = d,
-		//path_vis = folder_path +folder_nr[d]+images_visible[d]+0+'.jpg',
-	        //console.log(path_vis),    
-                //d3.select('#main_img_big_id').attr('xlink:href', path_vis),
-                d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+'resized_'+images_visible[d]+0+'.jpg')
-                d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[d]+images_hidden[d]+0+'.jpg')
-	        which_number_index = d
+    .on("click", function(d, i){main_image_var = d,
 	        total_equilibration_steps = 1
-                initialize_NN()
+	        selected_number = i
+                single_step()
     		});
 
 
@@ -139,42 +91,43 @@ var Energy_Plot_Container = svg_imgequil.append("svg")
 // -----------------------------------------------------------------------------
 // Define global variables
 //var img, context, imgData, raw_data1, raw_data
-var colors = ['white', 'black'];
-var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
-var hidden_colors_stroke = ["blue", "red"]
-var initialize_flag = false
-//context = canvas.node().getContext("2d");
+ var colors = [c_vis_node1, c_vis_node2];
+ var stroke_colors_visible = [c_vis_node1_stroke, c_vis_node2_stroke]
+ var hidden_colors = [c_hid_node1, c_hid_node2];
+ var hidden_colors_stroke = [c_hid_node1_stroke, c_hid_node2_stroke]
+ var initialize_flag = false
 
-
-function getwholeImage_new(url, threshold) {
-  var img = new Image();
-  img.src = url;
-  var canvas = document.createElement('canvas');
-  canvas.width = compressed_size
-  canvas.height = compressed_size
-  var context = canvas.getContext('2d');
-  context.drawImage(img, 0, 0);
-  imgData = context.getImageData(0, 0, canvas.width, canvas.height)
-  data_image_full = context.getImageData(0, 0, canvas.width, canvas.height).data
-  data_image_one_channel = every_nth_main(data_image_full, 4)
-  raw_data = binarizeArray(data_image_one_channel, threshold) // This value gives threshold for black and white	
-  var points = [];
+function getwholeImage_Main(digit_index, visible) {
+        if (digit_index==0){
+        if (visible==true){
+        raw_data = zeros_visible[Math.ceil(total_equilibration_steps/2)-1]}
+        else {raw_data = zeros_hidden[Math.floor(total_equilibration_steps/2)]
+        }
+        }
+        if (digit_index==1){
+        if (visible==true){
+        raw_data = fours_visible[Math.ceil(total_equilibration_steps/2)-1]}
+        else {raw_data = fours_hidden[Math.floor(total_equilibration_steps/2)]
+        }
+        }
+        if (digit_index==2){
+        if (visible==true){
+        raw_data = nines_visible[Math.ceil(total_equilibration_steps/2)-1]}
+        else {raw_data = nines_hidden[Math.floor(total_equilibration_steps/2)]
+        }
+        }
+var points = [];
   for (var s=0; s<compressed_size*compressed_size; s++){
-  	x = s % compressed_size,
+        x = s % compressed_size,
         y = Math.floor(s/compressed_size),
-	c = raw_data[s],
-	points.push([x,y,c]) ; 
+        c = raw_data[s],
+        points.push([x,y,c]) ;
   }
-  return points }
+  return points}
 
 function equilibration_step_rbm(){
-	//console.log('test')
-        //d3.select('#main_img_big_id').attr('xlink:href', folder_path +folder_nr[which_number_index]+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
-        d3.select('#compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+'resized_'+images_visible[which_number_index]+Math.floor(total_equilibration_steps/2)+'.jpg')
-        d3.select('#hidden_compressed_img_id').attr('xlink:href',folder_path +folder_nr[which_number_index]+images_hidden[which_number_index]+Math.ceil(total_equilibration_steps/2)+'.jpg')
 	if (total_equilibration_steps < max_equilibration_steps){
 	total_equilibration_steps += 1
-	console.log(total_equilibration_steps)
 	initialize_NN()}
 }
 
@@ -182,58 +135,56 @@ function equilibration_step_rbm(){
 //var which_number_index = 0 // defines what number is highlighted (0,1 or 9))
 //var which_equilibration_step = 0 // how many equil steps have been done.
 
-async function update_drawing() {
-    await new Promise(r => setTimeout(r, 200)); // Wait a short time until data is really loaded.
-    
-points = getwholeImage_new(d3.select('#compressed_img_id').attr('xlink:href'), 100)	
-hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('xlink:href'), 20)	
+selected_number = 0
+
+function update_drawing(delay_time, transition_time) {
+    points = getwholeImage_Main(selected_number, true)
+    hidden_points = getwholeImage_Main(selected_number, false)
     if (initialize_flag){
         d3.selectAll(".weightline1")
             //.data(points)
 	    .transition()
 	    .duration(100) 
-            .attr('stroke', 'blue')
-	    .attr('opacity', '0.1')
+            .attr('stroke', c_weight_lines_active)
+	    .attr('opacity', opacity_weight)
 	    .transition()
-            .duration(2000)
-            .attr('stroke', 'black')
-	    .attr('opacity', '0.1')
+            .delay(delay_time).duration(transition_time)
+            .attr('stroke', c_weight_lines_inactive)
+	    .attr('opacity', opacity_weight)
 
 	d3.selectAll(".visible_units_circles")
             .data(points)
 	    .transition()
-	    .duration(2000)
+	    .delay(delay_time).duration(transition_time)
             .style("fill", function(d) { return colors[d[2]] })
-        
+       
+       d3.select("#Main_Text_id").attr("opacity", 0.0) 
    if (total_equilibration_steps%2 == 1 ){
-	   console.log("even")
     	d3.selectAll('.equilibrationcircles')
-	        .attr("opacity", 0.1)
-	        .transition().duration(2000)
-            	.attr('cx', function(d){return (10 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
-            //.attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
-            	.attr('cy', function(d){return (10+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
-            //.attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
+	        .attr("opacity", 0.05)
+	        .transition().delay(delay_time).duration(transition_time)
+            	.attr('cx', function(d){return (15 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
+            	.attr('cy', function(d){return (15+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
+	        //.transition().delay(delay_time).duration(transition_time)
 	    }
-   else {console.log("odd")
+   else {
     	d3.selectAll('.equilibrationcircles')
-	        .transition().duration(2000)
-            	//.attr('cx', function(d){return (10 +  neuron_margin_x*points[0][0] - 5*points[0][0] )})
-            	.attr('cx', function(d){return (15 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
-            	//.attr('cy', function(d){return (10+neuron_margin_x*points[0][1]+ 5*points[0][0] )})
+	        .transition().delay(delay_time).duration(transition_time)
+		.attr('cx', function(d){return (15 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
             	.attr('cy', function(d){return (15+neuron_margin_x*d[1]+ 5*d[0] )})
-	        .transition().duration(1000).attr("opacity",0.0)
+		.transition().delay(delay_time).duration(transition_time/2).attr("opacity",0.0)
 	   }
 
         d3.select("#HiddenContainer").selectAll("circle")
 	.data(hidden_points)   
         .transition()
-        .duration(2000)
+        .delay(delay_time).duration(transition_time)
         .style("fill", function(d) { return hidden_colors[d[2]]}) 
         .style("stroke", function(d){return hidden_colors_stroke[d[2]]});
 
-       circle_energy_equilbration.attr("cx", x_scale_eq_plot(total_equilibration_steps) )
-    		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps].y))
+       circle_energy_equilbration.transition().delay(delay_time).duration(transition_time)
+		 .attr("cx", x_scale_eq_plot(total_equilibration_steps-1) )
+    		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps-1].y))
     		.attr("r", 4)
     }
     else{ // This is for the first run
@@ -248,8 +199,8 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
             .attr('x2', function(d){return (15 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
             .attr('y1', function(d){return (15+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
             .attr('y2', function(d){return (15+neuron_margin_x*d[1]+ 5*d[0] )})
-            .attr('stroke', 'black')
-            .attr('opacity', '0.1')
+            .attr('stroke', c_weight_lines_inactive)
+            .attr('opacity', opacity_weight)
     // Lines for lower nodes
     d3.select("#NNContainer").selectAll()
             .data(points)
@@ -257,12 +208,10 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
             .append("circle")
 	    .attr("class", "equilibrationcircles")
             .attr('cx', function(d){return (15 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
-            //.attr('x2', function(d){return (10 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
             .attr('cy', function(d){return (15+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
-            //.attr('y2', function(d){return (10+neuron_margin_x*d[1]+ 5*d[0] )})
-            .attr('fill', 'blue')
+            .attr('fill', c_equi_circle)
 	    .attr('r', 8)
-            .attr('opacity', '0.1')
+            .attr('opacity', opacity_equi_circle)
     // Add visible nodes
    d3.select("#NNContainer").selectAll()
         .data(points)
@@ -274,8 +223,7 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
         .style("fill", function(d) { return colors[d[2]]})
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0] - 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)
-        .attr("stroke", "black")
-        .attr("opacity", 1.0)
+        .attr("stroke", c_vis_node1_stroke)
         initialize_flag = true
     
        // Add hidden nodes
@@ -290,20 +238,44 @@ hidden_points = getwholeImage_new(d3.select('#hidden_compressed_img_id').attr('x
 	.style("stroke", function(d){return hidden_colors_stroke[d[2]]})
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0]- 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)  
-        //.attr("opacity", 0.5) 
-        
+       
+         d3.select("#NNContainer").append("rect")
+                .attr("x", 0)
+                .attr("y", -5)
+                .attr("width", 175)
+                .attr("height", 200)
+                .attr("opacity", 0.0)
+                .attr("transform", "rotate(18), skewX(18)")
+                .on("click", function(){equilibration_step_rbm()})
+         d3.select("#NNContainer").append("rect")
+                .attr("x", 240)
+                .attr("y", -75)
+                .attr("width", 175)
+                .attr("height", 200)
+                .attr("opacity", 0.0)
+                .attr("transform", "rotate(18), skewX(18)")
+                .on("click", function(){equilibration_step_rbm()})
+         d3.select("#NNContainer").append("text")
+                .attr("id", "Main_Text_id")
+                .attr("class", "annotation")
+                .attr("x", 100)
+                .attr("y", 270)
+                .text("(Click on nodes to equilibrate)")
+
         }
 }
 
-async function initialize_NN() {
-
-    img = document.getElementById("compressed_img_id")
-    try {
-    update_drawing();}
-    catch {return 'error'} // Wait for short time to load img
+function initialize_NN() {
+        for (idx=0; idx<max_equilibration_steps;idx++){
+    update_drawing(main_time_steps*idx, main_time_steps)
+    total_equilibration_steps += 1}
 }
 
-initialize_NN()
+function single_step(){
+        update_drawing(0, main_time_steps)
+}
+
+update_drawing(0, 0) //init drawing
 
 // Append Energy Curve
 // The number of datapoints for the graph
@@ -322,7 +294,6 @@ var y_scale_eq_plot = d3.scaleLinear()
     .domain([0, 1]) // input 
     .range([Energy_Plot_Container.attr("height")-2*margin_energy_plot, margin_energy_plot]); // output 
 
-//console.log(height_new)
 // 7. d3's line generator
 var plot_eq_energy_line = d3.line()
     .x(function(d, i) { return x_scale_eq_plot(i); }) // set the x values for the line generator
@@ -332,7 +303,6 @@ var plot_eq_energy_line = d3.line()
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
 var plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2)+0.45 } })
 
-strokewidth_eq_plot = 2
 energy_plot_frame = Energy_Plot_Container.append("rect")
 	.attr("x", 2*strokewidth_eq_plot)
 	.attr("y", 2*strokewidth_eq_plot)
@@ -342,23 +312,19 @@ energy_plot_frame = Energy_Plot_Container.append("rect")
 	.attr("height", Energy_Plot_Container.attr("height")-20)
 	.attr("fill", "none")
 	.attr("stroke-width", strokewidth_eq_plot)
-        .attr("stroke", "grey")
-	.attr("stroke-opacity", 0.5);
+        .attr("stroke", c_energy_plot_frame)
+	.attr("stroke-opacity", opacity_energy_plot_frame);
 
 line_energy_2 = Energy_Plot_Container.append("path")
     .datum(plot_eq_energy_data) // 10. Binds data to the line 
     .attr("class", "plotline") // Assign a class for styling
     .attr("d", plot_eq_energy_line)
-	.style("stroke", "blue")
-	.style("stroke-opacity", 0.3)
+	.style("stroke", c_energy_curve)
 
 circle_energy_equilbration = Energy_Plot_Container.append("circle") // Uses the enter().append() method
     //.attr("class", "dot") // Assign a class for styling
     .attr("cx", x_scale_eq_plot(total_equilibration_steps) )
     .attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps].y))
     .attr("r", 4)
-    .attr("fill", "blue")
-    .attr("opacity", 0.8)
+    .attr("fill", c_energy_position_dot)
 
-console.log(x_scale_eq_plot(1))
-console.log(x_scale_eq_plot(2), y_scale_eq_plot(plot_eq_energy_data[2].y))

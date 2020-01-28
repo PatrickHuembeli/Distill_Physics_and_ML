@@ -25,7 +25,6 @@ var compressed_size = 10,
 
 var distance_hidden = 230 // how far are hidden and visible appart
 
-var which_number_index = 0 // defines what number is highlighted (0,1 or 9))
 var teaser_total_equilibration_steps = 1
 var max_equilibration_steps = 16
 // ----------------------------------------------------
@@ -45,16 +44,6 @@ var folder_path = '/figures/images_for_equilibration/'
 var folder_nr = ['zero/', 'four/', 'nine/']
 var images_visible = ['damaged_zeros_visible_','damaged_fours_visible_','damaged_nines_visible_']
 
-function binarizeArray(array, bigger_than_value){
-	new_array = []
-	for (i=0; i<array.length; i++) {
-		if (array[i]>bigger_than_value){
-		new_array.push(1)
-		}
-		else{new_array.push(0)}
-	}
-	return new_array}	
-
 // Add IMAGES to the left
 teaser_images = teaser_svg_imgequil.selectAll()
     .data(number_of_images)
@@ -71,8 +60,6 @@ teaser_images = teaser_svg_imgequil.selectAll()
     .on("mouseout", function() {d3.select(this)
                                     .style("opacity", 0.5)})  
     .on("click", function(d,i){teaser_main_image_var = d,
-		path_vis = folder_path +folder_nr[d]+images_visible[d]+0+'.jpg',
-	        which_number_index = d
 	        teaser_total_equilibration_steps = 1
 	        teaser_selected_number = i
                 teaser_single_step()
@@ -121,7 +108,6 @@ function getwholeImage_N(digit_index, visible) {
 	else {raw_data = nines_hidden[Math.floor(teaser_total_equilibration_steps/2)]
 	}
 	}
-	console.log(visible, teaser_total_equilibration_steps)
 var points = [];
   for (var s=0; s<compressed_size*compressed_size; s++){
   	x = s % compressed_size,
@@ -199,8 +185,8 @@ hidden_points = getwholeImage_N(teaser_selected_number, false)
             .attr('x2', function(d){return (15 +  neuron_margin_x*d[0] - 5*d[0] + distance_hidden)})
             .attr('y1', function(d){return (15+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
             .attr('y2', function(d){return (15+neuron_margin_x*d[1]+ 5*d[0] )})
-            .attr('stroke', 'black')
-            .attr('opacity', '0.1')
+            .attr('stroke', c_weight_lines_inactive)
+            .attr('opacity', opacity_weight)
     // Lines for lower nodes
     d3.select("#teaser_NNContainer").selectAll()
             .data(points)
@@ -209,9 +195,9 @@ hidden_points = getwholeImage_N(teaser_selected_number, false)
 	    .attr("class", "teaser_equilibrationcircles")
             .attr('cx', function(d){return (15 +  neuron_margin_x*points[45][0] - 5*points[45][0] )})
             .attr('cy', function(d){return (15+neuron_margin_x*points[45][1]+ 5*points[45][0] )})
-            .attr('fill', 'blue')
+            .attr('fill', c_equi_circle)
 	    .attr('r', 8)
-            .attr('opacity', '0.1')
+            .attr('opacity', opacity_equi_circle)
     // Add visible nodes
    d3.select("#teaser_NNContainer").selectAll()
         .data(points)
@@ -223,7 +209,7 @@ hidden_points = getwholeImage_N(teaser_selected_number, false)
         .style("fill", function(d) { return colors[d[2]]})
         .attr("transform", function(d) { return "translate(" +(10 +  neuron_margin_x*d[0] - 5*d[0] )+ " " + (10+neuron_margin_x*d[1]+ 5*d[0] )+ ")"; })
         .attr("r", neuron_radius)
-        .attr("stroke", "black")
+        .attr("stroke", c_vis_node1_stroke)
         initialize_flag = true
     
        // Add hidden nodes
@@ -267,12 +253,12 @@ hidden_points = getwholeImage_N(teaser_selected_number, false)
 
 function teaser_initialize_NN() {
 	for (idx=0; idx<max_equilibration_steps;idx++){	
-    teaser_update_drawing(800*idx, 800)
+    teaser_update_drawing(teaser_time_steps*idx, teaser_time_steps)
 	teaser_total_equilibration_steps += 1}
 }
 
 function teaser_single_step(){
-	teaser_update_drawing(0, 800)
+	teaser_update_drawing(0, teaser_time_steps)
 }
 
 teaser_update_drawing(0, 0, 0) //init drawing
@@ -294,7 +280,6 @@ var y_scale_eq_plot = d3.scaleLinear()
     .domain([0, 1]) // input 
     .range([teaser_Energy_Plot_Container.attr("height")-2*margin_energy_plot, margin_energy_plot]); // output 
 
-//console.log(height_new)
 // 7. d3's line generator
 var plot_eq_energy_line = d3.line()
     .x(function(d, i) { return x_scale_eq_plot(i); }) // set the x values for the line generator
@@ -304,7 +289,6 @@ var plot_eq_energy_line = d3.line()
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
 var plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2)+0.45 } })
 
-strokewidth_eq_plot = 2
 energy_plot_frame = teaser_Energy_Plot_Container.append("rect")
 	.attr("x", 2*strokewidth_eq_plot)
 	.attr("y", 2*strokewidth_eq_plot)
@@ -315,14 +299,13 @@ energy_plot_frame = teaser_Energy_Plot_Container.append("rect")
 	.attr("fill", "none")
 	.attr("stroke-width", strokewidth_eq_plot)
         .attr("stroke", c_energy_plot_frame)
-	.attr("stroke-opacity", 0.5);
+	.attr("stroke-opacity", opacity_energy_plot_frame);
 
 line_energy_2 = teaser_Energy_Plot_Container.append("path")
     .datum(plot_eq_energy_data) // 10. Binds data to the line 
-    .attr("class", "plotline") // Assign a class for styling
+    //.attr("class", "plotline") // Assign a class for styling
     .attr("d", plot_eq_energy_line)
 	.style("stroke", c_energy_curve)
-	.style("stroke-opacity", 1.0)
 
 teaser_circle_energy_equilbration = teaser_Energy_Plot_Container.append("circle") // Uses the enter().append() method
     //.attr("class", "dot") // Assign a class for styling

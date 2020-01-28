@@ -67,12 +67,18 @@ var RBM_node_radius = 10.0
 
 // Figure Equilibration RBM and Teaser
 
-c_energy_position_dot = "blue"
-c_energy_curve = "blue"
-c_energy_plot_frame = "grey"
-teaser_time_steps = 2000 //Time step for single step
+c_energy_position_dot = "blue" // Energy curve position dot color
+c_energy_curve = "blue" // Energy curve line color
+c_energy_plot_frame = "grey" // Energy Plot Frame color
+strokewidth_eq_plot = 2 // Stroke width of frame of Energy curve
+opacity_energy_plot_frame = 0.5
+teaser_time_steps = 800 //Time step for single step for teaser
+main_time_steps = 800 // Time steps for main figure
 c_weight_lines_active = "blue"
 c_weight_lines_inactive = "black"
+c_equi_circle = "blue" // Color of the circles passed back and forth
+opacity_equi_circle = 0.1 // Opacity of same circles
+opacity_weight = 0.1 // Opacity of lines connecting the nodes
 
 
 
