@@ -83,8 +83,8 @@ div.tooltip {
     text-align: center;
     padding: 4px;
     border-radius: 4px;
-    font-weight: bold;
-    color: orange;
+    font-weight: normal;
+    color: grey;
 }
 
 

@@ -9,7 +9,6 @@ var visible_nodes_stroke_colors = [c_vis_node1_stroke, c_vis_node2_stroke]
 
 
 function toggle_colors_architecture(selection, d){
-	console.log(d)
         selection_id = selection.attr('id')
          if(d>3){
 	 	if(selection_id=="hiddenHopfield_figure"+d){
@@ -105,8 +104,6 @@ for (var i = 0; i < total_spins; i++) {
     spins_new.push(Math.floor(Math.random() * 2)) 
     biases.push(-1);	
 }
-
-console.log(spins_new)
 
 nodes_svg = svg_Figure.append("svg")
 visible_svg = svg_Figure.append("svg")

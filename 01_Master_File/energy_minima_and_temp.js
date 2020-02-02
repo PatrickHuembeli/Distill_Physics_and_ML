@@ -29,7 +29,6 @@ var y_scale = d3.scaleLinear()
     .domain([0, 1]) // input 
     .range([height_new, 0]); // output 
 
-//console.log(height_new)
 // 7. d3's line generator
 var plot_line = d3.line()
     .x(function(d, i) { return x_scale(i); }) // set the x values for the line generator
@@ -133,41 +132,12 @@ var x_temp_energy = d3.scalePow()
      .range([0.1, 10.05])
      .clamp(true);
 
-//pos = 15
-//for(i=1;i<20;i++){
-//   pos = convergence_boltzmann(pos, 0.5, 32)
-//	console.log(pos)}
-
-// Function for background
-//function make_temp_gradient(x_bottom, y_bottom, total_height, stepsize, color){
-//	max_opacity = 0.2
-//	for (i=1; i<Math.floor(total_height/stepsize); i++){
-//	  y = y_bottom - i*stepsize
-//	  x = x_bottom	
-//	  append_rect(max_opacity-0.0075*i, x, y, stepsize, 400, color)
-//	}
-//}
-
-// Function for Background
-//function append_rect(opacity, x, y, height, width, color){
-//	svg_2.append("rect")
-//	.attr("id", "temp_rectangle")
-//	.attr("x", x)
-//	.attr("y", y)
-//	.attr("height", height)
-//	.attr("width", width)
-//	.style("fill", color)
-//	.style("opacity", opacity)
-//}
-
-
 // The minimas and maximas are hardcoded
 min1 = 8
 E_max = 16
 min2 = 24
 
 function convergence_hopfield(position){
-	console.log(position, E_max)
 	if(position<E_max){position += Math.sign(min1-position)} 	    //go to min1
 	else {  if(position==E_max){ position+= Math.sign(Math.random()-0.5)} // exception for position = max
 		else{position += Math.sign(min2-position)} // go to min2
@@ -224,11 +194,7 @@ function draw_red_dot(iterator, pos_list){
 	}
 }
 
-
-//intervalID = setInterval(infinite_loop, 2000)
-
 function infinite_loop(){
-	console.log("STAAAAAART")
 	start_convergence(0, 32, true)
 }
 
@@ -244,14 +210,11 @@ function start_convergence(a, number_of_images, boltzmann){
 	for(i=1;i<nr_of_steps_per_loop;i++){
    		pos = convergence_boltzmann(pos, number_of_images)
 		pos_list.push(pos)}
-	//sequence(0, pos_list)
 	draw_red_dot(0, pos_list)
-	//draw_images(0, pos_list)
 }
 
 
 function temp_slider_energy_min(val){
-	console.log(x_temp_energy(val).toPrecision(2))
 	document.getElementById("temperature_slider_energy_minima").innerHTML = x_temp_energy(val).toPrecision(2);
 	d3.selectAll(".energy_min_images").interrupt()
 	d3.selectAll(".dot").interrupt()
@@ -272,8 +235,5 @@ function temp_slider_energy_min(val){
 
 
 function interrupt_convergence(val){
-	console.log("test")
 	d3.selectAll(".dot").interrupt()
-//			.attr("fill", "#ffab00")
-//			.attr("r", 4.0);
 } 

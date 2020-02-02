@@ -256,7 +256,6 @@ function generate_histogram_2_level(){
 		.attr("transform", function(d,i) {
 			  return "translate(" + twoL_histo_pos_gen(i) + ")"; })
 		.attr("width", function(d,i) { return twoL_histo_width ; })
-		//       .attr("width", function(d,i) { console.log(d) ; })
 		.attr("height", function(d) { return d*twoL_histo_height; });
 	  x_pos_histo_axis = twoL_histo_pos_gen(0)-20;
 	  y_pos_histo_axis = twoL_histo_y_pos-twoL_histo_height;

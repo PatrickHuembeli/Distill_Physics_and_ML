@@ -46,25 +46,16 @@ d3.selectAll(".img_energy_fig").data(UL_FIG_img_nr).transition().duration(100)
     .attr("y", function(d){return d[2]})
     .attr("ende", function(d){return d[3]})
     .attr("start", function(d){return d[2]})
-
-//d3.selectAll(".image_path").remove()	
-	
-//for (var i = 0; i < UL_FIG_number_of_images; i++) {
-//	console.log(i)
-//   selected_image_egy = d3.select('#energy_image'+i)
-//   addpath(selected_image_egy, i)}
 }
 
 UL_FIG_number_of_steps = 101 // Number of steps from bottom to top
 function initialize_image_energies(){
-// ADD MANY IMAGES    
 images = svg_imgequil.selectAll()
     .data(UL_FIG_img_nr)
     .enter()
     .append("image")
     .attr("class", "img_energy_fig")	
     .attr('xlink:href', function(d){return '/figures/Images_for_energy_vs_epoch/energy_image_'+d[0]+'.jpg'})
-//     .attr('class', 'mnist_images')
     .attr("x", function(d){return d[1]})
     .attr("y", function(d){return d[2]})
     .attr("ende", function(d){return d[3]})
@@ -80,62 +71,9 @@ images = svg_imgequil.selectAll()
     .on("click", function(d){main_image_var = d[0],
                             main_image.attr('xlink:href', '/figures/Images_for_energy_vs_epoch/energy_image_'+ main_image_var+'.jpg')});
 
-   //// add path to each image
-   //for (var i = 0; i < UL_FIG_number_of_images; i++) {
-   //   selected_image = d3.select('#energy_image'+i)
-   //   addpath(selected_image, i)
-   //  // pathtest = document.getElementById('path'+ i)
-   //} 
-//paths = make_random_paths()
-//return paths
 }
 
-//all_paths = initialize_image_energies()
 initialize_image_energies()
-
-
-//function make_random_paths(){
-//paths = []
-//for (j=0;j<UL_FIG_number_of_images;j++){
-//   single_path = []	
-//   for (i=0;i<UL_FIG_number_of_steps;i++){
-//    pathtest = document.getElementById('path'+j)
-//    pathLength = Math.floor( pathtest.getTotalLength() )
-//    start = pathtest.getPointAtLength(0).y
-//    end = pathtest.getPointAtLength(100).y
-//    prcnt = (i*pathLength) / 100;
-//    pt = pathtest.getPointAtLength(prcnt);
-//      pt.x = Math.round(pt.x);
-//      pt.y = Math.round(pt.y);
-//   single_path.push([pt.x,pt.y])	   
-//   }
-//   paths.push(single_path)	
-//}
-//return paths}
-//
-//// function to add paths to image
-//function addpath(image,  index){
-//    var start_x = image.attr('x')
-//    var start_y = image.attr('y')
-//    var end_y = image.attr("ende")
-//    var data_path = d3.range(11).map(function(){return Math.random()*1}) // defines amount of 'wiggling in x direction'
-//    var x = d3.scaleLinear().domain([0, 10]).range([start_x, width_energies_img]);
-//    var y = d3.scaleLinear().domain([0, 10]).range([start_y, end_y]);
-////     console.log(y)
-//    var line = d3.line()
-//          .x(function(d,i) {if (i != 0){return x(d)}
-//                            else{return x(i)}}    )
-//          .y(function(d,i) {return y(i);})
-//          .curve(d3.curveMonotoneY)
-//    d3.select('#main_svg_imag_energy').append("path")
-//                    .attr("d", line(data_path)) 
-//                    .attr('id', 'path'+ index)
-//		    .attr("class", "image_path")
-//                    .attr("fill", "none")
-//                    .attr("stroke-width", 1)
-//                    .attr("stroke", "rgb(0,0,0,0.3)")
-//                    //.attr('visibility', 'hidden')   
-//}
 
 // Slider Function
 // -------------------------------------------------
@@ -147,9 +85,6 @@ function unlearning_fct_image_energies(h) {
       var start_y = image.attr('y')
       var end_y = image.attr("ende")
       var y = d3.scaleLinear().domain([0, 2*number_of_learning_steps]).range([start_y, end_y]);
-  //change_image_pos(i, h);
-   //xx = all_paths[i][h][0]
-   //yy = all_paths[i][h][1]
     d3.select('#energy_image'+i).transition().delay(h*step_length).duration(step_length)
                     .attr('x', start_x)
                     .attr('y', y(h))   
@@ -159,7 +94,6 @@ function unlearning_fct_image_energies(h) {
 function learning_fct_image_energies(h) {
   good_img_list = [0,6,12,18,24,30,36]	
   for (var i=0; i< good_img_list.length; i++) {
-  //change_image_pos(i, h);
 	 idx = good_img_list[i]
 	image = d3.select('#energy_image'+idx)	  
       var start_x = image.attr('x')

@@ -55,7 +55,6 @@ function update_architecture(identifier){
 	all_connections = make_connection_new(identifier)
 	dictionary["connection_graph"+identifier] = all_connections[0]
 	dictionary["weight_matrix"+identifier] = all_connections[1]
-	// console.log(dictionary["weight_matrix"])	
 	var spins_data = []
 	var spins_new = []
 	var biases = []
@@ -67,13 +66,6 @@ function update_architecture(identifier){
 	dictionary["biases"+identifier] = biases
 	dictionary["spins_data"+identifier] = spins_data
 	dictionary["spins_new"+identifier] = spins_new
-
-//	d3.select("#RBM_sampler"+identifier).append("text")
-//			.attr("id", "energy_text"+identifier)
-//                        .attr("x", 20)
-//                        .attr("y", 20)
-//                        .attr("font-size", 20)
-//                        .text("Energy: "+energy_fct(spins_new, identifier))
 
 	d3.select("#RBM_sampler"+identifier).append("svg")
 			.attr("id", "RBM_complete_main_svg"+identifier)
@@ -100,11 +92,8 @@ histogram_svg.selectAll("rect")
 	.attr("id", function(d,i){return histo_id+identifier+i})
 	.attr("x", histo_x_pos) // margin left
 	.attr("y", function(d,i){return histo_pos_gen(i)}) // margin left
-	//.attr("transform", function(d,i) {
-	//	  return "translate(" + histo_pos_gen(i) + ")"; })
 	.attr("rx", histo_rx_RBM)
 	.attr("width", function(d,i) { return d*histo_height ; })
-	//       .attr("width", function(d,i) { console.log(d) ; })
 	.attr("height", function(d) { return histo_width; });
   y_pos_histo_axis = histo_pos_gen(0)-20;
   x_pos_histo_axis = histo_y_pos;
@@ -129,7 +118,6 @@ function make_connection_new(identifier){
 	var total_spins = dictionary["total_spins"+identifier]
 	var total_nodes = total_spins
 	stringer = "hidden_check"+identifier
-	//console.log("hidden_check"+identifier, stringer)
 	if (hidden_active== false){
 		total_nodes = total_spins - h_units
 	}
@@ -170,7 +158,6 @@ return [connection_graph, weight_matrix]};
 function update_select(){
 	hidden_activate = sel_hid_active.property('value')
 	restricted_activate = sel_rest_active.property("value")
-	//console.log(hidden_activate)
 };
 
 // -----------------------------------------------------------------------------
@@ -226,110 +213,9 @@ function line_pos_gen_y2(d,identifier){
 	return Math.round(y_2)
 };
 
-//console.log(weight_matrix)
-// =============================================================================
-// Genearte the RBM Graph
-// =============================================================================
-
-//function generate_RBM_nodes(identifier){
-//// Define tooltips for hovering information
-//	
-//var colors_init = ['white','white', 'hsl(240, 100%, 84%)']
-//var color_init_stroke = ['black','black', 'blue']	
-////var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
-////var hidden_colors_stroke = ["blue", "red"]
-//    // -------------------------------------------------------------------------
-//    // Draw nodes for the RBM 
-//    // -------------------------------------------------------------------------
-//    d3.select("#RBM_complete_main_svg"+identifier).selectAll("circle")
-//        .data(dictionary["spins_data"+identifier])
-//        .enter()
-//        .append("circle")
-//        .style("fill", function(d,i){return colors_init[d]})
-//	.attr("stroke", function(d,i){return color_init_stroke[d]})
-//        //.attr('class', 'hidden_circle') // class is needed for style sheet
-//        .attr("cx", function(d,i){return pos_gen_x(d,i,identifier)})
-//        .attr("cy", function(d,i){return pos_gen_y(d,i,identifier)}) 
-//        .attr("r", RBM_node_radius)
-//        .attr('id', "hidden")
-//    
-//        .on("click", function(d) {var selection = d3.select(this)
-//			   	  var spins_new = dictionary["spins_new"+identifier]
-//                                    spins_new = toggle_colors(selection, spins_new, d)
-//                                    d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
-//                                    tooltip.text('h' + d +' = '+ spins_new[d]) 
-//				    dictionary["spins_new"+identifier] = spins_new;
-//       }) 
-//   
-//        .on("mouseover", function(d) {
-//       	    var spins_new = dictionary["spins_new"+identifier]
-//                 tooltip.text('h' + d +' = '+ spins_new[d])   
-//                        .style("visibility", "visible")
-//      })
-//  
-//       .on("mousemove", function() {
-//         tooltip.style("top", (event.pageY+10)+ "px") // event.pageX is mouse position
-//                .style("left", event.pageX+10 + "px");
-//      })
-//  
-//      .on("mouseout", function() {
-//        return tooltip.style("visibility", "hidden");
-//      })
-//var dragHandler = d3.drag()	
-//   .on("drag", function () {
-//         xpos = d3.event.x
-//         ypos = d3.event.y
-//         console.log(xpos,ypos, function(d,i){return d, i})
-//         d3.select(this)
-//             .attr("cx", xpos)
-//             .attr("cy", ypos);})
-//	dragHandler(d3.select("#RBM_complete_main_svg"+identifier).selectAll("circle"))
-//}
-//    // -------------------------------------------------------------------------
-//    // Draw bias rectangles for the RBM 
-//    // -------------------------------------------------------------------------
-//function generate_RBM_biases(identifier){   
-//    d3.select("#RBM_complete_main_svg"+identifier).selectAll()
-//        .data(dictionary["spins_data"+identifier])
-//        .enter()	
-//        .append("rect")
-//        .attr("x",function(d,i){return pos_gen_x_rect(d,i,identifier)})
-//        .attr("y", function(d,i){return pos_gen_y(d,i,identifier)})
-//        .attr("width", 10)
-//        .attr("height", 20)
-//        .style("fill", "red")
-//    
-//      .on("click", function(d){
-//               line = d3.select(this)
-//                   bias_idx = d
-//                   arg = dictionary["biases"+identifier][bias_idx]
-//	           document.getElementById("bias_slider_id"+identifier).value = arg
-//               //text = d3.select("#biastext")
-//               //text.text(function(){return "Bias: "+bias_idx })
-//	      text = document.getElementById("bias_slider_text"+identifier)
-//	       text.innerHTML = "Bias: "+ bias_idx
-//	      value = document.getElementById("bias_slider_value"+identifier)
-//	      value.innerHTML =  arg	
-//               dictionary["bias_slider_index"+identifier] = bias_idx
-//      })	
-//   
-//        .on("mouseover", function(d) {
-//                 tooltip.text('bias' + d +' = '+ dictionary["biases"+identifier][d])   
-//                        .style("visibility", "visible")
-//      })
-//  
-//       .on("mousemove", function() {
-//         tooltip.style("top", (event.pageY+10)+ "px") // event.pageX is mouse position
-//                .style("left", event.pageX+10 + "px");
-//      })
-//  
-//      .on("mouseout", function() {
-//        return tooltip.style("visibility", "hidden");
-//      })
-//}
-    // -------------------------------------------------------------------------
-    // Draw lines for the RBM 
-    // -------------------------------------------------------------------------
+ // -------------------------------------------------------------------------
+ // Draw lines for the RBM 
+ // -------------------------------------------------------------------------
 function generate_RBM_connections(identifier){ 
 	  histo_id1 = "histogram_data_pos_phase"
    d3.select("#RBM_sampler"+identifier).selectAll()
@@ -337,7 +223,6 @@ function generate_RBM_connections(identifier){
         .enter()
         .append("line")
         .attr("id", function(d){return 'weight_h'+identifier + d[0] + '' + d[1]})
-    //     .attr("class", "RBM_line")
         .attr("stroke","rgb(0,0,0,0.5)") //These attr are defined by class
         .attr("stroke-width", 4.0)
         .attr("x1", function(d){return line_pos_gen_x1(d,identifier)})
@@ -454,7 +339,6 @@ function all_configs_given_v(single_visible, hidden_permutations){
 // =============================================================================
 function prob_of_v(single_visible, hidden_permutations, identifier){
     var bm_permutations = dictionary["bm_permutations"+identifier]
-	//console.log(bm_permutations)
     Z = part_fct(bm_permutations, identifier)
     boltzmann_factor = 0
     all_conf = all_configs_given_v(single_visible, hidden_permutations)
@@ -471,7 +355,6 @@ function prob_of_config(config, identifier){
     boltzmann_factor = 0
         energy_v = energy_fct(config, identifier) 
         boltzmann_factor += Math.exp(-energy_v)
-	//console.log(energy_v, config)
     return (boltzmann_factor/Z)    
 }
 

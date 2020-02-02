@@ -10,6 +10,13 @@ dictionary["hidden_vecs"+IDENTIFIERXOR] = permutations_of_vector(dictionary["h_u
 dictionary["bm_permutations"+IDENTIFIERXOR] = permutations_of_vector(dictionary["total_spins"+IDENTIFIERXOR])
 // Add the space where it draws the RBM
 
+// Define Mouseover tooltip style
+c_text_tooltip = "grey"
+c_background_tooltip = "#F1F1F1"
+tooltip.style("color", c_text_tooltip)
+	.style("background-color", c_background_tooltip)
+	.style("font-size", "12px")
+
 d3.select(RBM_complete_XOR)
     .append("svg")
     .attr("id", "CD_algo_main_svg")
@@ -173,30 +180,22 @@ function change_bias_value(y, index){
 
  var dragHandler = d3.drag()
     .on("drag", function () {
- //         xpos = d3.event.x
     	  index = d3.select(this).attr("index")
           ypos = d3.event.y
 	  out = change_bias_value(ypos, index)
-	    //console.log(out)
 	    ypos = out[0]
 	    bias_value = out[1]
           d3.select(this).attr("cy", ypos);
        dictionary["biases"+identifier][index] = bias_value
 	    if (index<2){
    line_w = d3.select("#weight"+index)
-//	   line_w.attr("x1", xpos)
 	   line_w.attr("y1", ypos)
 	    }
             else { 
    line_w = d3.select("#weight0")
-//	   line_w.attr("x2", xpos)
 	   line_w.attr("y2", ypos+RBM_node_radius)
    line_w = d3.select("#weight1")
-//	   line_w.attr("x2", xpos)
 	   line_w.attr("y2", ypos+RBM_node_radius)}
-//              .attr("cx", xpos)
-//	  bias_value = -2*(ypos/svg_RBM_height - 1/2).toPrecision(2)  
-//		d3.select("#biastext"+index).text(function(){return "bias: "+bias_value})    
 		    
     })
 	
@@ -215,6 +214,7 @@ function change_bias_value(y, index){
  }
 
 function generate_RBM_connections_new(identifier){
+	weight_text = [ "W₁", "W₂" ]	
            histo_id1 = "histogram_data_pos_phase"
    d3.select("#RBM_complete_main_svg"+identifier).selectAll("line")
          .data(dictionary["connection_graph"+identifier])
@@ -222,7 +222,6 @@ function generate_RBM_connections_new(identifier){
          .append("line")
          .attr("id", function(d, i){return 'weight'+i})
 	.attr("index", function(d,i){return i})
-     //     .attr("class", "RBM_line")
          .attr("stroke",c_rbm_connection) //These attr are defined by class
          .attr("stroke-width", rbm_connection_stroke)
 	 .attr("opacity", rbm_connection_opacity)
@@ -231,7 +230,7 @@ function generate_RBM_connections_new(identifier){
          .attr("x2", function(d){return line_pos_gen_x2(d,identifier)})
          .attr("y2", function(d){return line_pos_gen_y2(d,identifier)})
          .on("mouseover", function(d,i) {
-             tooltip.text('W' + i +' Strength: '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
+             tooltip.text(weight_text[i] +' = '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
                      .style("visibility", "visible")
           d3.select(this).attr("stroke", c_mouseover_rbm_connection).attr("opacity", rbm_connection_mousover_opacity)           ;
        })
@@ -252,19 +251,12 @@ function bias_fct_RBM_new(index, identifier) {
         var bias_slider_index = index
         var configuration_to_learn = dictionary["configuration_to_learn" + identifier]
         var hidden_vecs = dictionary["hidden_vecs"+identifier]
-        //value = document.getElementById("bias_slider_value"+identifier)
-        //value.innerHTML =  h
-        //d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
           histogram_data = []
           for (j=0; j<configuration_to_learn.length; j++){
                 histogram_data.push(prob_of_config(configuration_to_learn[j], identifier))}
 	histo_data_neg = histogram_data
-          //histo_data_pos = histo_pos_phase(histogram_data)
-          //histo_id1 = "histogram_pos_phase"
           histo_id2 = "histogram_neg_phase"
-          //update_histogram(histo_data_pos, histo_id1, identifier) // pos phase
           update_histogram(histo_data_neg, histo_id2, identifier) // neg phase
-        //d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
         }
 
 function slider_bias_just_text_new(h,index,identifier) {
@@ -273,7 +265,6 @@ function slider_bias_just_text_new(h,index,identifier) {
         dictionary["biases"+identifier][bias_slider_index] = h
         value = document.getElementById("bias_slider_value"+identifier)
         value.innerHTML =  h
-        //d3.select("#energy_text"+identifier).text("Energy: "+energy_fct(spins_new, identifier))
         }
 
 function generate_RBM_biases_new(identifier){
@@ -284,6 +275,8 @@ function generate_RBM_biases_new(identifier){
          .attr("x",10)
          .attr("y", function(d,i){return 200+i*20})
 	.text("bias: 0")
+	.attr("class", "general_text")
+	.attr("fill", c_text_slider)
 	.attr("id", function(d,i){return "biastext"+i})
  }	
 

@@ -86,7 +86,6 @@ circle_energy = svg.selectAll(".dot_energy_img")
    
 for (j=0;j<points_data.length;j++){
 	element = d3.select("#"+"noisy_images"+points_data[j])
-	console.log(element)
 	element.style("fill", c_data_dots)
 	element.attr("r", radius_data)
 
@@ -101,7 +100,6 @@ unlearn_adjust = 0.06
 function learn_phase(){
 	update1 = dataset[8].y - learn_adjust
 	update2 = dataset[24].y - learn_adjust
-	console.log(update2)
 	if (update1>0.02){
 	dataset[8].y = update1}
 	if (update2>0.02){
@@ -176,6 +174,4 @@ function find_local_minima(){
 	return minima_idx
 }
 
-console.log(points_data[0])
 tester = find_local_minima()
-console.log(tester)
