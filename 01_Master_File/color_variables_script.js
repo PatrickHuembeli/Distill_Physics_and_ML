@@ -109,6 +109,10 @@ c_visible_node2_stroke = "black"
 c_histo_bars_RBM = "#71a6d2" // Color histo bars
 histo_rx_RBM = 2 // Radius of corners of histo bars 
 
+c_text_tooltip = "grey" // mouseover tooltip text color (when mouse goes over weight lines)
+c_background_tooltip = "#F1F1F1" // mouseover tooltip  background color
+
+
 // ======================================================
 // Figure Equilibration RBM and Teaser
 // =============================================================
