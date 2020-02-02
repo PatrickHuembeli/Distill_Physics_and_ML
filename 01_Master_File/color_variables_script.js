@@ -27,13 +27,16 @@ var 	c_vis_node1 = "white" 			// Color for visible nodes
 	c_hid_node1_stroke = "black" 		// Stroke color1 hidden node
 	c_hid_node2_stroke = "black" 		// Storke color2 hidden node
 
+	c_unused_nodes =  "#D6D6D6"
+	unused_nodes_stroke =  "black"
+
 	// OTHER STYLE PARAMETERS FOR FIGURE 2
 	var 	connection_stroke_width = 1.5 	// width of the connection lines
 		nodes_stroke_width = 0.5 		// Stroke width of the nodes
 		nodes_radius = 12 		// Radius of the RBM nodes
 
 // COLORS FIGURE 3 (Temp dependent convergence)
-var c_energy_line = "#d6d6d6"  // Color of energy line (Also for Figure 4)
+var c_energy_line = "#d6d6d6"  // Color of energy line
     c_inactive_dot = "#faa869" // Color of inactive dots
     c_active_dot = "#cf1111" // Color of active dot
     c_stroke_dot_inactive = "#fff"
@@ -68,12 +71,47 @@ radius_spring_nodes = 19 // radius of nodes (circles) in spring figure
 var gradient_steps_spring_fig = 255 //We need this many values if we generate the gradient list!
 var grad_arrow_sum = ["#EB70E5", "#EB70E5", "#EB71E5", "#EB71E5", "#EB72E5", "#EB72E5", "#EB73E5", "#EB73E5", "#EB74E5", "#EB75E5    ", "#EB75E6", "#EB76E6", "#EB76E6", "#EC77E6", "#EC77E6", "#EC78E6", "#EC79E6", "#EC79E6", "#EC7AE6", "#EC7AE6", "#EC7BE7", "#EC7    BE7", "#EC7CE7", "#EC7CE7", "#EC7DE7", "#EC7EE7", "#ED7EE7", "#ED7FE7", "#ED7FE7", "#ED80E7", "#ED80E8", "#ED81E8", "#ED82E8", "#    ED82E8", "#ED83E8", "#ED83E8", "#ED84E8", "#ED84E8", "#ED85E8", "#EE85E8", "#EE86E9", "#EE87E9", "#EE87E9", "#EE88E9", "#EE88E9",     "#EE89E9", "#EE89E9", "#EE8AE9", "#EE8BE9", "#EE8BEA", "#EE8CEA", "#EF8CEA", "#EF8DEA", "#EF8DEA", "#EF8EEA", "#EF8EEA", "#EF8FE    A", "#EF90EA", "#EF90EA", "#EF91EB", "#EF91EB", "#EF92EB", "#EF92EB", "#EF93EB", "#F094EB", "#F094EB", "#F095EB", "#F095EB", "#F0    96EB", "#F096EC", "#F097EC", "#F097EC", "#F098EC", "#F099EC", "#F099EC", "#F09AEC", "#F09AEC", "#F19BEC", "#F19BEC", "#F19CED", "    #F19DED", "#F19DED", "#F19EED", "#F19EED", "#F19FED", "#F19FED", "#F1A0ED", "#F1A0ED", "#F1A1EE", "#F2A2EE", "#F2A2EE", "#F2A3EE"    , "#F2A3EE", "#F2A4EE", "#F2A4EE", "#F2A5EE", "#F2A6EE", "#F2A6EE", "#F2A7EF", "#F2A7EF", "#F2A8EF", "#F2A8EF", "#F3A9EF", "#F3A9    EF", "#F3AAEF", "#F3ABEF", "#F3ABEF", "#F3ACEF", "#F3ACF0", "#F3ADF0", "#F3ADF0", "#F3AEF0", "#F3AFF0", "#F3AFF0", "#F3B0F0", "#F    4B0F0", "#F4B1F0", "#F4B1F0", "#F4B2F1", "#F4B2F1", "#F4B3F1", "#F4B4F1", "#F4B4F1", "#F4B5F1", "#F4B5F1", "#F4B6F1", "#F4B6F1",     "#F5B7F2", "#F5B8F2", "#F5B8F2", "#F5B9F2", "#F5B9F2", "#F5BAF2", "#F5BAF2", "#F5BBF2", "#F5BCF2", "#F5BCF2", "#F5BDF3", "#F5BDF3    ", "#F5BEF3", "#F6BEF3", "#F6BFF3", "#F6BFF3", "#F6C0F3", "#F6C1F3", "#F6C1F3", "#F6C2F3", "#F6C2F4", "#F6C3F4", "#F6C3F4", "#F6C    4F4", "#F6C5F4", "#F6C5F4", "#F7C6F4", "#F7C6F4", "#F7C7F4", "#F7C7F4", "#F7C8F5", "#F7C8F5", "#F7C9F5", "#F7CAF5", "#F7CAF5", "#    F7CBF5", "#F7CBF5", "#F7CCF5", "#F7CCF5", "#F8CDF5", "#F8CEF6", "#F8CEF6", "#F8CFF6", "#F8CFF6", "#F8D0F6", "#F8D0F6", "#F8D1F6",     "#F8D1F6", "#F8D2F6", "#F8D3F7", "#F8D3F7", "#F9D4F7", "#F9D4F7", "#F9D5F7", "#F9D5F7", "#F9D6F7", "#F9D7F7", "#F9D7F7", "#F9D8F    7", "#F9D8F8", "#F9D9F8", "#F9D9F8", "#F9DAF8", "#F9DAF8", "#FADBF8", "#FADCF8", "#FADCF8", "#FADDF8", "#FADDF8", "#FADEF9", "#FA    DEF9", "#FADFF9", "#FAE0F9", "#FAE0F9", "#FAE1F9", "#FAE1F9", "#FAE2F9", "#FBE2F9", "#FBE3F9", "#FBE3FA", "#FBE4FA", "#FBE5FA", "    #FBE5FA", "#FBE6FA", "#FBE6FA", "#FBE7FA", "#FBE7FA", "#FBE8FA", "#FBE9FB", "#FCE9FB", "#FCEAFB", "#FCEAFB", "#FCEBFB", "#FCEBFB"    , "#FCECFB", "#FCECFB", "#FCEDFB", "#FCEEFB", "#FCEEFC", "#FCEFFC", "#FCEFFC", "#FCF0FC", "#FDF0FC", "#FDF1FC", "#FDF2FC", "#FDF2    FC", "#FDF3FC", "#FDF3FC", "#FDF4FD", "#FDF4FD", "#FDF5FD", "#FDF5FD", "#FDF6FD", "#FDF7FD", "#FDF7FD", "#FEF8FD", "#FEF8FD", "#F    EF9FD", "#FEF9FE", "#FEFAFE", "#FEFBFE", "#FEFBFE", "#FEFCFE", "#FEFCFE", "#FEFDFE", "#FEFDFE", "#FEFEFE", "#FFFFFF"]
 
+// UNLEARNING FIGURE
+// =======================================
+c_energy_landscape_line = "#d6d6d6"
+energy_landscape_line_stroke = 5
+radius_non_data = 5 // Radius of points that are not trained
+c_non_data_dots = "grey"
+radius_data = 6 // Radius of points that are trained
+c_data_dots = "blue"
 
 
 // Trainable RBM Figure
-var RBM_node_radius = 10.0
+// ======================================
+var RBM_node_radius = 10.0 // Radius of nodes of RBM
+magnet_field_radius = 35 // Radius of bias background circle
+c1_hidden_bias = "#eb99eb" // Hidden Bias top color
+c2_hidden_bias = "white" // Hidden bias intermediate color
+c3_hidden_bias = "#9b9beb" // Hidden bias bottom color
+c1_visible_bias = "#6B6B6B"
+c2_visible_bias = "#AEAEAE"
+c3_visible_bias = "#F1F1F1"
+c_bias_field_stroke = "grey" // Color of stroke around bias circles
 
+c_rbm_connection = "black" // Color RBM connections
+rbm_connection_stroke = 4 // Stroke RBM connection
+rbm_connection_opacity = 0.4 // Opacity RBM Connection
+c_mouseover_rbm_connection = "black" // Color RBM if mouseover
+rbm_connection_mousover_opacity = 0.8 // OPacity if mouseover
+	// 2D slider exact same colors as in Figure 1 (parity vs temperatur))
+c_hidden_node = "grey" 
+c_hidden_node_stroke = "black" 
+c_visible_node1 = "white"
+c_visible_node1_stroke = "black"
+c_visible_node2 = "white"
+c_visible_node2_stroke = "black"
+
+c_histo_bars_RBM = "#71a6d2" // Color histo bars
+histo_rx_RBM = 2 // Radius of corners of histo bars 
+
+// ======================================================
 // Figure Equilibration RBM and Teaser
+// =============================================================
 
 c_energy_position_dot = "#71a6d2" // Energy curve position dot color
 c_energy_curve = "#d6d6d6" // Energy curve line color

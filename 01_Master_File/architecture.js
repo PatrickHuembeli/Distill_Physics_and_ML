@@ -279,8 +279,8 @@ if (hidden_active==false){
 for (j=v_units; j<v_units+h_units; j++){
 	d3.select("#hidden"+Figure_id+j)
 	.attr("class", "unused_circle")
-	.style("fill", "rgb(0,0,0,0.1)")
-	.style("stroke", "rgb(0,0,0,0.5)")
+	.style("fill", c_unused_nodes)
+	.style("stroke", unused_nodes_stroke)
 	.style("stroke-dasharray","5,5")
 	.on("click", function(d,i){return})
 }

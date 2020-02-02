@@ -60,23 +60,13 @@ image_for_node = svg_img.append('image')
     .attr("width", 50)
     .attr("height", 50)
 
-// 3. Call the x axis in a group tag
-//svg.append("g")
-//    .attr("class", "x axis")
-//    .attr("transform", "translate(0," + height + ")")
-//    .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
-
-// 4. Call the y axis in a group tag
-//svg.append("g")
-//    .attr("class", "y axis")
-//    .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
-
 // 9. Append the path, bind the data, and call the line generator 
 line_energy = svg.append("path")
     .datum(dataset) // 10. Binds data to the line 
     .attr("class", "plotline") // Assign a class for styling 
     .attr("d", line)
-	.style("stroke", "blue")
+	.style("stroke", c_energy_landscape_line)
+	.style("stroke-width", energy_landscape_line_stroke)
 	.style("fill", "none" ); // 11. Calls the line generator 
 
 // 12. Appends a circle for each datapoint 
@@ -86,7 +76,8 @@ circle_energy = svg.selectAll(".dot_energy_img")
     .attr("class", "dot_energy_img") // Assign a class for styling
     .attr("cx", function(d, i) { return xScale(i) })
     .attr("cy", function(d) { return yScale(d.y) })
-    .attr("r", 5)
+    .attr("r", radius_non_data)
+    .style("fill", c_non_data_dots)
     .attr("id", function(d,i){return "noisy_images"+i})
 	.on("click", function(d,i){
 		    		image_for_node.attr('xlink:href', '/figures/images_with_gaussian_noise/noisy_image_'+i+'.jpg')	})
@@ -96,8 +87,8 @@ circle_energy = svg.selectAll(".dot_energy_img")
 for (j=0;j<points_data.length;j++){
 	element = d3.select("#"+"noisy_images"+points_data[j])
 	console.log(element)
-	element.style("fill", "red")
-	element.attr("r", 5)
+	element.style("fill", c_data_dots)
+	element.attr("r", radius_data)
 
 }
 neighbour1 = [5,6,7,8,9,10,11]
@@ -107,21 +98,6 @@ unlearning_steps = 0
 learn_adjust = 0.1
 unlearn_adjust = 0.06
 
-//function learn_phase(){
-//	if (dataset[8].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[3])/2)>0.001){ 
-//	// This if loop checks that the red dot never goes outside the image
-//		for (j=0; j<neighbour1.length;j++){
-//			dataset_update1 =  dataset[neighbour1[j]].y- learn_adjust*Math.exp(-Math.abs(8-neighbour1[j])/2)//*Math.exp(-learning_steps/4)
-//			console.log(dataset_update1, neighbour1[3])
-//			dataset[neighbour1[j]].y = dataset_update1}}
-//	if (dataset[24].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[3])/2)>0){ 
-//	for (j=0; j<neighbour2.length;j++){
-//		dataset_update2 =  dataset[neighbour2[j]].y- learn_adjust*Math.exp(-Math.abs(24-neighbour2[j])/2)//*Math.exp(-learning_steps/4)
-//		dataset[neighbour2[j]].y = dataset_update2}}	
-//	update_line()
-//	learning_steps +=1
-//	learning_fct_image_energies((learning_steps-unlearning_steps)*10)
-//}
 function learn_phase(){
 	update1 = dataset[8].y - learn_adjust
 	update2 = dataset[24].y - learn_adjust

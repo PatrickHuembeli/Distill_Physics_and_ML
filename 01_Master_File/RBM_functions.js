@@ -95,13 +95,14 @@ var histogram_svg = d3.select("#RBM_sampler_histo"+identifier).append("g")
 histogram_svg.selectAll("rect")
 	.data(histogram_data)
 	.enter().append("rect")
-	.style("fill", "#4682b4")
+	.style("fill", c_histo_bars_RBM)
 	.style("opacity", 1.0)
 	.attr("id", function(d,i){return histo_id+identifier+i})
 	.attr("x", histo_x_pos) // margin left
 	.attr("y", function(d,i){return histo_pos_gen(i)}) // margin left
 	//.attr("transform", function(d,i) {
 	//	  return "translate(" + histo_pos_gen(i) + ")"; })
+	.attr("rx", histo_rx_RBM)
 	.attr("width", function(d,i) { return d*histo_height ; })
 	//       .attr("width", function(d,i) { console.log(d) ; })
 	.attr("height", function(d) { return histo_width; });

@@ -50,18 +50,18 @@ d3.select("#RBM_sampler_histo"+IDENTIFIERXOR).append('image')
  
  magnet_gradient_h.append("stop")
      .attr("offset", "0%")
-     .attr("stop-color", "red")
-     .attr("stop-opacity", 0.4);
+     .attr("stop-color", c1_hidden_bias)
+     .attr("stop-opacity", 1.0);
  
  magnet_gradient_h.append("stop")
      .attr("offset", "50%")
-     .attr("stop-color", "white")
-     .attr("stop-opacity", 0.4);
+     .attr("stop-color", c2_hidden_bias)
+     .attr("stop-opacity", 1.0);
  
 magnet_gradient_h.append("stop")
      .attr("offset", "100%")
-     .attr("stop-color", "blue")
-     .attr("stop-opacity", 0.4);
+     .attr("stop-color", c3_hidden_bias)
+     .attr("stop-opacity", 1.0);
  
  var magnet_gradient_v = d3.select("#RBM_sampler"+IDENTIFIERXOR).append("defs")
    .append("linearGradient")
@@ -70,18 +70,18 @@ magnet_gradient_h.append("stop")
  
  magnet_gradient_v.append("stop")
      .attr("offset", "0%")
-     .attr("stop-color", "black")
-     .attr("stop-opacity", 0.4);
+     .attr("stop-color", c1_visible_bias)
+     .attr("stop-opacity", 1.0);
  
  magnet_gradient_v.append("stop")
      .attr("offset", "50%")
-     .attr("stop-color", "grey")
-     .attr("stop-opacity", 0.4);
+     .attr("stop-color", c2_visible_bias)
+     .attr("stop-opacity", 1.0);
  
 magnet_gradient_v.append("stop")
      .attr("offset", "100%")
-     .attr("stop-color", "white")
-     .attr("stop-opacity", 0.4);
+     .attr("stop-color", c3_visible_bias)
+     .attr("stop-opacity", 1.0);
  
 
 add_magnetic_field_background(0, 1)
@@ -113,18 +113,15 @@ unwanted_config = 'blue'
 
 
 function add_magnetic_field_background(index, v){
-magnet_field_radius = 35
-	//console.log(v)
 if (v==1){url = "url(#magnet_gradient_v)"}
 if (v==0 ) { url = "url(#magnet_gradient_h)"}
-	//console.log(url)
  d3.select("#RBM_sampler"+IDENTIFIERXOR)
          .append("circle")
          .attr("cx", function(d,i){return pos_gen_x(index,index,IDENTIFIERXOR)})
          .attr("cy", function(d,i){return pos_gen_y(index,index,IDENTIFIERXOR)})
      		.attr("r", magnet_field_radius)
      		.style("fill", url)
-		.style("stroke", "black");
+		.style("stroke", c_bias_field_stroke);
 }
 
 
@@ -144,8 +141,8 @@ function add_magnetic_field_background_rect(index, field_color){
 function generate_RBM_nodes_new(identifier){
  // Define tooltips for hovering information
 
- var colors_init = [c_vis_node1,c_vis_node1, c_hid_node1]
- var color_init_stroke = [c_vis_node1_stroke,c_vis_node1_stroke, c_hid_node1_stroke]
+ var colors_init = [c_visible_node1,c_visible_node2, c_hidden_node]
+ var color_init_stroke = [c_visible_node1_stroke,c_visible_node2_stroke, c_hidden_node_stroke]
  //var hidden_colors = ['hsl(240, 100%, 84%)', 'hsl(0, 100%, 84%)'];
  //var hidden_colors_stroke = ["blue", "red"]
      // -------------------------------------------------------------------------
@@ -226,8 +223,9 @@ function generate_RBM_connections_new(identifier){
          .attr("id", function(d, i){return 'weight'+i})
 	.attr("index", function(d,i){return i})
      //     .attr("class", "RBM_line")
-         .attr("stroke","rgb(0,0,0,0.5)") //These attr are defined by class
-         .attr("stroke-width", 4.0)
+         .attr("stroke",c_rbm_connection) //These attr are defined by class
+         .attr("stroke-width", rbm_connection_stroke)
+	 .attr("opacity", rbm_connection_opacity)
          .attr("x1", function(d){return line_pos_gen_x1(d,identifier)})
          .attr("y1", function(d){return line_pos_gen_y1(d,identifier)})
          .attr("x2", function(d){return line_pos_gen_x2(d,identifier)})
@@ -235,17 +233,17 @@ function generate_RBM_connections_new(identifier){
          .on("mouseover", function(d,i) {
              tooltip.text('W' + i +' Strength: '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
                      .style("visibility", "visible")
-          d3.select(this).attr("stroke","rgb(0,0,0,1.0)")           ;
+          d3.select(this).attr("stroke", c_mouseover_rbm_connection).attr("opacity", rbm_connection_mousover_opacity)           ;
        })
 
         .on("mousemove", function(d) {
              tooltip.style("top", (event.pageY+10)+ "px")
              .style("left", event.pageX+10 + "px")
-             d3.select(this).attr("stroke","rgb(0,0,0,1.0)");
+             d3.select(this).attr("stroke",c_mouseover_rbm_connection).attr("opacity", rbm_connection_mousover_opacity);
        })
 
        .on("mouseout", function() {tooltip.style("visibility", "hidden")
-       d3.select(this).attr("stroke","rgb(0,0,0,0.5)");
+       d3.select(this).attr("stroke",c_rbm_connection).attr("opacity", rbm_connection_opacity);
        })
  }
 
@@ -308,12 +306,12 @@ var RBM_gradient = d3.select("#RBM_sampler"+IDENTIFIERXOR).append("defs")
 RBM_gradient.append("stop")
     .attr("offset", "0%")
     .attr("stop-color", c2_2D_slider)
-    .attr("stop-opacity", 0.8);
+    .attr("stop-opacity", 1.0);
 
 RBM_gradient.append("stop")
     .attr("offset", "100%")
     .attr("stop-color", c1_2D_slider)
-    .attr("stop-opacity", 0.8);
+    .attr("stop-opacity", 1.0);
 
 d3.select("#RBM_sampler"+IDENTIFIERXOR).append("rect")
     .attr("width", RBM_2D_slider_width)
