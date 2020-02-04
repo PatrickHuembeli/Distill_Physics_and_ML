@@ -13,27 +13,29 @@ var slider_2D_rx = 10, //Corner radius of histo and slider
 
 // Histogram Variables
 var y0_systems = 13, //y position of parity blobs inside svg
-histo_label_pos_y = 120, // y position of the svg of histo parity labels 
+histo_label_pos_y = 230, // y position of the svg of histo parity labels 
 radius_systems = 7, // Radius of Parity Blobs
 node_distance_parity = 17, // How far are the blobs separated in the parity
 parity_blobs_shift_left = 11 // how much 1st blob is shifted from center of histo bar
-twoL_histo_y_pos = 110, //These values are relative to SVG container of histo
-twoL_histo_height = 200, //This scales the whole histogram height
+twoL_histo_y_pos = 180, //These values are relative to SVG container of histo
+twoL_histo_height = 350, //This scales the whole histogram height
 twoL_margin_x = 20, // margin to the left to have space for Probability text
 twoL_center_x = 200, //center of the histograms wrt svg
 twoL_space = 45, //space between left corner of histo bars
 twoL_histo_width = 35; //size of histo bars
 
+
 // Define SVG Histogram
 common_svg = d3.select(identity_test)
 	.append("svg")
 	.attr("id", "fig1_histo_SVG")
+	.attr("height", 260)
 
 // SVG for bars
 common_svg.append("svg")
     .attr("id", "two_level_histogram")
-    .attr('class','figures')
-    .attr("y", 0); 
+    .attr("y", 100)
+	.attr("height", 600)
 
 // SVG for parity labels
 common_svg.append("svg")
@@ -81,7 +83,7 @@ dragHandler_fig1(d3.select("#param_circle1"));
 d3.select("#two_level_histogram").append("text")
      .text("Probability")
      .attr("class", "general_text")
-    .attr("transform", "translate(60,100),rotate(-90)")
+    .attr("transform", "translate(60,170),rotate(-90)")
     .style("fill", c_text_histogram)
 
     max_scale = 10 //max scale for x_e
@@ -241,9 +243,11 @@ function twoL_histo_pos_gen(d) {
 function generate_histogram_2_level(){
 	var twoL_histogram_data = [0.25,0.25,0.25,0.25]
 	
-	var y_axis_ticks = d3.scaleLinear().domain([0,0.5]).range([200,100])
-	var histogram_svg = d3.select("#two_level_histogram").append("g")
-	
+	var histogram_svg = d3.select("#two_level_histogram")
+				.attr("height", 600)
+				.attr("width", 600)
+				.attr("y", 50)
+
 	histogram_svg.selectAll("rect")
 		.data(twoL_histogram_data)
 		.enter().append("rect")
