@@ -44,11 +44,11 @@ d3.select("#CD_algo_main_svg")
 
 d3.select("#RBM_sampler_histo"+IDENTIFIERXOR).append('image')
       .attr('id', 'teaser_main_img_big_id')
-      .attr('xlink:href', "figures/CD_algorithm/histogram_labels3.png")
+      .attr('xlink:href', "figures/CD_algorithm/histogram_labels4.png")
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", 100)
-      .attr("height", 250)
+      .attr("height", 260)
       .attr("opacity", 1.0)
 
 
