@@ -2,6 +2,8 @@ const RBM_complete_XOR = "#CD_figure1_id" // This defines in which div we write 
 
 var IDENTIFIERXOR = '_XOR'
 
+circle_offset = 50
+
 dictionary["h_units"+IDENTIFIERXOR] = 1
 dictionary["v_units"+IDENTIFIERXOR] = 2
 dictionary["total_spins"+IDENTIFIERXOR] = 3
@@ -21,7 +23,7 @@ d3.select(RBM_complete_XOR)
     .append("svg")
     .attr("id", "CD_algo_main_svg")
 	.attr("width", 800)
-	.attr("height", 270)
+	.attr("height", 350)
 
 
 d3.select("#CD_algo_main_svg")
@@ -125,7 +127,9 @@ if (v==0 ) { url = "url(#magnet_gradient_h)"}
  d3.select("#RBM_sampler"+IDENTIFIERXOR)
          .append("circle")
          .attr("cx", function(d,i){return pos_gen_x(index,index,IDENTIFIERXOR)})
-         .attr("cy", function(d,i){return pos_gen_y(index,index,IDENTIFIERXOR)})
+         .attr("cy", function(d,i){offset = 0
+         if(v==1){offset = circle_offset}
+         return pos_gen_y(index,index,IDENTIFIERXOR)+offset})
      		.attr("r", magnet_field_radius)
      		.style("fill", url)
 		.style("stroke", c_bias_field_stroke);
@@ -163,14 +167,20 @@ function generate_RBM_nodes_new(identifier){
          .attr("stroke", function(d,i){return color_init_stroke[d]})
          //.attr('class', 'hidden_circle') // class is needed for style sheet
          .attr("cx", function(d,i){return pos_gen_x(d,i,identifier)})
-         .attr("cy", function(d,i){return pos_gen_y(d,i,identifier)})
+         .attr("cy", function(d,i){offset=0
+         if(i==1){offset = circle_offset}
+         if(i==0){offset=circle_offset}
+         return pos_gen_y(d,i,identifier)+offset})
          .attr("r", RBM_node_radius)
          .attr('id', function(d,i){return "RBM_node"+d})
          .attr('index', function(d,i){return d})
 
 
 function change_bias_value(y, index){
-	y_zero = pos_gen_y(index,index,IDENTIFIERXOR)
+    offset=0
+	if(index==0){offset=circle_offset}
+	if(index==1){offset=circle_offset}
+	y_zero = pos_gen_y(index,index,IDENTIFIERXOR) +offset
 	if(Math.abs(y-y_zero)>(magnet_field_radius-RBM_node_radius)){
 	y = y_zero + Math.sign(y-y_zero)*(magnet_field_radius-RBM_node_radius)} 
 	bias_value = 1*((y-y_zero)/(magnet_field_radius-RBM_node_radius)).toFixed(1)  
@@ -213,6 +223,8 @@ function change_bias_value(y, index){
     dragHandler(d3.select("#RBM_complete_main_svg"+identifier).selectAll("circle"))
  }
 
+
+
 function generate_RBM_connections_new(identifier){
 	weight_text = [ "W₁", "W₂" ]	
            histo_id1 = "histogram_data_pos_phase"
@@ -226,9 +238,10 @@ function generate_RBM_connections_new(identifier){
          .attr("stroke-width", rbm_connection_stroke)
 	 .attr("opacity", rbm_connection_opacity)
          .attr("x1", function(d){return line_pos_gen_x1(d,identifier)})
-         .attr("y1", function(d){return line_pos_gen_y1(d,identifier)})
+         .attr("y1", function(d){return line_pos_gen_y1(d,identifier)+circle_offset})
          .attr("x2", function(d){return line_pos_gen_x2(d,identifier)})
-         .attr("y2", function(d){return line_pos_gen_y2(d,identifier)})
+         .attr("y2", function(d){
+         return line_pos_gen_y2(d,identifier)})
          .on("mouseover", function(d,i) {
              tooltip.text(weight_text[i] +' = '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
                      .style("visibility", "visible")
@@ -273,7 +286,7 @@ function generate_RBM_biases_new(identifier){
          .enter()
          .append("text")
          .attr("x",10)
-         .attr("y", function(d,i){return 200+i*20})
+         .attr("y", function(d,i){return 200+i*20+circle_offset})
 	.text("bias: 0")
 	.attr("class", "general_text")
 	.attr("fill", c_text_slider)
