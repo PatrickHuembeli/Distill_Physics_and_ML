@@ -1,6 +1,6 @@
 .vranger {
   margin-top: 50px;
-   transform: translate(-50px , 20px) rotate(270deg); 
+   transform: translate(-50px , 20px) rotate(270deg);
   -moz-transform: rotate(270deg); /*do same for other browsers if required*/
 }
 
@@ -21,7 +21,7 @@ path.plotline {
  /*   fill: #ffab00;*/
 /*    stroke: #fff;*/
 }
-  
+
 .dot_energy_img {
     fill: #ffab00;
     stroke: #fff;
@@ -68,7 +68,7 @@ line.spring_line {
 
 circle.unused_circle {
     opacity: 0.5;
-    stroke-width: 1.0; 
+    stroke-width: 1.0;
     fill: rgb(0,0,0,0.1);
     stroke: rgb(0,0,0,0.5);
     stroke-dasharray: 5,5;
@@ -148,7 +148,7 @@ g.guides circle {
   stroke: #348;
   stroke-width: 3px;
 }*/
- 
+
 * {
 box-sizing: border-box;
 }
@@ -168,7 +168,7 @@ height: 200px;
 padding: 2px;
 border: 0.5px solid rgb(0,0,0,0.1);
 border-radius: 5px;
-border-spacing: 15px; 
+border-spacing: 15px;
 }
 div.slider_img{
   margin-left: 10px;
@@ -183,8 +183,8 @@ border-radius: 5px;
 border-spacing: 15px; */
 }
 div.spring_column {
-float: left;	
-width: 330px; 
+float: left;
+width: 330px;
 padding: 10px;
 border: 0.5px solid grey;
 border-radius: 5px;
@@ -192,14 +192,14 @@ border-spacing: 15px; */
 }
 div.column_2level {
 float: left;
-width: 180px; 
+width: 180px;
 padding: 10px;
 border: 1px solid grey;
 border-radius: 5px;
 }
 div.column_2level_no_border {
 float: left;
-width: 180px; 
+width: 180px;
 padding: 10px;
 }
 div.column_2level_image {
