@@ -47,7 +47,12 @@ var svg_2 = d3.select(energy_minima_temp_id).append("svg")
     .attr("height", height_new)
   //.append("g")
    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+   svg_2.append("text")
+    .attr("id", "Temp_Energy_Text_Id")
+    .attr("class", "annotation")
+    .attr("x", 80)
+    .attr("y", 270)
+    .text("(Click on any node to start sampling)")
 // Draw background
 make_temp_gradient_new(0,0,280,400)
 
@@ -199,6 +204,7 @@ function infinite_loop(){
 }
 
 function start_convergence(a, number_of_images, boltzmann){
+  d3.select("#Temp_Energy_Text_Id").attr("opacity", 0.0)
 	d3.selectAll(".dot").interrupt()
 			.attr("fill", c_inactive_dot)
 			.attr("r", r_inactive_dot).style("stroke", c_stroke_dot_inactive);
