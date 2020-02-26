@@ -10,7 +10,7 @@ var 	c_histo_bars = "#71a6d2" 		//Color of the histogram bars
 	c1_2D_slider = "#ff8f8f" 		// Slider background color1 (2 COLORS BECAUSE IT IS A GRADIENT)
 	c2_2D_slider = "#71a6d2"		// Slider background color2
 	c_handle_2D_slider = "#d6d6d6" 		// SLider Handle color
-	c_stroke_2D_slider = "#d6d6d6" 		// Slider lines and circle stroke color 
+	c_stroke_2D_slider = "#d6d6d6" 		// Slider lines and circle stroke color
         handle_2D_slider_radius = 6.5
 	c_text_slider = "grey" 			// Slider Text color
 	c_text_histogram = "grey" 		// Histogram text color
@@ -47,9 +47,9 @@ var c_energy_line = "#d6d6d6"  // Color of energy line
     opacity2_temp_background = 0.5 // Opacity upper color
     temp_grad_offset = "50%" 	//This value determines, From when on gradient stops.
 				//The smaller the value the further up blue goes.
-   
+
 	// Other Style Parameter FOR FIGURE 3
-	var r_inactive_dot = 4.0 // Radius of inactive dot 
+	var r_inactive_dot = 4.0 // Radius of inactive dot
 	    r_active_dot = 5.0   // Radius of active dot
             stroke_energy_line = 3.0 // stroke thickness energy line
 	// Convergence Parameters
@@ -87,9 +87,9 @@ magnet_field_radius = 35 // Radius of bias background circle
 c1_hidden_bias = "#d6d6d6" // Hidden Bias top color
 c2_hidden_bias = "#EAB2B2" // Hidden bias intermediate color
 c3_hidden_bias = "#ff8f8f" // Hidden bias bottom color
-c1_visible_bias = "#ffffff"
+c3_visible_bias = "#ffffff"
 c2_visible_bias = "#ffffff"
-c3_visible_bias = "#d6d6d6"
+c1_visible_bias = "#d6d6d6"
 c_bias_field_stroke = "grey" // Color of stroke around bias circles
 
 c_rbm_connection = "#71a6d2" // Color RBM connections
@@ -98,15 +98,15 @@ rbm_connection_opacity = 1.0 // Opacity RBM Connection
 c_mouseover_rbm_connection = "#71a6d2" // Color RBM if mouseover
 rbm_connection_mousover_opacity = 0.8 // OPacity if mouseover
 	// 2D slider exact same colors as in Figure 1 (parity vs temperature))
-c_hidden_node = "#faa869" 
-c_hidden_node_stroke = "black" 
+c_hidden_node = "#faa869"
+c_hidden_node_stroke = "black"
 c_visible_node1 = "#faa869"
 c_visible_node1_stroke = "black"
 c_visible_node2 = "#faa869"
 c_visible_node2_stroke = "black"
 
 c_histo_bars_RBM = "#71a6d2" // Color histo bars
-histo_rx_RBM = 2 // Radius of corners of histo bars 
+histo_rx_RBM = 2 // Radius of corners of histo bars
 
 c_text_tooltip = "grey" // mouseover tooltip text color (when mouse goes over weight lines)
 c_background_tooltip = "#F1F1F1" // mouseover tooltip  background color
