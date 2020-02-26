@@ -182,7 +182,7 @@ As ambitious scientists, we are now in good shape: we have learnt that collectio
        </div>
      </div>
 
-     <div class="triplecolumn"> <p class="figure-text"> Effect of temperature and coupling on the Boltzmann distribution of a two-particle system. The histogram on the left shows the probability of each possible state <d-math>x = (x_1, x_2)</d-math>, where <d-math>x_i=\{-1, 1\}</d-math>. The energy function is <d-math>E(x_1, x_2) = W x_1 x_2 </d-math>, where <d-math>W</d-math> is a coupling constant. The sign of the coupling determines which configurations are more likely: if <d-math>W>0</d-math>, opposite configurations <d-math>x_1=-x_2</d-math> have lower energy (higher probability). If <d-math>W<0</d-math>, equal configurations <d-math>x_1=x_2</d-math> have lower energy (higher probability). Increasing the temperature <d-math>T</d-math> makes high-energy configurations more likely. In the limit of very large temperatures, states become approximately equiprobable regardless of coupling strength.<p></div>
+     <div class="triplecolumn"> <p class="figure-text"> Effect of temperature and coupling on the Boltzmann distribution of a two-particle system. The histogram on the left shows the probability of each possible state <d-math>x = (x_1, x_2)</d-math>, where <d-math>x_i=\{-1, 1\}</d-math>. The energy function is <d-math>E(x_1, x_2) = -W x_1 x_2 </d-math>, where <d-math>W</d-math> is a coupling constant. The sign of the coupling determines which configurations are more likely: if <d-math>W<0</d-math>, opposite configurations <d-math>x_1=-x_2</d-math> have lower energy (higher probability). If <d-math>W>0</d-math>, equal configurations <d-math>x_1=x_2</d-math> have lower energy (higher probability). Increasing the temperature <d-math>T</d-math> makes high-energy configurations more likely. In the limit of very large temperatures, states become approximately equiprobable regardless of coupling strength.<p></div>
 
 
 
@@ -247,7 +247,7 @@ Compared to the fully-connected Boltzmann machine, the RBM is less expressive be
 		<p class="figure-text"><b>Hopfield network:</b> The number of nodes is equal to the size of the input data. There are no hidden nodes (dashed) contributing to the energy, which limits the expressive power of this model. You can click on the nodes to change their state.</p>
 	</div>
 	<div class="column">
-    <p class="figure-text"><b>Boltzmann machine:</b> The Boltzmann machine network is fully connected. The visible nodes (blue) are clamped to the input data and the hidden nodes (white) are free parameters. This is a powerful model, but challenging to train.</p>
+    <p class="figure-text"><b>Boltzmann machine:</b> The Boltzmann machine network is fully connected. The visible nodes (black & white) are clamped to the input data and the hidden nodes (red & grey) are free parameters. This is a powerful model, but challenging to train.</p>
 	</div>
 	<div class="column">
     <p class="figure-text"><b>Restricted Boltzmann machine:</b> RBMs use hidden and visible nodes, but connections are not allowed within the same layer, i.e., the network is bipartite. This restriction greatly simplifies training.
@@ -459,95 +459,27 @@ By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase
   </div>
 
 
-<!--
-  <div class="row">
-  <div class="column">
-  <p id="weight_slider_text" class="slider-label-text">Weight</p>
-  <p id="weight_slider_value" class="slider-label-number"></p>
-    <input id="weight_slider_id" value=0 type="range" onchange="slider_fct_RBM(this.value,'')" min="-2" max="2" step="0.01">
-  <p id="bias_slider_text" class="slider-label-text">Bias</p>
-  <p id="bias_slider_value" class="slider-label-number" width="50%"></p>
-    <input id="bias_slider_id" value=0 type="range" oninput="slider_bias_just_text(this.value,'')" onchange="slider_bias_fct_RBM(this.value,'')" min="-2" max="2" step="0.01">
-  <div>
-  <input type="checkbox" onclick="change_layout_hidden('')" id="hidden_check" name="hidden_check"
-         checked>
-  <label for="hidden_check">Allow hidden units</label>
-  </div>
-  <div>
-  <input type="checkbox" onclick="change_layout_restricted('')" id="restricted_check" name="restricted_check">
-  <label for="restricted_check">Make it restricted</label>
-  </div>
-  </div>
-  <div class="doublecolumn">
-    <figure style = "width:100%; height:320px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete">
-  <div id = "RBM_complete_id" style="position:absolute; left:0px; top:0px"></div>
-  </figure>
-  <script type = "text/javascript" src = "RBM_complete_new.js" ></script>
-  </div>
-  </div>
-  <div class="caption-triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely
 
 
- <div class="row">
-  <div class="column">
-  <p id="weight_slider_text_XOR" class="slider-label-text">Weight</p>
-  <p id="weight_slider_value_XOR" class="slider-label-number"></p>
-    <input id="weight_slider_id_XOR" value=0 type="range" onchange="slider_fct_RBM(this.value,'_XOR')" min="-2" max="2" step="0.01">
-  <p id="bias_slider_text_XOR" class="slider-label-text">Bias</p>
-  <p id="bias_slider_value_XOR" class="slider-label-number" width="50%"></p>
-    <input id="bias_slider_id_XOR" value=0 type="range" oninput="slider_bias_just_text(this.value,'_XOR')" onchange="slider_bias_fct_RBM(this.value,'_XOR')" min="-2" max="2" step="0.01">
-  <div>
-  <input type="checkbox" onclick="change_layout_hidden('_XOR')" id="hidden_check_XOR" name="hidden_check_XOR"
-         checked>
-  <label for="hidden_check">Allow hidden units</label>
-  </div>
-  <div>
-  <input type="checkbox" onclick="change_layout_restricted('_XOR')" id="restricted_check_XOR" name="restricted_check_XOR">
-  <label for="restricted_check">Make it restricted</label>
-  </div>
-  </div>
-  <div class="doublecolumn">
-    <figure style = "width:100%; height:320px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "RBM_complete_XOR">
-  <div id = "RBM_complete_id_XOR" style="position:absolute; left:0px; top:0px"></div>
-  </figure>
-  <script type = "text/javascript" src = "RBM_complete_XOR.js" ></script>
-  </div>
-  </div>
-  <div class="caption-triplecolumn"><p class="figure-text"> Try to make the "Bars and Stripes" configurations maximally likely.
-  For this you have to adjust the weights and biases by clicking on the conections and the biases and adjust them with the slider.
-  The color of the nodes indicates in which direction the spins are. This can help you to find the weights for a certain configurations and make its energy high or low. Remember that the wanted configurations should be low energy. And all the others should be higher energy. A way to find the solution for this task is to set the spins of the model to a B&S configuration and make its energy as small as possible. Then change to another B&S configuration and repeat. You will figure out eventually how you "learn" the weights. If you want to have a working solution, click the solution button.</p></div>
-  -->
 
-
- <script type = "text/javascript" src = "scripts_and_figs/RBM_functions.js" ></script>
-
- <div class="row">
-<!--  <div class="column">
-  <p id="weight_slider_text_XOR" class="slider-label-text">Weight</p>
-  <p id="weight_slider_value_XOR" class="slider-label-number"></p>
-    <input id="weight_slider_id_XOR" value=0 type="range" onchange="slider_fct_RBM(this.value,'_XOR')" min="-2" max="2" step="0.01">
-<p id="bias_slider_text_XOR" class="slider-label-text">Bias</p>
-  <p id="bias_slider_value_XOR" class="slider-label-number" width="50%"></p>
-  <input id="bias_slider_id_XOR" value=0 type="range" oninput="slider_bias_just_text(this.value,'_XOR')" onchange="slider_bias_fct_RBM(this.value,'_XOR')" min="-2" max="2" step="0.01">
-  <div>
-  </div>
-  <div>
-  </div>
-</div> -->
-  <div class="triplecolumn">
-    <figure style = "width:700; height:270px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "CD_Figure1">
-  <div id = "CD_figure1_id" style="position:absolute; left:0px; top:0px"></div>
-  </figure>
-   <script type = "text/javascript" src = "scripts_and_figs/CD_algorithm.js" ></script>
-  <div class="triplecolumn">
-	  <p class ="figure-text"><b>Training a RBM: </b> To adjust the biases you can move the RBM nodes inside the "bias field". To adjust the weights use the 2D slider. On the right you can see how probable a certain configuration becomes. We encourage the reader to adjust the parameters of a RBM such that it learns a certain data pattern. For example to learn even parity (both input nodes are either black or white) it is sufficient to just adjust the weights without using the biases. If the even pattern where both input nodes are white should be most probable, you will have to use the biases as well.</p>
-  </div>
-  </div>
-  </div>
-  </div>
 
   <a class="marker" href="#section-4.3" id="section-4.3"><span>Training Boltzmann machines</span></a>
   <h3 id="r-bm-and-sampling">Training Boltzmann machines</h3>
+
+  <script type = "text/javascript" src = "scripts_and_figs/RBM_functions.js" ></script>
+
+  <div class="row">
+
+   <div class="triplecolumn">
+     <figure style = "width:700; height:270px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "CD_Figure1">
+   <div id = "CD_figure1_id" style="position:absolute; left:0px; top:0px"></div>
+   </figure>
+    <script type = "text/javascript" src = "scripts_and_figs/CD_algorithm.js" ></script>
+   <div class="triplecolumn">
+ 	  <p class ="figure-text"><b>Training a RBM: </b> To adjust the biases you can move the RBM nodes inside the "bias field". To adjust the weights use the 2D slider. On the right you can see how probable a certain configuration becomes. We encourage the reader to adjust the parameters of a RBM such that it learns a certain data pattern. For example to learn even parity (both input nodes are either black or white) it is sufficient to just adjust the weights without using the biases. If the even pattern where both input nodes are white should be most probable, you will have to use the biases as well.</p>
+   </div>
+   </div>
+   </div>
 
   <p>Hebbian learning and unlearning techniques are problematic when applied to Boltzmann machines: since only the visible nodes encode data, it is not clear how to assign values to the hidden nodes. The Hebbian learning rule can be promoted to an <em>update</em> rule that iteratively improves the weights with each step. By doing so, we allow the hidden nodes to "move" together with the visible ones, leading to training of the complete model. Starting from an initial value <d-math>w_{ij}</d-math>, a weight is updated to
   </p>
