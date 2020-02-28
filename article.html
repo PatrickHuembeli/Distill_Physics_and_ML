@@ -102,14 +102,14 @@
   Intelligence is widespread in nature, and intelligent life has indeed inspired many of the mathematical models, notably neural networks, that form the bedrock of research in machine learning and artificial intelligence. Is is possible to dive deeper, and instead draw inspiration from the most fundamental laws of nature to build new models?
     </p>
 
-  <p> Here, we embark on a journey to recreate energy-based models from the perspective of scientists aiming to build intelligent systems from the collective behaviour of interacting physical particles. Along the way, we explain familiar concepts from new perspectives, and uncover key physical concepts underlying the theory and practice of <emph> energy-based models </emph>. This includes the design, implementation, and training of Hopfield networks and Boltzmann machines, highlighting how physical principles can explain both the success and challenges associated with these models. We focus on Hopfield networks and Boltzmann machines because of their historical significance &mdash; which paved the way for future revolutions in the field &mdash; and because of their immediate connection to fundamental physical principles. 
-<text style="color:red">
-Ultimately, we will study modern concepts, exploring open questions in machine intelligence from a physical perspective, venturing a glance into future research. 
-  </p> </text>
+  <p> Here, we embark on a journey to recreate energy-based models from the perspective of scientists aiming to build intelligent systems from the collective behaviour of interacting physical particles. Along the way, we explain familiar concepts from new perspectives, and uncover key physical concepts underlying the theory and practice of <emph> energy-based models </emph>. This includes the design, implementation, and training of Hopfield networks and Boltzmann machines, highlighting how physical principles can explain both the success and challenges associated with these models. We focus on Hopfield networks and Boltzmann machines because of their historical significance &mdash; which paved the way for future revolutions in the field &mdash; and because of their immediate connection to fundamental physical principles.
 
-<text style="color:red">
+Ultimately, we will study modern concepts, exploring open questions in machine intelligence from a physical perspective, venturing a glance into future research.
+  </p>
+
+
   <p> This article should be understood as a journey from the past to the future of energy-based models. Attention is placed on using physical principles to understand basic concepts such as energy functions, Boltzmann distributions, Ising models, Gibbs sampling, and contrastive divergence. In the concluding sections,
-  we reflect on the possible future trends on machine intelligence, based on recent advances in energy-based models, statistical mechanics, tensor networks, spin-glasses, and generative models, shining light on cutting-edge research at the interface of physics and machine learning.</p> </text>
+  we reflect on the possible future trends on machine intelligence, based on recent advances in energy-based models, statistical mechanics, tensor networks, spin-glasses, and generative models, shining light on cutting-edge research at the interface of physics and machine learning.</p>
 
 
 <!-- Second Section  2  -->
@@ -154,6 +154,7 @@ where <d-math>\alpha(\theta)</d-math> is a vector-valued function and <d-math>A(
 </d-footnote><d-cite key="aurell2012inverse"></d-cite>.
 
 Knowledge of the expectation values <d-math>\langle f_i(x)\rangle </d-math> fixes the parameters <d-math>\theta_i </d-math> and therefore also the properties of the resulting Boltzmann distribution.
+If we would like to learn an image <d-math>x</d-math> for example, <d-math>f_i(x)</d-math> can represent any of the expectation values of single pixles of the image <d-math> \langle x_i \rangle </d-math>, two pixle correlations <d-math> \langle x_i x_j \rangle </d-math> and higher order terms. <d-math>\theta_i </d-math> weights the relevance of these expectation values to minimize the energy, which means irrelevant pixles in the image will not be important contributions to the energy.
 </p>
 
 <p>
@@ -524,10 +525,10 @@ The figure below collects the concepts we have covered thus far, showing how a t
     <p>
       Energy-based models are experiencing a resurgence of interest: they are stable to train, require few parameters, show high sample quality, generalization ability, and are amenable to compositionality <d-cite key="du2019implicit"></d-cite>. These are characteristics that other generative models like variational autoencoders or generative adversarial networks struggle with. Progress has also been made to improve the scaling of the training <d-cite key="du2019implicit,nijkamp2019on"></d-cite>. With these developments, there is an indication that this family of models continues to be relevant in machine learning.</p>
 
-      <p style="color:red">
+      <p>
         Despite recent successes and significant attention to the possible applications of deep learning, there are still fundamental challenges in machine learning and artificial intelligence. In particular, there are major open problems regarding the design of optimal architectures, training over small data sets, meta-learning, and achieving robustness to variations of the underlying probability distributions. Moreover, deep learning models operate as black-boxes without deeper theoretical foundations of why deep learning works and when it doesn’t. Many other frontiers are yet to be explored such as causal learning, self-supervised learning, and automated reasoning. Crucially, many of the aforementioned problems can be reformulated as discovering and parameterizing correlations in abstract many-body interacting systems and can therefore be mapped to energy-based problems.
         </p>
-        <p style="color:red">
+        <p>
         On the other hand, it is not only deep learning that has its short comings. Energy-based models also need improvement on several frontiers.
         Learning and inference over discrete data are still extremely challenging due to the combinatorial explosion of the state space. In particular, training and probabilistic inference in energy-based models and graphical models are still inefficient. This is due to the hardness of discrete optimization problems, which is equivalent to calculating the partition function or sampling over the Boltzmann distribution.
 
@@ -537,7 +538,7 @@ The figure below collects the concepts we have covered thus far, showing how a t
       <a class="marker" href="#section-5" id="section-5"><span>Spinglasses</span></a>
       <h3 id="training">Spinglasses: When optimization problems become frustrated</h3>
 
-<text style="color:red">
+
       <p>
       Spin-glasses -- a generalization of the Ising Hamiltonian to arbitrary k-local interactions, arbitrary local fields and interactions, over arbitrary graphs -- provide a prototypical and computationally universal language for representing discrete optimization problems <d-cite key="SteinBook"></d-cite>. The energy functions of such systems contain terms of the form
       <d-math block>
@@ -547,7 +548,7 @@ The figure below collects the concepts we have covered thus far, showing how a t
 
 
       A general class of probabilistic physics-inspired approaches to sample the solution space of such problems is based on Markov Chain Monte Carlo techniques, for example the Metropolis-Hastings algorithm described above that rely on local thermal fluctuations. Other examples include
-      simulated annealing <d-cite key="Kirkpatrick671"></d-cite> and parallel tempering <d-cite key="PTreview"></d-cite>. 
+      simulated annealing <d-cite key="Kirkpatrick671"></d-cite> and parallel tempering <d-cite key="PTreview"></d-cite>.
       More advanced methods combine probabilistic cluster update strategies over a backbone algorithm from the Markov Chain Monte Carlo family. This includes Swendsen-Wang-Wolf cluster updates <d-cite key="Swendsen_Wang87,Wolf89"></d-cite>, Hodayer moves <d-cite key="Houdayer2001"></d-cite>, or Hamze-Freitas-Selbey <d-cite key="HF04,Selby14,Hen_2017"></d-cite>.
       However, these approaches either break down for frustrated spin-glass systems <d-cite key="Wolf89"></d-cite>, or percolate for dimensions larger than two <d-cite key="Houdayer2001"></d-cite> or assume random tree-like subgraphs <d-cite key="HF04,Selby14,Hen_2017"></d-cite>
       that are not necessarily related to the actual low-energy excitation “droplets” <d-footnote>A droplet is a local low energy cluster of spins where the distribution is disconnected from the rest of the system.</d-footnote> of the underlying spin-glass problem.
@@ -560,9 +561,8 @@ The figure below collects the concepts we have covered thus far, showing how a t
     <p>
       Another class of physics-based approaches rely on quantum fluctuations to induce cluster updates such as adiabatic quantum computation <d-cite key="Lidar18"></d-cite>, dissipative quantum tunneling <d-cite key="Boixo16"></d-cite>,
       or coherent many-body delocalization effects <d-cite key="Kechedzhi18"></d-cite>.
-      Very recently, several quantum-inspired deterministic and probabilistic algorithms have been developed to efficiently reveal the structure of the low-energy spectrum and approximating partition functions for several classes of spin-glass systems that encode optimization problems <d-cite key="Rams2018,Hartnett2020,Hartnett2020self"></d-cite>. These works combine advanced tools from many-body physics such as tensor networks contractions <d-cite key="Rams2018"></d-cite>, tools for performing inference in graphical models such as loopy belief propagation, and recent advances in deep generative models such as normalizing flows <d-cite key="Hartnett2020,Hartnett2020self"></d-cite>. These latest works show that quantum-inspired methods or algorithms running on quantum devices can improve the sampling from complex spin systems and avoid the occurence of droplets. 
+      Very recently, several quantum-inspired deterministic and probabilistic algorithms have been developed to efficiently reveal the structure of the low-energy spectrum and approximating partition functions for several classes of spin-glass systems that encode optimization problems <d-cite key="Rams2018,Hartnett2020,Hartnett2020self"></d-cite>. These works combine advanced tools from many-body physics such as tensor networks contractions <d-cite key="Rams2018"></d-cite>, tools for performing inference in graphical models such as loopy belief propagation, and recent advances in deep generative models such as normalizing flows <d-cite key="Hartnett2020,Hartnett2020self"></d-cite>. These latest works show that quantum-inspired methods or algorithms running on quantum devices can improve the sampling from complex spin systems and avoid the occurence of droplets.
 </p>
-</text>
 
       <a class="marker" href="#section-5" id="section-5"><span>Quantum</span></a>
       <h3 id="training">Quantum machine learning</h3>
@@ -570,9 +570,8 @@ The figure below collects the concepts we have covered thus far, showing how a t
     <p>
       Let us refelct on recent progress in physics and see how those advances can inform research in machine learning.
       Statistical mechanics has a rich interplay with related areas such as condensed matter and quantum many-body physics. Tensor networks emerged as a highly scalable numerical method to study such systems <d-cite key="orus2014practical"></d-cite>. The core idea is to compress the space that represents the physical system for efficient numerical simulation. This method has seen a number of successful demonstrations employing tensor networks in machine learning <d-cite key="stoudenmire2016supervised,roberts2019tensornetwork,efthymiou2019tensornetwork"></d-cite>.
-     This is a success-story for physically-motivated techniques in machine learning. Tensor networks also come in hierarchical variants, which allows the creation of deep architectures. The first forays have been taken to explore the power of this learned hierarchical representation in machine learning <d-cite key="stoudenmire2018learning,liu2019machine"></d-cite>, a promising area of research. <text style="color:red">Furthermore, approximate tensor-network contraction provides a gradient-free algorithm for certain NP-hard problems, within some desired approximation, a task that in general (in worse case) is <d-math>\#P</d-math> hard and also compute better lowest energies. Discrete optimization problems are inherently non-differentiable thus all
+     This is a success-story for physically-motivated techniques in machine learning. Tensor networks also come in hierarchical variants, which allows the creation of deep architectures. The first forays have been taken to explore the power of this learned hierarchical representation in machine learning <d-cite key="stoudenmire2018learning,liu2019machine"></d-cite>, a promising area of research. Furthermore, approximate tensor-network contraction provides a gradient-free algorithm for certain NP-hard problems, within some desired approximation, a task that in general (in worse case) is <d-math>\#P</d-math> hard and also compute better lowest energies. Discrete optimization problems are inherently non-differentiable thus all
      gradient-based methods would naturally fail. This kind of approached offers new paths to develop approximate algorithms for unbiased sampling of low-energy states.
-  </text>
     </p>
 
     <p> The physical concepts covered in the beginning of this article had one property in common: they did not reflect the rules that govern the behaviour of fundamental particles. At its deepest level, every physical system follows the laws of quantum mechanics. What changes when energy-based models become quantum? The first difference is that possible states of a system are extended to also include <emph>linear combinations</emph> (known as superpositions) over different configurations. For instance, configurations of <d-math>n</d-math> particles where previously denotedby vectors <d-math>x = (x_1, x_2, \ldots, x_n)</d-math>. Possible states are restricted to different values of the variables <d-math>x_i</d-math>. In a quantum setting, more general states <d-math>\psi</d-math> of the form
@@ -618,18 +617,14 @@ Several papers study variants of Boltzmann machines <d-cite key="amin2018quantum
 
 
 <p>
-<text style="color:red">
   In the near future, there will be large classes of quantum machine learning tasks that do not have any classical analog, in particular when applied to quantum data. These applications could provide the best opportunity for quantum advantage as it is in principle exponentially hard to store the quantum data classically.  It is generally of fundamental and practical interest to use classical machine learning for modelling, calibration, or control of physical systems. These tasks could involve significant complexity when the system or device exhibits many-body quantum effects. These quantum many-body phenomena can be found in condensed matter physics, physical chemistry, or material science. They typically involve correlated electronic structures or disordered spin systems. The main hurdle in understanding or simulating such systems on classical computers is that the number of quantum mechanical degrees of freedom could be larger than the number of particles in the universe.
   This exponential scaling restricts classical approaches even for a few quantum particles and hence severely limit their applications. Concretely, this means that any scalable simulation of such systems on classical devices would likely remain infeasible. Yet, quantum generative models on quantum computers could lead to efficient simulations for chemical systems, or more generally, any sparse quantum Hamiltonians.
-</text>
 </p>
 
-  <p> Progress in physics and machine learning will benefit from an interplay between both fields. <text style="color:red">There are emerging interfaces of machine learning with quantum computation, quantum control, and many-body systems.</text>
+  <p> Progress in physics and machine learning will benefit from an interplay between both fields. There are emerging interfaces of machine learning with quantum computation, quantum control, and many-body systems.
   Machine learning tools can help understand physical data <d-cite key="wetzel2017unsupervised,huembeli2019automated"></d-cite>, design new experiments <d-cite key="melnikov2018active"></d-cite>, and solve old problems in new ways <d-cite key="iten2018discovering"></d-cite>. Similarly, insights from physics can inspire new models and lead to new hardware. Physics and machine learning, in combination, continue to expand perspectives, increase understanding, and push the frontiers of technology. </p>
 
 
-
- </text>
 
 </d-article>
 
