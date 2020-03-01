@@ -382,7 +382,9 @@ The identification of binary variables with physical spins, as was done above, i
      </div>
      </div>
      <div class="triplecolumn"> <p class="figure-text">
-	    Spring Figure Caption</p></div>
+       Equilibrating Forces of a mass on a spring compared to trained coupled nodes. On the left the mass is of fixed size and therefore the gravitational force <d-math> F_g</d-math> is fixed and the total force  <d-math>F</d-math> will be zero if the spring is extended to a position <d-math>y</d-math>, such that <d-math> F(y) = F_g</d-math>. This we call equilibration, because the mass would be now in a stable position.
+       To the right we have the neural network analogy of this concept of equilibration. The mass is now replaced by the force <d-math> F_d</d-math>, which is the expected value of the nodes over all the data. In this scenario we reach equilibration by adjusting the coupling <d-math> \theta</d-math> such that the forces of the network equilbrate with the force of the data and we get <d-math> F(\theta) = F_d</d-math>.
+      </p></div>
 
 
 
@@ -453,7 +455,7 @@ By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase
   <script type = "text/javascript" src = "scripts_and_figs/energy_landscape.js" ></script>
   </div>
   <div class="triplecolumn">
-	  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized spin system has an energy landscape with many different local minima. In physics this is often referred to as the spinglass phase <d-cite key="amit1985spin"> </d-cite>. In energy-based models, learning a certain configuration (red dots) means that their energy needs to be decreased. This can be achieved through "learning steps" that locally update the weights of the model as to decrease the energy of data configurations. You can try this by repeatedly clicking on the learning step button. This strategy suffers from the drawback that the energy of other points is also decreased, resulting in spurious local minima. Instead, by alternating between learning and unlearning steps &mdash; which you can do by clicking on the corresponding buttons &mdash; the occurrence of spurious minima can be reduced.</p>
+	  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized spin system has an energy landscape with many different local minima. In physics this is often referred to as the spinglass phase <d-cite key="amit1985spin"> </d-cite>. In energy-based models, learning a certain configuration (red dots) means that their energy needs to be decreased. This can be achieved through "learning steps" that locally update the weights of the model as to decrease the energy of data configurations. You can try this by clicking on the "Without unlearning" button. This strategy suffers from the drawback that the energy of other points can be local minimas, dependent on the initialization of the system. Instead, by alternating between learning and unlearning steps &mdash; which you can do by clicking on the "With unlearning" button &mdash; the occurrence of spurious minima can be reduced.</p>
   </div>
   </div>
   </div>
