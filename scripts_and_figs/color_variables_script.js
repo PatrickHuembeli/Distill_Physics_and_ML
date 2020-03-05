@@ -7,8 +7,8 @@
 
 // COLORS FIGURE 1 (Temperature, coupling and probability)
 var 	c_histo_bars = "#71a6d2" 		//Color of the histogram bars
-	c1_2D_slider = "#ff8f8f" 		// Slider background color1 (2 COLORS BECAUSE IT IS A GRADIENT)
-	c2_2D_slider = "#71a6d2"		// Slider background color2
+	c1_2D_slider = "#71a6d2" 		// Slider background color1 (2 COLORS BECAUSE IT IS A GRADIENT)
+	c2_2D_slider = "#ff8f8f"		// Slider background color2
 	c_handle_2D_slider = "#d6d6d6" 		// SLider Handle color
 	c_stroke_2D_slider = "#d6d6d6" 		// Slider lines and circle stroke color
         handle_2D_slider_radius = 6.5

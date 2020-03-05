@@ -47,7 +47,7 @@ common_svg.append("svg")
 var temp_scale = d3.scalePow()
     .exponent(5)
     .domain([0, 100])
-    .range([0.1, 100])
+    .range([1, 100])
     .clamp(true);   
 var couple_scale = d3.scaleLinear()
     .domain([param_margin_x, param_width+param_margin_x])
@@ -180,7 +180,7 @@ svg.append("text")
     	.style("fill", c_text_slider)
 
 svg.append("text")
-	.text(function(){return "T="+ temp_scale(50).toPrecision(2)})
+	.text(function(){return "T=3.4"})
 	.attr("id", "para_text_temp")
 	.attr("class", "general_text")
 	.attr("x", 0)
@@ -191,15 +191,16 @@ svg.append("text")
 // END INIT 2D SLIDER
 
 function twoD_slider(xpos, ypos) {
+  console.log(ypos)
   energy = 1.0
   coupling = couple_scale(xpos)
-	temp = temp_scale(ypos)
+	temp = temp_scale(110-ypos)
 	new_data = update_2L_probabilities(coupling,temp,energy)
 	update_2L_histogram(new_data,twoL_histo_height, twoL_histo_y_pos)
 	d3.select("#param_line_y").attr("y1", ypos).attr("y2", ypos)    
 	d3.select("#param_line_x").attr("x1", xpos).attr("x2", xpos)
 	d3.select("#para_text_temp").attr("y", ypos+10)
-		.text(function(){return "T="+ temp_scale(ypos).toPrecision(2)})
+		.text(function(){return "T="+ temp_scale(110-ypos).toPrecision(2)})
 	d3.select("#para_text_coupl").attr("x", xpos-param_margin_x)
 		.text(function(){return "w="+ couple_scale(xpos).toPrecision(2)})
 }

@@ -12,6 +12,17 @@ var width_new = positionInfo.width;
 temp_slider_energy_minim_init_value = 1
 
 document.getElementById("temperature_slider_energy_minima").innerHTML = temp_slider_energy_minim_init_value;
+
+var x_temp_energy = d3.scalePow()
+     .exponent(2)
+     .domain([0.01, 100])
+     .range([0.1, 10.05])
+     .clamp(true);
+
+document.getElementById("temp_slider_energy_minima_id").value=1
+document.getElementById("temperature_slider_energy_minima").innerHTML = x_temp_energy(1).toPrecision(2)
+
+
 //document.getElementById("coupling_strength").value = temp_slider_energy_minim_init_value
 
 // The number of datapoints for the graph
@@ -131,11 +142,7 @@ circle_energy_2 = svg_2.selectAll(".dot")
       .on("click", function(d,i){start_convergence(i, 32, true)})
 
 
-var x_temp_energy = d3.scalePow()
-     .exponent(2)
-     .domain([0.01, 100])
-     .range([0.1, 10.05])
-     .clamp(true);
+
 
 // The minimas and maximas are hardcoded
 min1 = 8
@@ -165,7 +172,7 @@ function convergence_inverse_hopfield(position, n){
 
 function convergence_boltzmann(position, n){
 	Temp = document.getElementById("temperature_slider_energy_minima").innerHTML
-	if (Math.exp(-1/Temp)<Math.random()*1.5){
+	if (Math.exp(-1/Temp)<Math.random()*1.88){
 	position = convergence_hopfield(position)}
 	else {position = convergence_inverse_hopfield(position, n)}
 	return position
