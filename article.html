@@ -241,7 +241,7 @@ Compared to the fully-connected Boltzmann machine, the RBM is less expressive be
     <p class="figure-text"><b>Boltzmann machine:</b> The Boltzmann machine network is fully connected. The visible nodes (black or white) are clamped to the input data and the hidden nodes (red & grey) are free parameters. This is a powerful model, but challenging to train.</p>
 	</div>
 	<div class="column">
-    <p class="figure-text"><b>Restricted Boltzmann machine:</b> RBMs use hidden and visible nodes, but connections are not allowed within the same layer, i.e., the network is bipartite. This restriction greatly simplifies training.
+    <p class="figure-text"><b>Restricted Boltzmann machine:</b> RBMs use hidden and visible nodes, but connections are not allowed within the same layer, i.e., the network is bipartite. This restriction greatly simplifies training.</p>
 	</div>
 </div>
 
@@ -299,7 +299,7 @@ where <d-math>p = \exp(-(1/T) ~\Delta E_i) </d-math>. Physically, these jumps to
     </div>
   </div>
 
-  <div class="triplecolumn"><p class="figure-text"> <b>Sampling from a Boltzmann distribution.</b> The minima of the energy function correspond to states that encode an MNIST digit. Neighbouring states are variants that become increasingly noisy as energy increases. The sampling algorithm begins from a randomly chosen state, which you can choose by clicking on the corresponding yellow point. At very low temperatures, each step of the algorithm updates the state to one with lower energy, until we reach and stay at a local minima. The current state is highlighted in red. At higher temperatures, each step of the algorithm may jump to higher-energy configurations and the final sampled state may not necessarily be a local minimum. This can eventually allow the model to generalize beyond training data.</p>
+  <div class="triplecolumn"><p class="figure-text"> <b>Sampling from a Boltzmann distribution.</b> The minima of the energy function correspond to states that encode an MNIST digit. Neighbouring states are variants that become increasingly noisy as energy increases. The sampling algorithm begins from a randomly chosen state, which you can choose by clicking on the corresponding yellow point. At very low temperatures, each step of the algorithm updates the state to one with lower energy, until we reach and stay at a local minima. The current state is highlighted in red. At higher temperatures, each step of the algorithm may jump to higher-energy configurations and the final sampled state may not necessarily be a local minimum. This can eventually allow the model to generalize beyond training data.</p></div>
 
 
 <p>
@@ -327,13 +327,11 @@ Moreover, because of the independence between nodes in the same layer, the indiv
 <p>
 The remaining probabilities <d-math>P(v_i=-1|h)</d-math> and <d-math>P(h_j=-1|v)</d-math> follow from these equations. These properties of RBMs permit a new sampling strategy:</p>
 
-<p>
  <ol>
      <li>Fix the hidden nodes. Sample visible nodes from the conditional distribution <d-math>P(v|h) = \prod_i P(v_i|h)</d-math> by independently sampling the state of each node from its distribution <d-math>P(v_i|h)</d-math>.</li>
      <li>Fix the visible nodes according to the samples of the previous step. Sample hidden nodes from the conditional distribution <d-math>P(h|v) = \prod_i P(h_i|v)</d-math> by independently sampling the state of each particle from its distribution <d-math>P(h_i|v)</d-math>.</li>
      <li>Repeat the above steps <d-math>N</d-math> times, for suitably chosen <d-math>N</d-math>.</li>
   </ol>
-</p>
 
 <p>The resulting states <d-math>(v, h)</d-math> will be approximately sampled from the system's Boltzmann distribution. This algorithm is known as <em>Gibbs sampling</em>, and it is the method typically used in practice to sample RBMs <d-cite key="carreira2005contrastive"></d-cite>.
 </p>
@@ -342,8 +340,6 @@ The remaining probabilities <d-math>P(v_i=-1|h)</d-math> and <d-math>P(h_j=-1|v)
   <a class="marker" href="#section-4" id="section-4"><span>Training</span></a>
   <h2 id="training">Training</h2>
 
-
-<<<<<<< HEAD
 <p>
 Significant progress has been made in the journey to design models based on fundamental physical principles. We have learned that probabilistic models can be built from physical systems at thermal equilibrium. We have also identified useful architectures and have developed algorithms to sample from their Boltzmann distributions. A final challenge remains: how can these systems be trained to perform specific tasks? In this context, training is equivalent to identifying the parameters of the energy function that give rise to a desired probability distribution. Searching for inspiration in physics has so far proved fruitful. Let's try that again.
 </p>
