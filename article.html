@@ -83,13 +83,13 @@
 </d-title>
 
 <d-article>
-  <p>	<div class="l-body-outset">
+  <div class="l-body-outset">
 		<figure style = "grid-column: page; margin: 1rem 0;" id = "Teaser_Id">
   		<div id = "Equilibration_Img_Teaser" style="left:0px; top:0px"></div>
   		</figure>
    		<script type = "text/javascript" src = "scripts_and_figs/Equilibration_Teaser.js" ></script>
 	</div>
-  </p>
+
   	<p>Using physics to understand the past and future of energy-based models.</p>
 </d-article>
 <d-byline></d-byline>
@@ -150,7 +150,6 @@ The energy function of a physical system can be expressed as a sum over contribu
 where <d-math>\alpha(\theta)</d-math> is a vector-valued function and <d-math>A(\theta)</d-math> is a scalar, which for a Boltzmann distribution is related to the partition function as <d-math>A(\theta) = \log(1/Z)</d-math> <d-cite key="li2013learning"></d-cite>.</d-footnote><d-cite key="aurell2012inverse"></d-cite>.
 
 Knowledge of the expectation values <d-math>\langle f_i(x)\rangle </d-math> fixes the parameters <d-math>\theta_i </d-math> and therefore also the properties of the resulting Boltzmann distribution.
-<!-- If we would like to learn an image <d-math>x</d-math> for example, <d-math>f_i(x)</d-math> can represent any of the expectation values of single pixles of the image <d-math> \langle x_i \rangle </d-math>, two pixle correlations <d-math> \langle x_i x_j \rangle </d-math> and higher order terms. <d-math>\theta_i </d-math> weights the relevance of these expectation values to minimize the energy, which means irrelevant pixles in the image will not be important contributions to the energy. -->
 </p>
 
 <p>
@@ -191,7 +190,7 @@ The next step is to select the energy function. A reasonable choice is to start 
 <d-math block>
 E(\sigma) = -\sum_i b_i \sigma_i - \sum_{ij} w_{ij} \sigma_i\sigma_j.
 </d-math>
-This is known as the <em> Ising model </em>, first introduced as a mathematical description of interacting spins in the presence of a magnetic field <d-cite key="cipra1987introduction"> </d-cite>. </b> The parameters <d-math> b_i </d-math> determine the individual energies of the particles, which can take values <d-math> \pm b_i </d-math>. The parameters <d-math> w_{ij} </d-math> introduce energy contributions due to pairwise interactions
+This is known as the <em> Ising model </em>, first introduced as a mathematical description of interacting spins in the presence of a magnetic field <d-cite key="cipra1987introduction"> </d-cite>. The parameters <d-math> b_i </d-math> determine the individual energies of the particles, which can take values <d-math> \pm b_i </d-math>. The parameters <d-math> w_{ij} </d-math> introduce energy contributions due to pairwise interactions
 <!--: for <d-math> w_{ij}>0 </d-math>, equal configurations <d-math>(\sigma_i=\sigma_j)</d-math> have lower energy. For <d-math> w_{ij}<0 </d-math>, opposite configurations <d-math>(\sigma_i\neq\sigma_j)</d-math> lead to lower energies.-->
 This model is known as a <em>Hopfield network</em>. The parameters <d-math> w_{ij} </d-math> in the energy function can be viewed as weighted edges in a graph and therefore the model can be represented by a network &mdash; a neural network when particles themselves are viewed as neurons.
 <!--At this stage, we make another strategic choice: experimentally, it is extremely challenging to engineer physical systems that represent Ising models with arbitrary parameters. Therefore, despite our imagined role as ambitious experimental physicists, instead of building these systems in a laboratory, we aim simulate them using computer models. In particular, this gives freedom to explore a wide variety of systems without worrying about experimental constraints. --></p>
