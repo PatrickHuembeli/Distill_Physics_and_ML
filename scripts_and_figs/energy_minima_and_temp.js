@@ -228,6 +228,7 @@ function start_convergence(a, number_of_images, boltzmann){
 
 
 function temp_slider_energy_min(val){
+  console.log(val)
 	document.getElementById("temperature_slider_energy_minima").innerHTML = x_temp_energy(val).toPrecision(2);
 	d3.selectAll(".energy_min_images").interrupt()
 	d3.selectAll(".dot").interrupt()

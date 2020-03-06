@@ -116,7 +116,7 @@
 
 <p>
 Energy-based models emerged in the machine learning literature of the 1980s <d-cite key="hopfield_neural_1982,ackley1985learning"></d-cite>.
-They have since been further developed, extended, and improved over several decades of work <d-cite key="lecun2006tutorial"></d-cite>. Some energy-based models &mdash; Boltzmann machines especially &mdash; have recently been “back-ported” to physics, and used for example to model the wavefunctions of quantum systems <d-cite key="carleo2017solving,gao2017efficient,torlai2018neural,melko2019restricted"></d-cite>. Furthermore, Boltzmann machines are still being employed in other areas <d-cite key='salakhutdinov2007restricted,zhai2016deep,dahl2010phone,swersky2011autoencoders'></d-cite>, and they have become competitive with GANs for specific tasks <d-cite key="du2019implicit"></d-cite> . Many types of energy-based models are generative, are guarantee to sample a valid probability distribution, and can often be stacked to create deep, hierarchical representations <d-cite key="le2010deep"></d-cite>.
+They have since been further developed, extended, and improved over several decades of work <d-cite key="lecun2006tutorial"></d-cite>. Some energy-based models &mdash; Boltzmann machines especially &mdash; have recently been “back-ported” to physics, and used for example to model the wavefunctions of quantum systems <d-cite key="carleo2017solving,gao2017efficient,torlai2018neural,melko2019restricted"></d-cite>. Furthermore, Boltzmann machines are still being employed in other areas <d-cite key='salakhutdinov2007restricted,zhai2016deep,dahl2010phone,swersky2011autoencoders'></d-cite>, and they have become competitive with GANs for specific tasks <d-cite key="du2019implicit"></d-cite> . Many types of energy-based models are generative, are guaranteed to sample a valid probability distribution, and can often be stacked to create deep, hierarchical representations <d-cite key="le2010deep"></d-cite>.
 More recent developments include their use in reinforcement learning <d-cite key="finn2016connection,haarnoja2017reinforcement,du2019model"></d-cite>, to replace discriminators in GANs <d-cite key="zhao2016energy"></d-cite>, and the appearance of quantum energy-based models <d-cite key="amin2018quantum,verdon2019quantum"></d-cite>. </p>
 
 
@@ -173,7 +173,7 @@ As ambitious scientists, we are now in good shape: we have learned that collecti
        </div>
      </div>
 
-     <div class="triplecolumn"> <p class="figure-text"> Effect of temperature <d-math>T</d-math> and coupling <d-math>w</d-math> on the Boltzmann distribution of a two-particle system. The histogram on the left shows the probability of each possible state <d-math>x = (x_1, x_2)</d-math>, where <d-math>x_i=\{-1, 1\}</d-math>. The energy function is <d-math>E(x_1, x_2) = -w x_1 x_2 </d-math>. The sign of the coupling determines which configurations are more likely: if <d-math>w<0</d-math>, opposite configurations <d-math>x_1=-x_2</d-math> have lower energy (higher probability). If <d-math>w>0</d-math>, equal configurations <d-math>x_1=x_2</d-math> have lower energy (higher probability). Increasing the temperature <d-math>T</d-math> makes high-energy configurations more likely. In the limit of very large temperatures, states become approximately equiprobable regardless of coupling strength.<p></div>
+     <div class="triplecolumn"> <p class="figure-text"> Effect of temperature <d-math>T</d-math> and coupling <d-math>w</d-math> on the Boltzmann distribution of a two-particle system. The histogram on the left shows the probability of each possible state <d-math>x = (x_1, x_2)</d-math>, where <d-math>x_i=\{-1, 1\}</d-math> (red / grey). The energy function is <d-math>E(x_1, x_2) = -w x_1 x_2 </d-math>. The sign of the coupling determines which configurations are more likely: if <d-math>w<0</d-math>, opposite configurations <d-math>x_1=-x_2</d-math> have lower energy (higher probability). If <d-math>w>0</d-math>, equal configurations <d-math>x_1=x_2</d-math> have lower energy (higher probability). Increasing the temperature <d-math>T</d-math> makes high-energy configurations more likely. In the limit of very large temperatures, states become approximately equiprobable regardless of coupling strength.<p></div>
 
 
 
@@ -320,13 +320,13 @@ Moreover, because of the independence between nodes in the same layer, the indiv
 <p>
 <d-math block>
   \begin{aligned}
-  P(v_i=1|h) &= \frac{1}{1+e^{-\Delta E_i/T}},\\
-  P(h_j=1|v) &= \frac{1}{1+e^{-\Delta E_j/T}}.
+  P(h_j=1|v) &= \frac{1}{1+e^{-\Delta E_j/T}}, \\
+  P(v_i=1|h) &= \frac{1}{1+e^{-\Delta E_i/T}}.\\
   \end{aligned}
 </d-math>
 </p>
 <p>
-The remaining probabilities <d-math>P(v_i=-1|h)</d-math> and <d-math>P(h_j=-1|v)</d-math> follow from these equations. These properties of RBMs permit a new sampling strategy:</p>
+The remaining probabilities <d-math>P(h_j=-1|v)</d-math> and <d-math>P(v_i=-1|h)</d-math> follow from these equations. These properties of RBMs permit a new sampling strategy:</p>
 
  <ol>
      <li>Fix the hidden nodes. Sample visible nodes from the conditional distribution <d-math>P(v|h) = \prod_i P(v_i|h)</d-math> by independently sampling the state of each node from its distribution <d-math>P(v_i|h)</d-math>.</li>
