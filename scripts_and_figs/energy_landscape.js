@@ -147,7 +147,7 @@ function reinitialize_phase(){
 	unlearning_steps = 0
 	dataset = init_dataset()
 	//learning_fct_image_energies(0)
-	update_line(0, 2000)
+	update_line(0, 1000)
 	step_length = 500
 	reinitialize_image_energies()
 }
