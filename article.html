@@ -82,7 +82,7 @@
 <d-title>
 </d-title>
 
-<d-article>
+<d-article class="centered">
   <div class="l-body-outset">
 		<figure style = "grid-column: page; margin: 1rem 0;" id = "Teaser_Id">
   		<div id = "Equilibration_Img_Teaser" style="left:0px; top:0px"></div>
@@ -190,7 +190,7 @@ E(\sigma) = -\sum_i b_i \sigma_i - \sum_{ij} w_{ij} \sigma_i\sigma_j.
 This is known as the <em> Ising model </em>, first introduced as a mathematical description of interacting spins in the presence of a magnetic field <d-cite key="cipra1987introduction"> </d-cite>. The parameters <d-math> b_i </d-math> determine the individual energies of the spins, which can take values <d-math> \pm b_i </d-math>. The parameters <d-math> w_{ij} </d-math> introduce energy contributions due to pairwise interactions: for <d-math> w_{ij}<0 </d-math>, equal configurations <d-math>(\sigma_i=\sigma_j)</d-math> have higher energy. For <d-math> w_{ij}>0 </d-math>, opposite configurations <d-math>(\sigma_i\neq\sigma_j)</d-math> lead to higher energies
 <d-footnote>There are other conventions for Ising Hamiltonian in the literature, where the signs of the energy terms change. For example
 <d-math block>
-E(\sigma) = - \sum_i b_i \sigma_i - \sum_{ij} w_{ij} \sigma_i\sigma_j.
+E(\sigma) = \sum_i b_i \sigma_i + \sum_{ij} w_{ij} \sigma_i\sigma_j.
 </d-math>
 We follow the convention introduced above.
 </d-footnote>. This model is known as a <em>Hopfield network</em>. The parameters <d-math> w_{ij} </d-math> in the energy function can be viewed as weighted edges in a graph and therefore the model can be represented by a network &mdash; a neural network, when particles themselves are viewed as neurons.

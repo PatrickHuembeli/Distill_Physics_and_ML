@@ -26,8 +26,8 @@ spring_svg.append("polyline")
 	.attr("class", "up_arrow")
 	.attr("points", string)
 	.attr("stroke", arrow_color)
-	.attr("stroke-linejoin", "round")
-	.attr("stroke-linecap", "round")
+	.attr("stroke-linejoin", "miter")
+	.attr("stroke-linecap", "miter")
 	.attr("stroke-width", arrow_stroke)
 	.attr("fill", "none")
 }
@@ -128,7 +128,7 @@ x_change = 10
 y_change = 10
 x_pos_arrows = 100
 down_arrow_length = 62
-margin_between_arrows = 10
+margin_between_arrows = 15
 
 draw_arrow_up(x_pos_arrows, 10, x_pos_arrows, 100)
 draw_arrow_down(x_pos_arrows, 120, x_pos_arrows, 180)

@@ -147,8 +147,8 @@ function draw_arrow_up2(x1, y1, x2, y2){
          .attr("points", string)
          .attr("stroke", arrow_color)
          .attr("stroke-width", arrow_stroke)
-         .attr("stroke-linejoin", "round")
-         .attr("stroke-linecap", "round")
+         .attr("stroke-linejoin", "miter")
+         .attr("stroke-linecap", "miter")
          .attr("fill", "none")
  }
 
@@ -168,7 +168,7 @@ function Arrow_Sum2(center_x, center_y, max_length, slider_input){
          .attr("stroke", grad_arrow_sum[scale])
              //.attr("stroke","rgb(0,0,0)")
          .attr("stroke-linejoin", "miter")
-         .attr("stroke-linecap", "round")
+         .attr("stroke-linecap", "miter")
               .attr("stroke-width",arrow_sum_stroke)
 
 
