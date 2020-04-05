@@ -522,7 +522,7 @@ The figure below collects the concepts we have covered thus far, showing how a t
 
   <p>
     On the other hand, energy-based models are experiencing a resurgence of interest: they are stable to train, require few parameters, show high sample quality, generalization ability, and are amenable to compositionality <d-cite key="du2019implicit"></d-cite>. These are characteristics that other generative models like variational autoencoders or generative adversarial networks struggle with. Progress has also been made to improve the scaling of training <d-cite key="du2019implicit,nijkamp2019on"></d-cite>. With these developments, there is an indication that this family of models continues to be relevant in machine learning.</p>
-       
+
         </p>
         <p>
        However, it is not only deep learning that has shortcomings. Energy-based models also need improvements on several frontiers.
@@ -561,8 +561,8 @@ The figure below collects the concepts we have covered thus far, showing how a t
       or coherent many-body delocalization effects <d-cite key="Kechedzhi18"></d-cite>.
       Very recently, several quantum-inspired deterministic and probabilistic algorithms have been developed to efficiently reveal the structure of the low-energy spectrum and approximating partition functions for several classes of spin-glass systems that encode optimization problems <d-cite key="Rams2018,Hartnett2020,Hartnett2020self"></d-cite>. These works combine advanced tools from many-body physics such as tensor networks contractions <d-cite key="Rams2018"></d-cite>, tools for performing inference in graphical models such as loopy belief propagation, and recent advances in deep generative models such as normalizing flows <d-cite key="Hartnett2020,Hartnett2020self"></d-cite>. These latest works show that quantum-inspired methods or algorithms can improve the sampling from complex spin systems. </p>
 
-
-      Let us refelct on recent progress in physics and see how those advances can inform research in machine learning.
+<p>
+      Let us reflect on recent progress in physics and see how those advances can inform research in machine learning.
       Statistical mechanics has a rich interplay with related areas such as condensed matter and quantum many-body physics. Tensor networks emerged as a highly scalable numerical method to study such systems <d-cite key="orus2014practical"></d-cite>. The core idea is to compress the space that represents the physical system for efficient numerical simulation. There have been a number of successful demonstrations employing tensor networks in machine learning <d-cite key="stoudenmire2016supervised,roberts2019tensornetwork,efthymiou2019tensornetwork"></d-cite>.
      This is a success-story for physically-motivated techniques in machine learning. Tensor networks also come in hierarchical variants, which allows the creation of deep architectures. The first forays have been taken to explore the power of this learned hierarchical representation in machine learning <d-cite key="stoudenmire2018learning,liu2019machine"></d-cite>, a promising area of research. Furthermore, approximate tensor-network contraction provides a gradient-free algorithm for certain NP-hard problems, within some desired approximation -- a task that in general (in worse case) is <d-math>\#P</d-math> hard -- and also computes better lowest energies. Discrete optimization problems are inherently non-differentiable; thus, all
      gradient-based methods would, without sufficient modifications or approximations, naturally fail. Tensor network-based approaches offer new paths to develop approximate algorithms for unbiased sampling of low-energy states.
