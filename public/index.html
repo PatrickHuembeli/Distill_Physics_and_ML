@@ -88,7 +88,15 @@
   		<div id = "Equilibration_Img_Teaser" style="left:0px; top:0px"></div>
   		</figure>
    		<script type = "text/javascript" src = "scripts_and_figs/Equilibration_Teaser.js" ></script>
+
+      <div style="position:absolute; width: 250px; height: 50px; left: 960px; top: 40px;;">
+      <p class="figure-text"> <b>Using an RBM to retrieve damaged images.</b> An RBM is a energy based model that can learn patterns such as MNIST digits. Through equilibration the RBM reaches a low-energy state and retrieves a learned pattern. Dependent on the initial states one can reach different low-energy states and therefore find different patterns. </p>
+      </div>
+
 	</div>
+
+
+
 
   	<p>Using physics to understand the past and future of energy-based models.</p>
 </d-article>
@@ -99,15 +107,15 @@
   <a class="marker" href="#section-1" id="section-1"><span>Introduction</span></a>
   <h2 id="testing-the-bm-as-a-trained-model">Introduction</h2>
 
-  <p>Inspiration takes many forms. A painter contemplates a sunrise and translates its colours onto a canvas. A writer sets sail on a new adventure, transforming life experiences into compelling stories. Scientists attempting to design artificial intelligence systems &mdash; where can they find inspiration?
-  Neuroscience has inspired many of the mathematical models that form the bedrock of research in machine learning and artificial intelligence. Is it possible to dive deeper and draw inspiration from the fundamental laws of nature?
+  <p>Inspiration takes many forms: A painter contemplates a sunrise and translates its colours onto a canvas. A writer sets sail on a new adventure, transforming life experiences into compelling stories. Scientists attempting to design artificial intelligence systems &mdash; where can they find inspiration?
+  While neuroscience has inspired many of the mathematical models that form the bedrock of research in ML and AI, is it possible to dive deeper and draw inspiration from the fundamental laws of nature themselves?
     </p>
 
-  <p> Here, we embark on a journey to recreate energy-based models from the following perspective: as scientists aiming to build intelligent systems from the collective behaviour of interacting physical particles. Along the way, we explain familiar concepts from new perspectives, and uncover key physical concepts underlying the theory and practice of <emph> energy-based models </emph>. This includes the design, implementation, and training of Hopfield networks and Boltzmann machines, highlighting how physical principles can explain both the success and challenges associated with these models. We focus on Hopfield networks and Boltzmann machines because of their historical significance &mdash; which paved the way for future revolutions in the field &mdash; and because of their immediate connection to fundamental physical principles. Ultimately, we study modern concepts, exploring open questions in machine intelligence from a physical perspective, venturing a glance into future research.
+  <p> We invite the reader on a journey to recreate energy-based models from the following perspective: as scientists aiming to build intelligent systems from the collective behaviour of interacting physical particles. Along the way, we explain familiar concepts from new perspectives, and uncover key physical concepts underlying the theory and practice of <emph> energy-based models </emph>. This includes the design, implementation, and training of Hopfield networks <d-cite key="hopfield_neural_1982"></d-cite> and Boltzmann machines <d-cite key="ackley1985learning"></d-cite>, highlighting how physical principles can explain both the success and challenges associated with these models. We focus on Hopfield networks and Boltzmann machines because of their historical significance &mdash; which paved the way for future revolutions in the field &mdash; and because of their immediate connection to fundamental physical principles. Ultimately, we study modern concepts, exploring open questions in machine intelligence from a physical perspective, venturing a glance into future research.
   </p>
 
 
-<p> This article should be understood as a journey from the past to the future of energy-based models. Attention is placed on using physical principles to understand basic concepts such as energy functions, Boltzmann distributions, Ising models, Gibbs sampling, and contrastive divergence. In the concluding sections, we reflect on the possible future trends on machine intelligence based on recent advances in statistical mechanics, tensor networks, spin glasses, and generative models, shining light on cutting-edge research at the interface of physics and machine learning.</p>
+<p> This article should be understood as a journey from the past to the future of energy-based models. Attention is placed on using physical principles to understand basic concepts such as energy functions, Boltzmann distributions, Ising models <d-cite key="cipra1987introduction"> </d-cite>, Gibbs sampling <d-cite key="MCMC_Springer"> </d-cite>, and contrastive divergence <d-cite key="carreira2005contrastive"></d-cite>. In the concluding sections, we reflect on the possible future trends on machine intelligence based on recent advances in statistical mechanics, tensor networks <d-cite key="orus2014practical"></d-cite>, spin glasses <d-cite key="SteinBook"></d-cite>, and generative models <d-cite key="ng2002discriminative"> </d-cite>, shining light on cutting-edge research at the interface of physics and machine learning.</p>
 
 
 <!-- Second Section  2  -->
@@ -115,20 +123,28 @@
 <h2 id="testing-the-bm-as-a-trained-model">Energy-based models</h2>
 
 <p>
-Energy-based models emerged in the machine learning literature of the 1980s <d-cite key="hopfield_neural_1982,ackley1985learning"></d-cite>.
+Energy-based models emerged in the machine learning literature in the 1980s <d-cite key="hopfield_neural_1982,ackley1985learning"></d-cite>.
 They have since been further developed, extended, and improved over several decades of work <d-cite key="lecun2006tutorial"></d-cite>. Some energy-based models &mdash; Boltzmann machines especially &mdash; have recently been “back-ported” to physics, and used for example to model the wavefunctions of quantum systems <d-cite key="carleo2017solving,gao2017efficient,torlai2018neural,melko2019restricted"></d-cite>. Furthermore, Boltzmann machines are still being employed in other areas <d-cite key='salakhutdinov2007restricted,zhai2016deep,dahl2010phone,swersky2011autoencoders'></d-cite>, and they have become competitive with GANs for specific tasks <d-cite key="du2019implicit"></d-cite> . Many types of energy-based models are generative, are guaranteed to sample a valid probability distribution, and can often be stacked to create deep, hierarchical representations <d-cite key="le2010deep"></d-cite>.
-More recent developments include their use in reinforcement learning <d-cite key="finn2016connection,haarnoja2017reinforcement,du2019model"></d-cite>, to replace discriminators in GANs <d-cite key="zhao2016energy"></d-cite>, and the appearance of quantum energy-based models <d-cite key="amin2018quantum,verdon2019quantum"></d-cite>. </p>
+More recent developments include their use in reinforcement learning <d-cite key="finn2016connection,haarnoja2017reinforcement,du2019model"></d-cite>, as potential replacements for discriminators in GANs <d-cite key="zhao2016energy"></d-cite>, and the appearance of quantum energy-based models <d-cite key="amin2018quantum,verdon2019quantum"></d-cite>. </p>
 
 
 <p>
-To understand the origin of energy-based models, we imagine being ambitious experimental physicists. Our goal &mdash; a bold one! &mdash; is to build a physical system that is capable of intelligent behavior: artificial intelligence in the lab. This is definitely ambitious, being able to fully engineer a large collection of particles is challenging; typically they move randomly and uncontrolably as they interact with each other and with the environment. As an initial strategic choice, we aim to use these random fluctuations to our advantage. The goal is to design <em>probabilistic systems</em> that harness randomness in their intelligent behaviour. Mathematically, a probabilistic system is characterized by a probability distribution that determines the likely configurations of the system at different times. The challenge is to design systems that are sufficiently complex to give rise to rich behaviour, but also simple enough that they can be efficiently trained and characterized. </p>
+To understand the origin of energy-based models, we imagine ourselves as ambitious experimental physicists. Our goal &mdash; a bold one! &mdash; is to build a physical system that is capable of intelligent behavior. This is definitely ambitious, as being able to fully engineer a large collection of particles is challenging; they typically move randomly and uncontrolably as they interact with each other and with the environment. As an initial strategic choice, we aim to use these random fluctuations to our advantage. The goal is to design <em>probabilistic systems</em> that harness randomness in their intelligent behaviour.</p>
 
 <p>
-For large systems, it is overwhelmingly difficult to keep track of all their rapidly-fluctuating internal degrees of freedom. Typically only coarse-grained information can be accessed. An example is the total energy, which can even be theoretically determined for any given configuration of the system. This is encapsulated in terms of an <em> energy function </em> <d-math> E(x) </d-math> that assigns energy values to the possible configurations
-<d-math> x=(x_1, x_2, \ldots, x_n) </d-math> of an <d-math>n</d-math>-particle system. Here <d-math>x_i</d-math> denotes a relevant degree of freedom of the <d-math>i</d-math>-th particle, for example whether it is spinning clockwise or anti-clockwise. Energy functions are also referred to as the <em>Hamiltonian</em> of the system. </p>
+Mathematically, a probabilistic system is characterized by a probability distribution that determines the likely configurations of the system at different times. The challenge is to design systems that are sufficiently complex to give rise to rich behaviour, but also simple enough such that they can be efficiently trained and characterized.
+For large systems, it is overwhelmingly difficult to keep track of all their rapidly-fluctuating internal degrees of freedom. Typically only coarse-grained information can be accessed, signifying that in general one does not keep track of all the degrees of freedom, but of macroscopic properties of the system.</p>
 
+<p>
+An example for such a coarse-grained information is the total energy <d-cite key="goldstein2002classical"></d-cite>, which can be theoretically determined for any given configuration of the system. The total energy of a system is defined in terms of an <em> energy function </em> <d-math> E(x) </d-math> which assigns energy values to all its possible configurations.
+A configuration of an <d-math>n</d-math>-particle system can be described as <d-math> x=(x_1, x_2, \ldots, x_n) </d-math>, where <d-math>x_i</d-math> denotes a relevant degree of freedom of the <d-math>i</d-math>-th particle, for example whether it is spinning clockwise or anti-clockwise. Energy functions are also referred to as the <em>Hamiltonian</em> of the system.</p>
 
-<p> If the average energy <d-math> \langle E \rangle </d-math> is fixed, what probability distribution <d-math>P(x)</d-math> can be assigned? It is reasonable to choose the distribution with maximum entropy: if we do not have any information – and therefore no constraint – about a particular degree of freedom of a system, we should remain maximally flexible in the choice of model, while remaining consistent with the quantitites that are constrained. Choosing the maximum entropy model reduces the amount of potentially biased or unsubstantiated prior information built into a model. This strategy is known as <em> Jaynes' maximum entropy principle </em> <d-cite key="jaynes1957information"></d-cite>. It states that in assigning a model on the basis of partial available information, the distribution with the largest possible entropy should be chosen. The resulting distribution <d-math> P(x) </d-math> is the solution to the optimization problem
+<p> The average energy <d-math> \langle E \rangle </d-math> is given by the mean of the energies of all the possible states of the system and for a given system at equilibrium the average energy is constant. For such a system in equilibrium, what probability distribution <d-math>P(x)</d-math> can be assigned to a configuration <d-math>x</d-math> with energy <d-math> E(x) </d-math>? Since entropy is a measure for the randomness of system
+  <d-footnote>
+    The entropy of a system is given by <d-math>S = \sum_x -P(x)\log P(x)</d-math>, where
+    <d-math>P(x)</d-math> is the probability of a configuration <d-math>x</d-math>. If all configurations are equally likely, the entropy is maximal. If only one configuration <d-math>P(x) = 1</d-math> then the entropy is minimal. Because of this, the entropy is often referred to as a measure of randomness.
+  </d-footnote>
+  , it is reasonable to choose the distribution with maximum entropy: if we do not have any information – and therefore no constraint – about a particular degree of freedom of a system, we should remain maximally flexible in the choice of model, while remaining consistent with the quantitites that are constrained. Choosing the maximum entropy model reduces the amount of potentially biased or unsubstantiated prior information built into a model. This strategy is known as <em> Jaynes' maximum entropy principle </em> <d-cite key="jaynes1957information"></d-cite>. It states that in assigning a model on the basis of partial available information, the distribution with the largest possible entropy should be chosen. The resulting distribution <d-math> P(x) </d-math> is the solution to the optimization problem
 
  <d-math block>
   \begin{aligned}
@@ -141,7 +157,11 @@ giving <d-cite key="jaynes1957information"></d-cite>
  <d-math block>
   P(x) = \frac{1}{Z} \exp\left[ - E(x)/T \right],
  </d-math>
-where  <d-math>T </d-math> is a free parameter and <d-math> Z=\sum_x \exp[- E(x)/T] </d-math> is a normalization constant known as the <em>partition function</em>. This probability distribution is a familiar one in statistical physics: it is the <em> Boltzmann distribution </em>, which describes the probability of finding the system in a state <d-math>x</d-math> when it is in thermal equilibrium with a bath at temperature <d-math> T </d-math>. The Boltzmann distribution establishes a concrete relationship between energy and probability: low-energy configurations are the most likely to be observed. In the context of machine learning, probabilistic models governed by an energy function that describes the probability of a certain configuration are known as <em>energy-based models</em>. The Boltzmann distribution is one example of how to connect energy with probability. </p>
+where  <d-math>T </d-math> is a free parameter and <d-math> Z=\sum_x \exp[- E(x)/T] </d-math> is a normalization constant known as the <em>partition function</em>. This probability distribution is a familiar one in statistical physics: it is the <em> Boltzmann distribution </em>, which describes the probability of finding the system in a state <d-math>x</d-math> when it is in thermal equilibrium with a bath at temperature <d-math> T </d-math>
+<d-footnote>
+  Thermal equilibrium with a bath of temperature <d-math>T </d-math> means that the system is as well at tempearature <d-math>T </d-math>. The temperature in the end determines the average energy of a system. With an increasing <d-math>T </d-math> the probability of high energy configurations increases and hence, the average energy increases.
+</d-footnote>
+. The Boltzmann is one example for a distribution that establishes a concrete relationship between energy and probability: low-energy configurations are the most likely to be observed. <b>In the context of machine learning, probabilistic models governed by an energy function that describes the probability of a certain configuration are known as energy-based models</b>. </p>
 
 <p>
 The energy function of a physical system can be expressed as a sum over contributions arising both from the internal energy of each particle and the interactions between them. In such cases, the energy function can be written as
@@ -334,7 +354,7 @@ The remaining probabilities <d-math>P(h_j=-1|v)</d-math> and <d-math>P(v_i=-1|h)
      <li>Repeat the above steps <d-math>N</d-math> times, for suitably chosen <d-math>N</d-math>.</li>
   </ol>
 
-<p>The resulting states <d-math>(v, h)</d-math> will be approximately sampled from the system's Boltzmann distribution. This algorithm is known as <em>Gibbs sampling</em>, and it is the method typically used in practice to sample RBMs <d-cite key="carreira2005contrastive"></d-cite>.
+<p>The resulting states <d-math>(v, h)</d-math> will be approximately sampled from the system's Boltzmann distribution. This algorithm is known as <em>Gibbs sampling</em>, and it is the method typically used in practice to sample RBMs<d-cite key="carreira2005contrastive"></d-cite>.
 </p>
 
 <!-- Second Section  4  -->
