@@ -470,32 +470,9 @@ The second force  <d-math>F(\theta)</d-math> represents the system's natural pre
 where <d-math>\epsilon>0</d-math> is a small parameter and the model equilibrium states <d-math>\{\tilde{\sigma}^{(1)},\ldots, \tilde{\sigma}^{(N)} \}</d-math>
 are obtained by choosing a random initial configuration and using the sampling algorithms described in the previous section to find equilibrium states.
 During sampling, the weights of the model are set according to the Hebbian rule. The addition of this expectation value over model configurations leads to an increase in energy of all minima, including spurious ones.
-By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase in energy can lead to the disappearance of spurious minima, which are consequently "unlearned". This concept is illustrated in the figure below, where you can test the effect of learning and unlearning in shaping the energy function. </p>
+By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase in energy can lead to the disappearance of spurious minima, which are consequently "unlearned".</p>
 
-  <div class="row">
-    <div class="column">
-    <p class="figure-text"> </p>
-    <figure style = "width:100%; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "image_energies">
-  <div id = "image_energies_id" style="position:absolute; left:0px; top:0px"></div>
-  </figure>
-  </div>
-  <script type = "text/javascript" src = "scripts_and_figs/image_energies_script_new.js" ></script>
-  <div class="doublecolumn">
-    <input id="learn_button_id" type="button" value="Without Unlearning" onclick="learn_training()">
-    <input id="learn_button_id" type="button" value="With Unlearning" onclick="unlearn_training()">
-    <input id="learn_button_id" type="button" value="Reinitialize" onclick="reinitialize_phase()">
-  </div>
-  <div class="doublecolumn">
-    <figure style = "width:100%; height:400px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
-  <div id = "energy_landscape_figure_id" style="width:100%, height:100%, position:absolute; left:0px; top:0px"></div>
-  </figure>
-  <script type = "text/javascript" src = "scripts_and_figs/energy_landscape.js" ></script>
-  </div>
-  <div class="triplecolumn">
-	  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized spin system has an energy landscape with many different local minima. In physics this is often referred to as the spin-glass phase <d-cite key="amit1985spin"> </d-cite>. In energy-based models, learning a certain configuration (red dots) means that their energy needs to be decreased. This can be achieved through "learning steps" that locally update the weights of the model as to decrease the energy of data configurations. You can try this by clicking on the "Without unlearning" button. This strategy suffers from the drawback that the energy of other points can be local minimas, dependent on the initialization of the system. Instead, by alternating between learning and unlearning steps &mdash; which you can do by clicking on the "With unlearning" button &mdash; the occurrence of spurious minima can be reduced. On the left we show what happens with the energies of certain configurations from a more global perspective.</p>
-  </div>
-  </div>
-  </div>
+
 
 
   <a class="marker" href="#section-4.3" id="section-4.3"><span>Training Boltzmann machines</span></a>
@@ -533,7 +510,35 @@ By appropriately selecting the value of <d-math>\epsilon</d-math>, this increase
   </p>
   <p>
 
-This rule is known as the <em>contrastive divergence</em> formula for training RBMs. The Hebbian learning term <d-math> \langle v_i h_j\rangle_{\text{data}}</d-math>, usually referred to as the <em>positive phase</em>, decreases the energy of the configurations of the training data. The unlearning term <d-math> \langle v_i h_j\rangle_{\text{model}}</d-math>  (the <em>negative phase</em>) increases the energy of all the configurations that are near equilibrium. The role of contrastive divergence is to gradually shape the energy function of the model until all low-energy states of the model correspond to data points. Viewing the weights as generalized positions, we interpret the term <d-math>\Delta w_{ij}:=\langle v_i h_j \rangle_{\text{data}} - \langle v_i h_j \rangle_{\text{model}}</d-math> as a net force originating from two competing forces: a fixed external one due to data, and an internal force due to specific generalized positions of the system. When the forces are not balanced, this causes a shift in position in a direction that brings the forces closer to balance. Each shift in weight propagates across the entire model affecting all forces, so the strategy of the contrastive divergence training algorithm is to set a small learning rate <d-math> \eta</d-math> until all forces are balanced and the model is trained.
+This rule is known as the <em>contrastive divergence</em> formula for training RBMs. The Hebbian learning term <d-math> \langle v_i h_j\rangle_{\text{data}}</d-math>, usually referred to as the <em>positive phase</em>, decreases the energy of the configurations of the training data. The unlearning term <d-math> \langle v_i h_j\rangle_{\text{model}}</d-math>  (the <em>negative phase</em>) increases the energy of all the configurations that are near equilibrium. The figure below illustartes how the competing Hebbian learning term and the unlearning term can help to learn a pattern while avoiding local spurious minima.</p>
+
+<div class="row">
+  <div class="column">
+  <p class="figure-text"> </p>
+  <figure style = "width:100%; height:500px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "image_energies">
+<div id = "image_energies_id" style="position:absolute; left:0px; top:0px"></div>
+</figure>
+</div>
+<script type = "text/javascript" src = "scripts_and_figs/image_energies_script_new.js" ></script>
+<div class="doublecolumn">
+  <input id="learn_button_id" type="button" value="Without Unlearning" onclick="learn_training()">
+  <input id="learn_button_id" type="button" value="With Unlearning" onclick="unlearn_training()">
+  <input id="learn_button_id" type="button" value="Reinitialize" onclick="reinitialize_phase()">
+</div>
+<div class="doublecolumn">
+  <figure style = "width:100%; height:400px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "energy_landscape">
+<div id = "energy_landscape_figure_id" style="width:100%, height:100%, position:absolute; left:0px; top:0px"></div>
+</figure>
+<script type = "text/javascript" src = "scripts_and_figs/energy_landscape.js" ></script>
+</div>
+<div class="triplecolumn">
+  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized spin system has an energy landscape with many different local minima. In physics this is often referred to as the spin-glass phase <d-cite key="amit1985spin"> </d-cite>. In energy-based models, learning a certain configuration (red dots) means that their energy needs to be decreased. This can be achieved through "learning steps" that locally update the weights of the model as to decrease the energy of data configurations, with what we referred to as the Hebbian learning term (positive phase). You can try this by clicking on the "Without unlearning" button. This strategy suffers from the drawback that the energy of other points can be local minimas, dependent on the initialization of the system. Instead, by alternating between learning and unlearning steps &mdash; which you can do by clicking on the "With unlearning" button &mdash; the occurrence of spurious minima can be reduced with the unlearning term (negative phase). On the left we show what happens with the energies of certain configurations from a more global perspective.</p>
+</div>
+</div>
+</div>
+
+<p>
+The role of contrastive divergence is to gradually shape the energy function of the model until all low-energy states of the model correspond to data points. Viewing the weights as generalized positions, we interpret the term <d-math>\Delta w_{ij}:=\langle v_i h_j \rangle_{\text{data}} - \langle v_i h_j \rangle_{\text{model}}</d-math> as a net force originating from two competing forces: a fixed external one due to data, and an internal force due to specific generalized positions of the system. When the forces are not balanced, this causes a shift in position in a direction that brings the forces closer to balance. Each shift in weight propagates across the entire model affecting all forces, so the strategy of the contrastive divergence training algorithm is to set a small learning rate <d-math> \eta</d-math> until all forces are balanced and the model is trained.
 
 </p>
 
@@ -573,42 +578,7 @@ The figure below collects the concepts we have covered thus far, showing how a t
         Algorithms that require equilibration seem inefficient as the time-scales for equilibration blow up exponentially because of the exponential growth of the state space. Non-equilibrium statistical physics techniques should therefore be considered. Consequently, there is a significant opportunity for developing physics-based models that capture such correlations. In particular, quantum correlations could provide fruitful insights especially when the many-body systems are originated from natural or physical systems with quantum degrees of freedom. We discuss quantum models in the final section of this work. There are exciting emergent areas of research at the interfaces of machine learning, quantum computing, many-body physics, and optimization. This convergence provides a unique opportunity to make several seminal contributions at the mutual interfaces among these major disciplines, for students and upcoming researchers in these fields.
       </p>
 
-      <a class="marker" href="#section-5" id="section-5"><span>Spin glasses</span></a>
-      <h3 id="training">Spin glasses: when optimization problems become frustrated</h3>
 
-
-      <p>
-      Spin glasses -- a generalization of the Ising Hamiltonian to arbitrary k-local interactions, arbitrary local fields and interactions, over arbitrary graphs -- provide a prototypical and computationally universal language for representing discrete optimization problems <d-cite key="SteinBook"></d-cite>. The energy functions of such systems contain terms of the form
-      <d-math block>
-      	E(\sigma) = \sum_{i_1, i_2, \ldots, i_k} J_{i_1i_2\cdots i_k}\sigma_{i_1}\sigma_{i_2}\cdots\sigma_{i_k}.
-      </d-math>
- There is a one-to-one correspondence between such spin-glass representations and the conjunctive normal form in boolean logic. In particular, there is a fundamental connection in complexity of finding the low energy states of spin glasses and many important computational tasks, such as finding high-quality solutions to NP-hard combinatorial optimization problems <d-cite key="MezardBook"></d-cite> and performing sampling and inference in graphical models <d-cite key="MooreBook"></d-cite>. Metastable states and non-equilibrium dynamics of spin glasses can also represent steady-state attractors in dynamical systems <d-cite key="NishimoriBook"></d-cite>, associative memory retrieval in neuroscience <d-cite key="NishimoriBook"></d-cite>, and the training and inference over energy-based models of neural networks <d-cite key="LeCun06tutorial"></d-cite>. Developing a deep understanding of the structure and dynamics of emergent many-body phenomena in such complex systems has been an elusive goal for decades across many disciplines, including physics, neuroscience, and computer science.
-      </p>
-
-      <p>
-      A general class of probabilistic physics-inspired approaches to sample the solution space of such problems is based on Markov Chain Monte Carlo techniques, for example the Metropolis-Hastings algorithm described above that relies on local thermal fluctuations. Other examples include
-      simulated annealing <d-cite key="Kirkpatrick671"></d-cite> and parallel tempering <d-cite key="PTreview"></d-cite>.
-      More advanced methods combine probabilistic cluster update strategies over a backbone algorithm from the Markov Chain Monte Carlo family. This includes Swendsen-Wang-Wolf cluster updates <d-cite key="Swendsen_Wang87,Wolf89"></d-cite>, Hodayer moves <d-cite key="Houdayer2001"></d-cite>, or Hamze-Freitas-Selbey <d-cite key="HF04,Selby14,Hen_2017"> </d-cite> methods.
-      However, these approaches either break down for frustrated spin-glass systems <d-cite key="Wolf89"></d-cite>, percolate for dimensions larger than two <d-cite key="Houdayer2001"></d-cite>, or assume random tree-like subgraphs <d-cite key="HF04,Selby14,Hen_2017"></d-cite>
-
-      that are not necessarily related to the actual low-energy excitation “droplets” <d-footnote>A droplet is a local low energy cluster of spins where the distribution is disconnected from the rest of the system.</d-footnote> of the underlying spin-glass problem.
-    </p>
-
-    <p>
-      The intrinsic strongly disordered and frustrated nature of spin glasses defined over discrete variables significantly limits the applicability of machine learning algorithms to such systems. In order to tackle such problems, a continuous probability density theory for spin-glass systems has recently been developed with arbitrary connectivity graph, physical interactions, and local fields <d-cite key="Hartnett2020"></d-cite>. A self-supervised learning paradigm was used by automatically generating the data from the spin glass itself <d-cite key="Hartnett2020self"></d-cite>. It has been demonstrated that key physical and computational properties of the spin-glass phase can be successfully learned, including multi-modal steady-state distributions and topological structures among metastable states. Remarkably, it was observed that the learning itself corresponds to a spin-glass phase transition within the layers of the trained normalizing flows. The inverse normalizing flows can be interpreted as a learning procedure to perform reversible multi-scale coarse-graining operations which are different from the typical irreversible renormalization group techniques. Overall, there is an opportunity to employ such combinations of machine learning and statistical mechanics techniques to efficiently sample the high-quality solutions in an instance-wise fashion for certain subsets of hard problems.
-    </p>
-
-    <p>
-      Another class of physics-based approaches relies on quantum fluctuations to induce cluster updates such as adiabatic quantum computation <d-cite key="Lidar18"></d-cite>, dissipative quantum tunneling <d-cite key="Boixo16"></d-cite>,
-      or coherent many-body delocalization effects <d-cite key="Kechedzhi18"></d-cite>.
-      Very recently, several quantum-inspired deterministic and probabilistic algorithms have been developed to efficiently reveal the structure of the low-energy spectrum and approximating partition functions for several classes of spin-glass systems that encode optimization problems <d-cite key="Rams2018,Hartnett2020,Hartnett2020self"></d-cite>. These works combine advanced tools from many-body physics such as tensor networks contractions <d-cite key="Rams2018"></d-cite>, tools for performing inference in graphical models such as loopy belief propagation, and recent advances in deep generative models such as normalizing flows <d-cite key="Hartnett2020,Hartnett2020self"></d-cite>. These latest works show that quantum-inspired methods or algorithms can improve the sampling from complex spin systems. </p>
-
-<p>
-      Let us reflect on recent progress in physics and see how those advances can inform research in machine learning.
-      Statistical mechanics has a rich interplay with related areas such as condensed matter and quantum many-body physics. Tensor networks emerged as a highly scalable numerical method to study such systems <d-cite key="orus2014practical"></d-cite>. The core idea is to compress the space that represents the physical system for efficient numerical simulation. There have been a number of successful demonstrations employing tensor networks in machine learning <d-cite key="stoudenmire2016supervised,roberts2019tensornetwork,efthymiou2019tensornetwork"></d-cite>.
-     This is a success-story for physically-motivated techniques in machine learning. Tensor networks also come in hierarchical variants, which allows the creation of deep architectures. The first forays have been taken to explore the power of this learned hierarchical representation in machine learning <d-cite key="stoudenmire2018learning,liu2019machine"></d-cite>, a promising area of research. Furthermore, approximate tensor-network contraction provides a gradient-free algorithm for certain NP-hard problems, within some desired approximation -- a task that in general (in worse case) is <d-math>\#P</d-math> hard -- and also computes better lowest energies. Discrete optimization problems are inherently non-differentiable; thus, all
-     gradient-based methods would, without sufficient modifications or approximations, naturally fail. Tensor network-based approaches offer new paths to develop approximate algorithms for unbiased sampling of low-energy states.
-    </p>
 
       <a class="marker" href="#section-5" id="section-5"><span>Quantum machine learning</span></a>
       <h3 id="training">Quantum machine learning</h3>
@@ -667,6 +637,42 @@ Several papers study variants of Boltzmann machines <d-cite key="amin2018quantum
   <p> Progress in physics and machine learning will benefit from an interplay between both fields. There are emerging interfaces of machine learning with quantum computation, quantum control, and many-body systems.
   Machine learning tools can help understand physical data <d-cite key="wetzel2017unsupervised,huembeli2019automated"></d-cite>, design new experiments <d-cite key="melnikov2018active"></d-cite>, and solve old problems in new ways <d-cite key="iten2018discovering"></d-cite>. Similarly, insights from physics can inspire new models and lead to new hardware. Physics and machine learning, in combination, continue to expand perspectives, increase understanding, and push the frontiers of technology. </p>
 
+
+  <a class="marker" href="#section-5" id="section-5"><span>Spin glasses</span></a>
+  <h3 id="training">Spin glasses: when optimization problems become frustrated</h3>
+
+
+  <p>
+  Spin glasses -- a generalization of the Ising Hamiltonian to arbitrary k-local interactions, arbitrary local fields and interactions, over arbitrary graphs -- provide a prototypical and computationally universal language for representing discrete optimization problems <d-cite key="SteinBook"></d-cite>. The energy functions of such systems contain terms of the form
+  <d-math block>
+    E(\sigma) = \sum_{i_1, i_2, \ldots, i_k} J_{i_1i_2\cdots i_k}\sigma_{i_1}\sigma_{i_2}\cdots\sigma_{i_k}.
+  </d-math>
+There is a one-to-one correspondence between such spin-glass representations and the conjunctive normal form in boolean logic. In particular, there is a fundamental connection in complexity of finding the low energy states of spin glasses and many important computational tasks, such as finding high-quality solutions to NP-hard combinatorial optimization problems <d-cite key="MezardBook"></d-cite> and performing sampling and inference in graphical models <d-cite key="MooreBook"></d-cite>.  Developing a deep understanding of the structure and dynamics of emergent many-body phenomena in such complex systems has been an elusive goal for decades across many disciplines, including physics, neuroscience, and computer science.
+  </p>
+
+  <p>
+  A general class of probabilistic physics-inspired approaches to sample the solution space of such problems is based on Markov Chain Monte Carlo techniques, for example the Metropolis-Hastings algorithm described above that relies on local thermal fluctuations. Other examples include
+  simulated annealing <d-cite key="Kirkpatrick671"></d-cite> and parallel tempering <d-cite key="PTreview"></d-cite>.
+  More advanced methods combine probabilistic cluster update strategies over a backbone algorithm from the Markov Chain Monte Carlo family <d-cite key="Swendsen_Wang87,Wolf89, Houdayer2001, HF04,Selby14,Hen_2017"></d-cite>.
+  However, these approaches either break down for frustrated spin-glass systems <d-cite key="Wolf89"></d-cite>, percolate for dimensions larger than two <d-cite key="Houdayer2001"></d-cite>, or assume random tree-like subgraphs <d-cite key="HF04,Selby14,Hen_2017"></d-cite>
+  that are not necessarily related to the actual low-energy excitation “droplets” <d-footnote>A droplet is a local low energy cluster of spins where the distribution is disconnected from the rest of the system.</d-footnote> of the underlying spin-glass problem.
+</p>
+
+<p>
+  The intrinsic strongly disordered and frustrated nature of spin glasses defined over discrete variables significantly limits the applicability of machine learning algorithms to such systems. In order to tackle such problems, a continuous probability density theory for spin-glass systems has recently been developed <d-cite key="Hartnett2020"></d-cite> and a self-supervised learning paradigm was used by automatically generating the data from the spin glass itself <d-cite key="Hartnett2020self"></d-cite>. It has been demonstrated that key physical and computational properties of the spin-glass phase can be successfully learned, including multi-modal steady-state distributions and topological structures among metastable states. Remarkably, it was observed that the learning itself corresponds to a spin-glass phase transition within the layers of the trained normalizing flows. Overall, there is an opportunity to employ such combinations of machine learning and statistical mechanics techniques to efficiently sample the high-quality solutions in an instance-wise fashion for certain subsets of hard problems.
+</p>
+
+<p>
+  Another class of physics-based approaches relies on quantum fluctuations to induce cluster updates such as adiabatic quantum computation <d-cite key="Lidar18"></d-cite>, dissipative quantum tunneling <d-cite key="Boixo16"></d-cite>,
+  or coherent many-body delocalization effects <d-cite key="Kechedzhi18"></d-cite>.
+  Very recently, several quantum-inspired deterministic and probabilistic algorithms have been developed to efficiently reveal the structure of the low-energy spectrum and approximating partition functions for several classes of spin-glass systems that encode optimization problems <d-cite key="Rams2018,Hartnett2020,Hartnett2020self"></d-cite>. These latest works show that quantum-inspired methods or algorithms can improve the sampling from complex spin systems. </p>
+
+<p>
+  Let us reflect on recent progress in physics and see how those advances can inform research in machine learning.
+  Statistical mechanics has a rich interplay with related areas such as condensed matter and quantum many-body physics. Tensor networks emerged as a highly scalable numerical method to study such systems <d-cite key="orus2014practical"></d-cite>. The core idea is to compress the space that represents the physical system for efficient numerical simulation. There have been a number of successful demonstrations employing tensor networks in machine learning <d-cite key="stoudenmire2016supervised,roberts2019tensornetwork,efthymiou2019tensornetwork"></d-cite>.
+ This is a success-story for physically-motivated techniques in machine learning. Tensor networks also come in hierarchical variants, which allows the creation of deep architectures. The first forays have been taken to explore the power of this learned hierarchical representation in machine learning <d-cite key="stoudenmire2018learning,liu2019machine"></d-cite>, a promising area of research. Furthermore, approximate tensor-network contraction provides a gradient-free algorithm for certain NP-hard problems, within some desired approximation -- a task that in general (in worse case) is <d-math>\#P</d-math> hard -- and also computes better lowest energies. Discrete optimization problems are inherently non-differentiable; thus, all
+ gradient-based methods would, without sufficient modifications or approximations, naturally fail. Tensor network-based approaches offer new paths to develop approximate algorithms for unbiased sampling of low-energy states.
+</p>
 
 
 </d-article>
