@@ -62,6 +62,7 @@ teaser_images = teaser_svg_imgequil.selectAll()
     .on("click", function(d,i){teaser_main_image_var = d,
 	        teaser_total_equilibration_steps = 1
 	        teaser_selected_number = i
+          teaser_update_energy_line(i, teaser_total_equilibration_steps)
                 teaser_single_step()
     		});
 
@@ -167,10 +168,10 @@ hidden_points = getwholeImage_N(teaser_selected_number, false)
         .delay(delay_time).duration(transition_time)
         .style("fill", function(d) { return hidden_colors[d[2]]})
 	.style("stroke", function(d){return hidden_colors_stroke[d[2]]})
-       teaser_circle_energy_equilbration        .transition()
+       d3.select("#teaser_circle_energy_equilibration").transition()
         .delay(delay_time).duration(transition_time)
 		    .attr("cx", x_scale_eq_plot(teaser_total_equilibration_steps-1) )
-    		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[teaser_total_equilibration_steps-1].y))
+    		.attr("cy", y_scale_eq_plot(teaser_plot_eq_energy_data[teaser_total_equilibration_steps-1].y))
     		.attr("r", 4)
     }
     else{ // This is for the first run
@@ -287,7 +288,7 @@ var plot_eq_energy_line = d3.line()
     .curve(d3.curveMonotoneX) // apply smoothing to the line
 
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-var plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2)+0.45 } })
+var teaser_plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2)+0.45 } })
 
 energy_plot_frame = teaser_Energy_Plot_Container.append("rect")
 	.attr("x", 2*strokewidth_eq_plot)
@@ -302,15 +303,36 @@ energy_plot_frame = teaser_Energy_Plot_Container.append("rect")
 	.attr("stroke-opacity", opacity_energy_plot_frame);
 
 line_energy_2 = teaser_Energy_Plot_Container.append("path")
-    .datum(plot_eq_energy_data) // 10. Binds data to the line
+  .attr("id", "teaser_energy_line_path")
+    .datum(teaser_plot_eq_energy_data) // 10. Binds data to the line
     .attr("class", "plotline") // Assign a class for styling
     .attr("d", plot_eq_energy_line)
 	.style("stroke", c_energy_curve)
 
 teaser_circle_energy_equilbration = teaser_Energy_Plot_Container.append("circle") // Uses the enter().append() method
     //.attr("class", "dot") // Assign a class for styling
+    .attr("id", "teaser_circle_energy_equilibration")
     .attr("cx", x_scale_eq_plot(teaser_total_equilibration_steps) )
-    .attr("cy", y_scale_eq_plot(plot_eq_energy_data[teaser_total_equilibration_steps].y))
+    .attr("cy", y_scale_eq_plot(teaser_plot_eq_energy_data[teaser_total_equilibration_steps].y))
     .attr("r", 4)
     .attr("fill", c_energy_position_dot)
     .attr("opacity", 1.0)
+
+function teaser_update_energy_line(i){
+      if (i==0){
+      teaser_plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2)+0.45 } })
+    }
+    if (i==1){
+      teaser_plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2) +0.1*Math.sin(d/number_of_steps*Math.PI*8-Math.PI/3) +0.5 } })
+    }
+    if (i==2){
+      teaser_plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.8*Math.cos(d/number_of_steps*Math.PI+Math.PI/2) + 0.1*Math.cos(d/number_of_steps*Math.PI*10)  +0.9 } })
+    }
+    d3.select("#teaser_energy_line_path").datum(teaser_plot_eq_energy_data)
+    .attr("d", plot_eq_energy_line)
+
+    d3.select("#teaser_circle_energy_equilibration")
+    .attr("cx", x_scale_eq_plot(total_equilibration_steps) )
+    .attr("cy", y_scale_eq_plot(teaser_plot_eq_energy_data[total_equilibration_steps].y))
+
+    }
