@@ -225,6 +225,11 @@ var tooltip = d3.select("body") //This is in body not svg
   .append("div")
   .attr('class', 'tooltip');
 
+
+tooltip.style("color", c_text_tooltip)
+	.style("background-color", c_background_tooltip)
+	.style("font-size", "14px")
+
     // -------------------------------------------------------------------------
     // Draw lines for the RBM
     // -------------------------------------------------------------------------

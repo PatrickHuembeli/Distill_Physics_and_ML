@@ -13,11 +13,7 @@ dictionary["bm_permutations"+IDENTIFIERXOR] = permutations_of_vector(dictionary[
 // Add the space where it draws the RBM
 
 // Define Mouseover tooltip style
-c_text_tooltip = "grey"
-c_background_tooltip = "#F1F1F1"
-tooltip.style("color", c_text_tooltip)
-	.style("background-color", c_background_tooltip)
-	.style("font-size", "12px")
+
 
 d3.select(RBM_complete_XOR)
     .append("svg")

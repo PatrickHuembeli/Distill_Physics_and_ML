@@ -30,6 +30,9 @@ var 	c_vis_node1 = "white" 			// Color for visible nodes
 	c_unused_nodes =  "white"//"#D6D6D6"
 	unused_nodes_stroke =  "black"
 
+	c_text_tooltip = "grey"
+	c_background_tooltip = "#F1F1F1"
+
 	// OTHER STYLE PARAMETERS FOR FIGURE 2
 	var 	connection_stroke_width = 3.5 	// width of the connection lines
 		nodes_stroke_width = 0.5 		// Stroke width of the nodes
