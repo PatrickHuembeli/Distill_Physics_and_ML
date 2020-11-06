@@ -1,6 +1,6 @@
 var Hopfield_id = "#architecture_Hopfield_id" // This defines in which div we write into
 var RBM_id = "#architecture_RBM_id"
-var BM_id = "#architecture_BM_id" 
+var BM_id = "#architecture_BM_id"
 
 var hidden_nodes_colors = [c_hid_node1, c_hid_node2]
 var visible_nodes_colors = [c_vis_node1, c_vis_node2]
@@ -101,8 +101,8 @@ spins_new = []
 biases = []
 for (var i = 0; i < total_spins; i++) {
     spins_data.push(i);
-    spins_new.push(Math.floor(Math.random() * 2)) 
-    biases.push(-1);	
+    spins_new.push(Math.floor(Math.random() * 2))
+    biases.push(-1);
 }
 
 nodes_svg = svg_Figure.append("svg")
@@ -115,7 +115,7 @@ generate_RBM_figure()
 }
 
 generate_figure()
-  
+
 // =============================================================================
 // =============================================================================
 // DEFINE ALL FUNCTIONS
@@ -135,13 +135,13 @@ function make_connection_new(){
 	// Initialize connection Data
     	for(var j=0; j< total_nodes; j++) {
 		row = Array(total_nodes).fill(-1.0);
-        	weight_matrix.push(row);	
+        	weight_matrix.push(row);
 		for (i=0; i< total_nodes; i++){
 			if (j>=i){}
 			else{
 			     if(restricted_active==false){
 		    	       connection_graph.push([j,i])}
-			     else{ 
+			     else{
                                if((j<v_units && i<v_units)||(j>=v_units && i>=v_units)){}
 			       else{connection_graph.push([j,i])} }
 			}
@@ -215,6 +215,8 @@ function line_pos_gen_y2(d){
 // =============================================================================
 // Genearte the RBM Graph
 // =============================================================================
+lc_N = ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉']
+vh = ["v", "h"]
 
 function generate_RBM_figure(){
 
@@ -224,7 +226,7 @@ var tooltip = d3.select("body") //This is in body not svg
   .attr('class', 'tooltip');
 
     // -------------------------------------------------------------------------
-    // Draw lines for the RBM 
+    // Draw lines for the RBM
     // -------------------------------------------------------------------------
     d3.select("#"+Figure_id).selectAll()
         .data(connection_graph)
@@ -238,8 +240,23 @@ var tooltip = d3.select("body") //This is in body not svg
         .attr("y1", line_pos_gen_y1)
         .attr("x2", line_pos_gen_x2)
         .attr("y2", line_pos_gen_y2)
+        .on("mouseover", function(d,i) {
+            tooltip.text( "w" + lc_N[d[0]] + lc_N[d[1]])
+                    .style("visibility", "visible")
+         d3.select(this).attr("stroke", c_mouseover_rbm_connection).attr("opacity", rbm_connection_mousover_opacity)           ;
+      })
+
+       .on("mousemove", function(d) {
+            tooltip.style("top", (event.pageY+10)+ "px")
+            .style("left", event.pageX+10 + "px")
+            d3.select(this).attr("stroke",c_mouseover_rbm_connection).attr("opacity", rbm_connection_mousover_opacity);
+      })
+
+      .on("mouseout", function() {tooltip.style("visibility", "hidden")
+      d3.select(this).attr("stroke",c_rbm_connection).attr("opacity", rbm_connection_opacity);
+      })
     // -------------------------------------------------------------------------
-    // Draw nodes for the RBM 
+    // Draw nodes for the RBM
     // -------------------------------------------------------------------------
     nodes_svg.selectAll("circle")
         .data(spins_new)
@@ -259,11 +276,31 @@ var tooltip = d3.select("body") //This is in body not svg
 	.attr("node_state", function(d,i){return d})
         .attr('class', 'visible_circle') // class is needed for style sheet
         .attr("cx", pos_gen_x)
-        .attr("cy", pos_gen_y) 
+        .attr("cy", pos_gen_y)
         .attr("r", radius)
         .attr('id', function(d,i){return "hidden"+Figure_id+i})
-	.on("click", function(d,i){toggle_colors_architecture(d3.select(this), i)})
+	.on("click", function(d,i){
+    if (hidden_active==true){
+    spins_new[i] = Math.abs(spins_new[i]-1)
+    toggle_colors_architecture(d3.select(this), i)
+    tooltip.text( function(){return vh[Math.floor(i/v_units)] + lc_N[i] +"="+ -2*(spins_new[i]-0.5) })
+  }
+  })
+  .on("mouseover", function(d,i) {
+      tooltip.text( function(){return vh[Math.floor(i/v_units)] + lc_N[i] +"="+ -2*(spins_new[i]-0.5) })
+              .style("visibility", "visible")
+   d3.select(this).attr("stroke", c_mouseover_rbm_connection).attr("opacity", rbm_connection_mousover_opacity)           ;
+})
 
+ .on("mousemove", function(d) {
+      tooltip.style("top", (event.pageY+10)+ "px")
+      .style("left", event.pageX+10 + "px")
+      d3.select(this).attr("stroke",c_mouseover_rbm_connection).attr("opacity", rbm_connection_mousover_opacity);
+})
+
+.on("mouseout", function() {tooltip.style("visibility", "hidden")
+d3.select(this).attr("stroke",c_rbm_connection).attr("opacity", rbm_connection_opacity);
+})
 //if (hidden_active==true){
 //for (j=v_units; j<v_units+h_units; j++){
 //	d3.select("#hidden"+Figure_id+j)
@@ -276,12 +313,18 @@ if (hidden_active==false){
 for (j=v_units; j<v_units+h_units; j++){
 	d3.select("#hidden"+Figure_id+j)
 	.attr("class", "unused_circle")
-	.style("fill", c_unused_nodes)
+	// .style("fill", c_unused_nodes)
+  .style("fill", "white")
 	.style("stroke", unused_nodes_stroke)
-	.style("stroke-dasharray","5,5")
+	.style("stroke-dasharray","5,4")
+  .style("stroke-width", 2.0)
 	.on("click", function(d,i){return})
+  .on("mouseover", function(d,i) {
+  })
+
+
 }
 }
 
-    } 
-} 
+    }
+}

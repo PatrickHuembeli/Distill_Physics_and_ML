@@ -240,8 +240,7 @@ function generate_RBM_connections_new(identifier){
          .attr("x1", function(d){return line_pos_gen_x1(d,identifier)})
          .attr("y1", function(d){return line_pos_gen_y1(d,identifier)+circle_offset})
          .attr("x2", function(d){return line_pos_gen_x2(d,identifier)})
-         .attr("y2", function(d){
-         return line_pos_gen_y2(d,identifier)})
+         .attr("y2", function(d){return line_pos_gen_y2(d,identifier)})
          .on("mouseover", function(d,i) {
              tooltip.text(weight_text[i] +' = '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
                      .style("visibility", "visible")
