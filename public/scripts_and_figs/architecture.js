@@ -10,15 +10,24 @@ var visible_nodes_stroke_colors = [c_vis_node1_stroke, c_vis_node2_stroke]
 
 function toggle_colors_architecture(selection, d){
         selection_id = selection.attr('id')
+        id = selection_id.slice(0,-1)
+        selection = d3.select("#"+id + "0")
+        sel_Fig_id  = selection.attr("Figure_id")
+        index_list = [0,1,2,3,4,6,7]
+        if(sel_Fig_id == "Hopfield_figure"){
+          index_list = [0,1,2,3]
+        }
+        for(d in index_list){
+          selection = d3.select("#"+id + d)
          if(d>3){
 	 	if(selection_id=="hiddenHopfield_figure"+d){
 		}
 		 else {switch_color(selection, hidden_nodes_colors, hidden_nodes_stroke_colors)}
 	 }
 	else {switch_color(selection, visible_nodes_colors, visible_nodes_stroke_colors)}
-         }
+}}
 
-function switch_color(selection, nodes_color, stroke_color){
+function switch_color(selection, nodes_color, stroke_color, sel_Fig_id){
 	 current_state = selection.attr("node_state")
 	 if(current_state==0){current_state=1}
 	 else{current_state=0}
@@ -101,7 +110,9 @@ spins_new = []
 biases = []
 for (var i = 0; i < total_spins; i++) {
     spins_data.push(i);
-    spins_new.push(Math.floor(Math.random() * 2))
+    if(i<4){
+    spins_new.push((Math.pow(-1, i)+1)/2)}
+    else{spins_new.push(1)}
     biases.push(-1);
 }
 
@@ -283,6 +294,7 @@ tooltip.style("color", c_text_tooltip)
         .attr("cx", pos_gen_x)
         .attr("cy", pos_gen_y)
         .attr("r", radius)
+        .attr("Figure_id", Figure_id)
         .attr('id', function(d,i){return "hidden"+Figure_id+i})
 	.on("click", function(d,i){
     if (hidden_active==true){
