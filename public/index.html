@@ -97,8 +97,6 @@
 	</div>
 
 
-
-
   	<p>Using physics to understand energy-based models.</p>
 </d-article>
 <d-byline></d-byline>
@@ -351,21 +349,6 @@ Moreover, because of the independence between nodes in the same layer, the indiv
 <p>
 The remaining probabilities <d-math>P(h_j=-1|v)</d-math> and <d-math>P(v_i=-1|h)</d-math> follow from these equations. These properties of RBMs permit a new sampling strategy:
 
-<d-math block align=center>
-\begin{aligned}
-&\qquad \qquad \text{ranodmly initialize}~\vec{h} = [h_1, h_2, h_3, ...]\\
-&\qquad \qquad \textbf{for } \tau \quad 1\rightarrow N\\
-&\qquad \qquad\quad \textbf{for } \text{each element in }~\vec{v}\\
-&\qquad \qquad \qquad \text{sample}~v_i^{(\tau+1)} \sim p(v_i | h^{\tau})\\
-&\qquad \qquad \quad \textbf{end for} \\
-&\qquad \qquad \quad \textbf{for } \text{each element in }~\vec{h}\\
-&\qquad \qquad \qquad \text{sample}~h_i^{(\tau+1)} \sim p(h_i | v^{(\tau+1)})\\
-&\qquad \qquad \quad \textbf{end for}\\
-&\qquad \qquad \textbf{end for}\\
-&\qquad \qquad \textbf{return } (\vec{v},\vec{h})\\
-\end{aligned}
-</d-math>
-
  <ol>
      <li>Fix the hidden nodes. Sample visible nodes from the conditional distribution <d-math>P(v|h) = \prod_i P(v_i|h)</d-math> by independently sampling the state of each node from its distribution <d-math>P(v_i|h)</d-math>.</li>
      <li>Fix the visible nodes according to the samples of the previous step. Sample hidden nodes from the conditional distribution <d-math>P(h|v) = \prod_i P(h_i|v)</d-math> by independently sampling the state of each particle from its distribution <d-math>P(h_i|v)</d-math>.</li>
@@ -375,7 +358,6 @@ The remaining probabilities <d-math>P(h_j=-1|v)</d-math> and <d-math>P(v_i=-1|h)
 
 <p>The resulting states <d-math>(v, h)</d-math> will be approximately sampled from the system's Boltzmann distribution. This algorithm is known as <em>Gibbs sampling</em>, and it is the method typically used in practice to sample RBMs<d-cite key="carreira2005contrastive"></d-cite>.
 </p>
-
 
 
 <!-- Second Section  4  -->

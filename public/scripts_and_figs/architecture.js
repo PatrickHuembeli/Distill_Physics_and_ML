@@ -9,6 +9,7 @@ var visible_nodes_stroke_colors = [c_vis_node1_stroke, c_vis_node2_stroke]
 
 
 function toggle_colors_architecture(selection, d){
+        spins = [1,1,1,1,1,1,1,1]
         selection_id = selection.attr('id')
         id = selection_id.slice(0,-1)
         selection = d3.select("#"+id + "0")
@@ -17,15 +18,25 @@ function toggle_colors_architecture(selection, d){
         if(sel_Fig_id == "Hopfield_figure"){
           index_list = [0,1,2,3]
         }
-        for(d in index_list){
+        for(i in index_list){
+          d = index_list[i]
           selection = d3.select("#"+id + d)
          if(d>3){
-	 	if(selection_id=="hiddenHopfield_figure"+d){
-		}
-		 else {switch_color(selection, hidden_nodes_colors, hidden_nodes_stroke_colors)}
+	 	//         if(selection_id=="hiddenHopfield_figure"+d){
+    //           console.log("hidden")
+		// }
+		//  else {
+       state = switch_color(selection, hidden_nodes_colors, hidden_nodes_stroke_colors)
+       spins[d] = state
+     // }
 	 }
-	else {switch_color(selection, visible_nodes_colors, visible_nodes_stroke_colors)}
-}}
+	else {
+        state = switch_color(selection, visible_nodes_colors, visible_nodes_stroke_colors)
+        spins[d] = state
+        }
+}
+return spins
+}
 
 function switch_color(selection, nodes_color, stroke_color, sel_Fig_id){
 	 current_state = selection.attr("node_state")
@@ -33,8 +44,28 @@ function switch_color(selection, nodes_color, stroke_color, sel_Fig_id){
 	 else{current_state=0}
          selection.transition()
 	 selection.style("stroke", stroke_color[current_state])
-         selection.style("fill", nodes_color[current_state])
+   selection.style("fill", nodes_color[current_state])
 	 selection.attr("node_state", current_state)
+   return current_state
+}
+
+graph_weights = []
+for(var i=0;i<8;i++){
+  graph_weights[i] = []
+  for(var j=0;j<8;j++){
+    graph_weights[i][j] = 5*(Math.random()-1/2).toFixed(5)
+  }
+
+}
+
+function get_energy(spins, connection_graph){
+  energy = 0
+  for (var i = 0; i<connection_graph.length; i++){
+		kk = connection_graph[i][0]
+		ll = connection_graph[i][1]
+		energy += 2*(spins[kk]-1/2)*(spins[ll]-1/2)*2*graph_weights[kk][ll]
+		}
+    return energy.toFixed(2)
 }
 
 // Default Variables
@@ -43,7 +74,7 @@ var v_units = 4
 var total_spins = h_units + v_units
 
 var width = 700;
-var height = 200;
+var height = 230;
 var radius = nodes_radius;
 var space = 70.0
 
@@ -241,6 +272,13 @@ tooltip.style("color", c_text_tooltip)
 	.style("background-color", c_background_tooltip)
 	.style("font-size", "14px")
 
+    d3.select("#"+Figure_id).append("text")
+    .text(function(){return "Energy =" + get_energy(spins_new, connection_graph)})
+    .attr("id", Figure_id+"_energy_text")
+    .attr("x", 10)
+    .attr("y", 10)
+    .attr("class", "general_text")
+    .attr("fill", c_text_slider)
     // -------------------------------------------------------------------------
     // Draw lines for the RBM
     // -------------------------------------------------------------------------
@@ -257,7 +295,7 @@ tooltip.style("color", c_text_tooltip)
         .attr("x2", line_pos_gen_x2)
         .attr("y2", line_pos_gen_y2)
         .on("mouseover", function(d,i) {
-            tooltip.text( "w" + lc_N[d[0]] + lc_N[d[1]])
+            tooltip.text( "w" + lc_N[d[0]] + lc_N[d[1]] +"="+graph_weights[d[0]][d[1]].toFixed(2))
                     .style("visibility", "visible")
          d3.select(this).attr("stroke", c_mouseover_rbm_connection).attr("opacity", rbm_connection_mousover_opacity)           ;
       })
@@ -298,10 +336,11 @@ tooltip.style("color", c_text_tooltip)
         .attr('id', function(d,i){return "hidden"+Figure_id+i})
 	.on("click", function(d,i){
     if (hidden_active==true){
-    spins_new[i] = Math.abs(spins_new[i]-1)
-    toggle_colors_architecture(d3.select(this), i)
+    spins_new = toggle_colors_architecture(d3.select(this), i)
     tooltip.text( function(){return vh[Math.floor(i/v_units)] + lc_N[i] +"="+ -2*(spins_new[i]-0.5) })
   }
+  id = d3.select(this).attr("Figure_id")
+  d3.select("#"+id+ "_energy_text").text(function(){return "Energy =" + get_energy(spins_new, connection_graph)})
   })
   .on("mouseover", function(d,i) {
       tooltip.text( function(){return vh[Math.floor(i/v_units)] + lc_N[i] +"="+ -2*(spins_new[i]-0.5) })
