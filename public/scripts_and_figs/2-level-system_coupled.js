@@ -3,8 +3,8 @@ const identity_test = "#test_figure_id"
 // Variables
 
 // Size of 2D slider
-var param_width = 100, //width of slider rectangle
-    param_height = 100 // heigh
+var param_width = 190, //width of slider rectangle
+    param_height = 190 // height
     param_margin_x = 50; // distance of text with values
     param_margin_y = 10 // y margin 2D slider position
 
@@ -13,7 +13,7 @@ var slider_2D_rx = 10, //Corner radius of histo and slider
 
 // Histogram Variables
 var y0_systems = 13, //y position of parity blobs inside svg
-histo_label_pos_y = 230, // y position of the svg of histo parity labels
+histo_label_pos_y = 190, // y position of the svg of histo parity labels
 radius_systems = 7, // Radius of Parity Blobs
 node_distance_parity = 17, // How far are the blobs separated in the parity
 parity_blobs_shift_left = 11 // how much 1st blob is shifted from center of histo bar
@@ -30,6 +30,7 @@ common_svg = d3.select(identity_test)
 	.append("svg")
 	.attr("id", "fig1_histo_SVG")
 	.attr("height", 260)
+  .attr("width", 800)
 
 // SVG for bars
 common_svg.append("svg")
@@ -115,9 +116,9 @@ draw_parity_systems(twoL_histo_pos_gen(n)+20,y0_systems,updown[n],node_distance_
 // =================================================
 // INITIALIZE 2D SLIDER
 function initialize_2D_slider_fig1(){
-var svg = d3.select(identity_test).append("svg")
-    .attr("y", 0)
-    .attr("x",0);
+var svg = common_svg.append("svg")
+    .attr("y", 10)
+    .attr("x",300);
 
 var gradient = svg.append("defs")
   .append("linearGradient")
@@ -269,7 +270,7 @@ function generate_histogram_2_level(){
 	var histogram_svg = d3.select("#two_level_histogram")
 				.attr("height", 600)
 				.attr("width", 600)
-				.attr("y", 50)
+				.attr("y", 10)
 
 	histogram_svg.selectAll("rect")
 		.data(twoL_histogram_data)
