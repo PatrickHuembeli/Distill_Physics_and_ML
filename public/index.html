@@ -144,8 +144,8 @@ A configuration of an <d-math>n</d-math>-particle system can be described as <d-
 
  <d-math block>
   \begin{aligned}
-  \max_{P(x)}&\,\,  \sum_x -P(x)\log P(x) \\[0.4em]
-   &\text{s.t. } \sum_x P(x) E(x) = \langle E \rangle,
+  \max_{P(x)}\,\,  &\sum_x -P(x)\log P(x) \\[0.4em]
+   \text{s.t. } &\sum_x P(x) E(x) = \langle E \rangle,
   \end{aligned}
   </d-math>
 
@@ -203,7 +203,7 @@ E(\sigma) = -\sum_i b_i \sigma_i - \sum_{ij} w_{ij} \sigma_i\sigma_j.
 </d-math>
 
 This is known as the <em> Ising model </em> <d-cite key="cipra1987introduction"> </d-cite>. The parameters <d-math> b_i </d-math> determine the individual energies of the particles, which depend on the state <d-math> b_i \sigma_i = \pm b_i</d-math>.
- The parameters <d-math> w_{ij} </d-math> introduce energy contributions due to pairwise interactions: for <d-math> w_{ij}<0 </d-math>, equal configurations <d-math>(\sigma_i=\sigma_j)</d-math> have higher energy. For <d-math> w_{ij}>0 </d-math>, opposite configurations <d-math>(\sigma_i\neq\sigma_j)</d-math> lead to higher energies
+ The parameters <d-math> w_{ij} </d-math> introduce energy contributions due to pairwise interactions: for <d-math> w_{ij}<0 </d-math>, equal configurations <d-math>(\sigma_i=\sigma_j)</d-math> have higher energy. For <d-math> w_{ij}>0 </d-math>, opposite configurations <d-math>(\sigma_i = -\sigma_j)</d-math> lead to higher energies
 <d-footnote>There are other conventions for the Ising energy function in the literature, where the signs of the energy terms change. For example
 <d-math block>
 E(\sigma) = \sum_i b_i \sigma_i + \sum_{ij} w_{ij} \sigma_i\sigma_j.
@@ -513,7 +513,7 @@ This rule is known as the <em>contrastive divergence</em> formula for training R
 <script type = "text/javascript" src = "scripts_and_figs/energy_landscape.js" ></script>
 </div>
 <div class="triplecolumn">
-  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized system has an energy landscape (here represented by a simplified curve) with many different local minima. In physics this is often referred to as the spin-glass phase <d-cite key="amit1985spin"> </d-cite>. In energy-based models, learning a certain configuration (red dots) means that their energy needs to be decreased. This can be achieved through "learning steps" that locally update the weights of the model as to decrease the energy of data configurations, with what we referred to as the Hebbian learning term (positive phase). You can try this by clicking on the "Without unlearning" button. This strategy suffers from the drawback that the energy of other points can be local minimas, dependent on the initialization of the system. Instead, by alternating between learning and unlearning steps &mdash; which you can do by clicking on the "With unlearning" button &mdash; the occurrence of spurious minima can be reduced with the unlearning term (negative phase). On the left we show what happens with the energies of certain configurations from a more global perspective.</p>
+  <p class ="figure-text"><b>Learning and Unlearning: </b> A randomly initialized system has an energy landscape (here represented by a simplified curve) with many different local minima. In physics this is often referred to as the spin-glass phase <d-cite key="amit1985spin"> </d-cite>. In energy-based models, learning a certain configuration (red dots) means that their energy needs to be decreased. This can be achieved through "learning steps" that locally update the weights of the model as to decrease the energy of data configurations, with what we referred to as the Hebbian learning term (positive phase). You can try this by clicking on the "Without unlearning" button. This strategy suffers from the drawback that the energy of other points can be local minimas, dependent on the initialization of the system. Instead, by alternating between learning and unlearning steps &mdash; which you can do by clicking on the "With unlearning" button &mdash; the occurrence of spurious minima can be reduced with the unlearning term (negative phase). Hovering over the orange and red dots, shows which patterns they represent. On the left we show what happens with the energies of certain configurations from a more global perspective.</p>
 </div>
 </div>
 </div>
