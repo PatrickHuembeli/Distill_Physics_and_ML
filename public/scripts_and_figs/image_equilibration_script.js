@@ -62,7 +62,9 @@ images = svg_imgequil.selectAll()
     .on("click", function(d, i){main_image_var = d,
 	        total_equilibration_steps = 1
 	        selected_number = i
+          update_energy_line(i, total_equilibration_steps)
                 single_step()
+
     		});
 
 
@@ -182,7 +184,7 @@ function update_drawing(delay_time, transition_time) {
         .style("fill", function(d) { return hidden_colors[d[2]]})
         .style("stroke", function(d){return hidden_colors_stroke[d[2]]});
 
-       circle_energy_equilbration.transition().delay(delay_time).duration(transition_time)
+       d3.select("#circle_energy_equilibration").transition().delay(delay_time).duration(transition_time)
 		 .attr("cx", x_scale_eq_plot(total_equilibration_steps-1) )
     		.attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps-1].y))
     		.attr("r", 4)
@@ -301,6 +303,26 @@ var plot_eq_energy_line = d3.line()
     .curve(d3.curveMonotoneX) // apply smoothing to the line
 
 // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
+
+function update_energy_line(i){
+  if (i==0){
+  plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2)+0.45 } })
+}
+if (i==1){
+  plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2) +0.1*Math.sin(d/number_of_steps*Math.PI*8-Math.PI/3) +0.5 } })
+}
+if (i==2){
+  plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.8*Math.cos(d/number_of_steps*Math.PI+Math.PI/2) + 0.1*Math.cos(d/number_of_steps*Math.PI*10)  +0.9 } })
+}
+d3.select("#energy_line_path").datum(plot_eq_energy_data)
+.attr("d", plot_eq_energy_line)
+
+d3.select("#circle_energy_equilibration")
+.attr("cx", x_scale_eq_plot(total_equilibration_steps) )
+.attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps].y))
+
+}
+
 var plot_eq_energy_data = d3.range(number_of_steps).map(function(d) { return {"y":0.4*Math.cos(d/number_of_steps*Math.PI*2)+0.45 } })
 
 energy_plot_frame = Energy_Plot_Container.append("rect")
@@ -317,12 +339,14 @@ energy_plot_frame = Energy_Plot_Container.append("rect")
 
 line_energy_2 = Energy_Plot_Container.append("path")
     .datum(plot_eq_energy_data) // 10. Binds data to the line
+    .attr("id", "energy_line_path")
     .attr("class", "plotline") // Assign a class for styling
     .attr("d", plot_eq_energy_line)
 	.style("stroke", c_energy_curve)
 
 circle_energy_equilbration = Energy_Plot_Container.append("circle") // Uses the enter().append() method
     //.attr("class", "dot") // Assign a class for styling
+    .attr("id", "circle_energy_equilibration")
     .attr("cx", x_scale_eq_plot(total_equilibration_steps) )
     .attr("cy", y_scale_eq_plot(plot_eq_energy_data[total_equilibration_steps].y))
     .attr("r", 4)

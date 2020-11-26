@@ -13,11 +13,7 @@ dictionary["bm_permutations"+IDENTIFIERXOR] = permutations_of_vector(dictionary[
 // Add the space where it draws the RBM
 
 // Define Mouseover tooltip style
-c_text_tooltip = "grey"
-c_background_tooltip = "#F1F1F1"
-tooltip.style("color", c_text_tooltip)
-	.style("background-color", c_background_tooltip)
-	.style("font-size", "12px")
+
 
 d3.select(RBM_complete_XOR)
     .append("svg")
@@ -240,8 +236,7 @@ function generate_RBM_connections_new(identifier){
          .attr("x1", function(d){return line_pos_gen_x1(d,identifier)})
          .attr("y1", function(d){return line_pos_gen_y1(d,identifier)+circle_offset})
          .attr("x2", function(d){return line_pos_gen_x2(d,identifier)})
-         .attr("y2", function(d){
-         return line_pos_gen_y2(d,identifier)})
+         .attr("y2", function(d){return line_pos_gen_y2(d,identifier)})
          .on("mouseover", function(d,i) {
              tooltip.text(weight_text[i] +' = '+ dictionary["weight_matrix"+identifier][d[0]][d[1]])
                      .style("visibility", "visible")

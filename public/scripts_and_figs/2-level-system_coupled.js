@@ -3,8 +3,8 @@ const identity_test = "#test_figure_id"
 // Variables
 
 // Size of 2D slider
-var param_width = 100, //width of slider rectangle
-    param_height = 100 // heigh
+var param_width = 190, //width of slider rectangle
+    param_height = 190 // height
     param_margin_x = 50; // distance of text with values
     param_margin_y = 10 // y margin 2D slider position
 
@@ -13,7 +13,7 @@ var slider_2D_rx = 10, //Corner radius of histo and slider
 
 // Histogram Variables
 var y0_systems = 13, //y position of parity blobs inside svg
-histo_label_pos_y = 230, // y position of the svg of histo parity labels 
+histo_label_pos_y = 190, // y position of the svg of histo parity labels
 radius_systems = 7, // Radius of Parity Blobs
 node_distance_parity = 17, // How far are the blobs separated in the parity
 parity_blobs_shift_left = 11 // how much 1st blob is shifted from center of histo bar
@@ -30,6 +30,7 @@ common_svg = d3.select(identity_test)
 	.append("svg")
 	.attr("id", "fig1_histo_SVG")
 	.attr("height", 260)
+  .attr("width", 800)
 
 // SVG for bars
 common_svg.append("svg")
@@ -48,11 +49,11 @@ var temp_scale = d3.scalePow()
     .exponent(5)
     .domain([0, 100])
     .range([1, 100])
-    .clamp(true);   
+    .clamp(true);
 var couple_scale = d3.scaleLinear()
     .domain([param_margin_x, param_width+param_margin_x])
     .range([-1, 1])
-    .clamp(true);   
+    .clamp(true);
 
 // initialize the 2D SVGs
 initialize_2D_slider_fig1()
@@ -63,10 +64,10 @@ var dragHandler_fig1 = d3.drag()
 	xpos = d3.event.x
 	ypos = d3.event.y
 	if (xpos<param_margin_x){xpos = param_margin_x}
-	if (xpos>param_width+param_margin_x){xpos=param_width+param_margin_x} 
+	if (xpos>param_width+param_margin_x){xpos=param_width+param_margin_x}
 	if (ypos<param_margin_y){ypos = param_margin_y}
 	if (ypos>param_height+param_margin_y){ypos=param_height+param_margin_y}
-	twoD_slider(xpos,ypos)    
+	twoD_slider(xpos,ypos)
         d3.select(this)
             .attr("cx", xpos)
             .attr("cy", ypos);
@@ -96,7 +97,7 @@ d3.select("#two_level_histogram").append("text")
     variable = 0
     plot_steps = 500
 
-    
+
 generate_histogram_2_level()
 
 d3.select("#SVG_fig1_histo").append("text")
@@ -115,9 +116,9 @@ draw_parity_systems(twoL_histo_pos_gen(n)+20,y0_systems,updown[n],node_distance_
 // =================================================
 // INITIALIZE 2D SLIDER
 function initialize_2D_slider_fig1(){
-var svg = d3.select(identity_test).append("svg")
-    .attr("y", 0)
-    .attr("x",0);
+var svg = common_svg.append("svg")
+    .attr("y", 10)
+    .attr("x",300);
 
 var gradient = svg.append("defs")
   .append("linearGradient")
@@ -144,7 +145,7 @@ svg.append("rect")
     .attr("height", param_height)
     .attr("x", param_margin_x)
     .attr("y",param_margin_y)
-	.attr("rx", slider_2D_rx)	
+	.attr("rx", slider_2D_rx)
     .style("fill", "url(#gradient)");
 
 
@@ -169,7 +170,7 @@ svg.append("circle")
       .attr("cy", 50+param_margin_y)
       .attr("r", handle_2D_slider_radius)
       .attr("fill", c_handle_2D_slider)
-      .attr("stroke", c_stroke_2D_slider)	
+      .attr("stroke", c_stroke_2D_slider)
 
 svg.append("text")
 	.text(function(){return "w="+couple_scale(100).toPrecision(2)})
@@ -197,7 +198,7 @@ function twoD_slider(xpos, ypos) {
 	temp = temp_scale(110-ypos)
 	new_data = update_2L_probabilities(coupling,temp,energy)
 	update_2L_histogram(new_data,twoL_histo_height, twoL_histo_y_pos)
-	d3.select("#param_line_y").attr("y1", ypos).attr("y2", ypos)    
+	d3.select("#param_line_y").attr("y1", ypos).attr("y2", ypos)
 	d3.select("#param_line_x").attr("x1", xpos).attr("x2", xpos)
 	d3.select("#para_text_temp").attr("y", ypos+10)
 		.text(function(){return "T="+ temp_scale(110-ypos).toPrecision(2)})
@@ -211,13 +212,13 @@ function twoD_slider(xpos, ypos) {
 function draw_parity_systems(x0,y0,up,width,radius,identity){
 	circle1_color = c_hid_node1
 	circle2_color = c_hid_node1
-	circle1_color_stroke = c_hid_node1_stroke		
-	circle2_color_stroke = c_hid_node1_stroke		
+	circle1_color_stroke = c_hid_node1_stroke
+	circle2_color_stroke = c_hid_node1_stroke
 	if (up[0]==true){circle1_color = c_hid_node2
-			circle1_color_stroke = c_hid_node2_stroke		
+			circle1_color_stroke = c_hid_node2_stroke
 	}
 	if (up[1]==true){circle2_color = c_hid_node2
-			circle2_color_stroke = c_hid_node2_stroke		
+			circle2_color_stroke = c_hid_node2_stroke
 	}
 	d3.select("#SVG_fig1_histo").append("circle")
 	    .attr("id", identity+"circle1")
@@ -235,6 +236,28 @@ function draw_parity_systems(x0,y0,up,width,radius,identity){
 	    .style("fill", circle2_color)
 	    //.style("opacity", 0.5)
 	    .style("stroke", circle2_color_stroke)
+    d3.select("#SVG_fig1_histo").append("line")
+    .attr("y1", y0).attr("y2", y0)
+  	.attr("x1", x0-parity_blobs_shift_left-radius/2).attr("x2", x0-parity_blobs_shift_left+radius/2)
+    .style("stroke", "black")
+    d3.select("#SVG_fig1_histo").append("line")
+    .attr("y1", y0).attr("y2", y0)
+  	.attr("x1", x0-parity_blobs_shift_left+width-radius/2).attr("x2", x0-parity_blobs_shift_left+width+radius/2)
+    .style("stroke", "black")
+  if (up[0]==false){
+    d3.select("#SVG_fig1_histo").append("line")
+    .attr("y1", y0-radius/2).attr("y2", y0+radius/2)
+  	.attr("x1", x0-parity_blobs_shift_left).attr("x2", x0-parity_blobs_shift_left)
+    .style("stroke", "black")
+    }
+  if (up[1]==false){
+    d3.select("#SVG_fig1_histo").append("line")
+    .attr("y1", y0-radius/2).attr("y2", y0+radius/2)
+    .attr("x1", x0-parity_blobs_shift_left+width).attr("x2", x0-parity_blobs_shift_left+width)
+    .style("stroke", "black")
+
+  }
+
 }
 
 function twoL_histo_pos_gen(d) {
@@ -243,11 +266,11 @@ function twoL_histo_pos_gen(d) {
 
 function generate_histogram_2_level(){
 	var twoL_histogram_data = [0.25,0.25,0.25,0.25]
-	
+
 	var histogram_svg = d3.select("#two_level_histogram")
 				.attr("height", 600)
 				.attr("width", 600)
-				.attr("y", 50)
+				.attr("y", 10)
 
 	histogram_svg.selectAll("rect")
 		.data(twoL_histogram_data)
@@ -275,8 +298,8 @@ function probability_2_level(weight, x1, x2, gap, temperature){
 	var normalization = 0
 	var all_configs = [[-1,-1], [1,-1], [-1,1], [1,1]]
 	for(i=0; i<all_configs.length;i++){
-		normalization += Math.exp(-energy_2L_system(weight, all_configs[i][0], all_configs[i][1], gap)/temperature)	
-	} 
+		normalization += Math.exp(-energy_2L_system(weight, all_configs[i][0], all_configs[i][1], gap)/temperature)
+	}
 	return 	Math.exp(-energy_2L_system(weight,x1,x2,gap)/temperature)/normalization
 }
 

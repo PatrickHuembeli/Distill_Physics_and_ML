@@ -27,11 +27,14 @@ var 	c_vis_node1 = "white" 			// Color for visible nodes
 	c_hid_node1_stroke = "black" 		// Stroke color1 hidden node
 	c_hid_node2_stroke = "black" 		// Storke color2 hidden node
 
-	c_unused_nodes =  "#D6D6D6"
+	c_unused_nodes =  "white"//"#D6D6D6"
 	unused_nodes_stroke =  "black"
 
+	c_text_tooltip = "grey"
+	c_background_tooltip = "#F1F1F1"
+
 	// OTHER STYLE PARAMETERS FOR FIGURE 2
-	var 	connection_stroke_width = 1.5 	// width of the connection lines
+	var 	connection_stroke_width = 3.5 	// width of the connection lines
 		nodes_stroke_width = 0.5 		// Stroke width of the nodes
 		nodes_radius = 12 		// Radius of the RBM nodes
 
