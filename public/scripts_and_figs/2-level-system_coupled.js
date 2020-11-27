@@ -101,10 +101,10 @@ d3.select("#two_level_histogram").append("text")
 generate_histogram_2_level()
 
 d3.select("#SVG_fig1_histo").append("text")
-     .text("Parity")
+     .text("State")
      .attr("class", "general_text")
-     .attr("x", 245)
-    .attr("y", 20)
+     .attr("x", 137)
+    .attr("y", 40)
     .style("fill", c_text_histogram)
 updown = [[false,false],[true,false],[false,true],[true,true]]
 for (n=0;n<updown.length;n++){
