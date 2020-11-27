@@ -61,9 +61,9 @@ var svg_2 = d3.select(energy_minima_temp_id).append("svg")
    svg_2.append("text")
     .attr("id", "Temp_Energy_Text_Id")
     .attr("class", "annotation")
-    .attr("x", 80)
+    .attr("x", 25)
     .attr("y", 270)
-    .text("(Click on any node to start sampling)")
+    .text("(Click any node to start sampling algorithm)")
 // Draw background
 make_temp_gradient_new(0,0,280,400)
 
