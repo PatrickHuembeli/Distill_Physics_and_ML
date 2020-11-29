@@ -30,6 +30,8 @@ var n = 32;
 // The number of actual points for images
 var n_points = 6;
 
+var pos_list = 0;
+
 // 5. X scale will use the index of our data
 var x_scale = d3.scaleLinear()
     .domain([0, n-1]) // input
@@ -216,7 +218,7 @@ function start_convergence(a, number_of_images, boltzmann){
 			.attr("fill", c_inactive_dot)
 			.attr("r", r_inactive_dot).style("stroke", c_stroke_dot_inactive);
 	d3.select("#configuration" + a).attr("fill", c_active_dot).attr("r", r_active_dot)
-	.style("stroke", c_stroke_dot_active)
+	    .style("stroke", c_stroke_dot_active)
 	d3.select(".energy_min_images").interrupt()
 	pos_list = [a]
 	pos = a
@@ -237,7 +239,8 @@ function temp_slider_energy_min(val){
 	selected_dot = d3.select("#configuration"+i)
 	activity = selected_dot.attr("activity")
 	if (activity=="active"){
-		start_position = i
+    if (pos_list.includes(i)){
+		  start_position = i}
 		}
 	}
 	start_convergence(start_position, 32, true)
