@@ -61,8 +61,10 @@ initialize_2D_slider_fig1()
 // Define drag Handler
 var dragHandler_fig1 = d3.drag()
     .on("drag", function () {
-	xpos = d3.event.x
-	ypos = d3.event.y
+      x = parseInt(d3.select(this).attr('cx'), 10),
+      y = parseInt(d3.select(this).attr('cy'), 10);
+	xpos = x + d3.event.dx //d3.event.x
+	ypos = y + d3.event.dy //d3.event.y
 	if (xpos<param_margin_x){xpos = param_margin_x}
 	if (xpos>param_width+param_margin_x){xpos=param_width+param_margin_x}
 	if (ypos<param_margin_y){ypos = param_margin_y}
@@ -192,7 +194,6 @@ svg.append("text")
 // END INIT 2D SLIDER
 
 function twoD_slider(xpos, ypos) {
-  console.log(ypos)
   energy = 1.0
   coupling = couple_scale(xpos)
 	temp = temp_scale(110-ypos)
